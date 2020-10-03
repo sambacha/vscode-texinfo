@@ -1,0 +1,129 @@
+{
+    "name": "texinfo",
+    "displayName": "Texinfo Language Support",
+    "description": "Syntax highlighting, autocompletion and preview support for Texinfo.",
+    "version": "0.1.0",
+    "author": {
+        "name": "CismonX",
+        "email": "admin@cismon.net",
+        "url": "https://cismon.net"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CismonX/vscode-texinfo"
+    },
+    "engines": {
+        "vscode": "^1.49.0"
+    },
+    "categories": [
+        "Linters",
+        "Other",
+        "Programming Languages",
+        "Snippets"
+    ],
+    "main": "./out/extension.js",
+    "activationEvents": [
+        "onLanguage:texinfo"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "texinfo.showPreview",
+                "title": "Show preview (Texinfo)",
+                "icon": "$(open-preview)"
+            }
+        ],
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "texinfo.showPreview",
+                    "when": "editorLangId == texinfo",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "Texinfo",
+            "properties": {
+                "texinfo.makeinfo": {
+                    "type": "string",
+                    "default": "makeinfo",
+                    "markdownDescription": "Path to the `makeinfo` command."
+                },
+                "texinfo.preview.noHeaders": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Suppress node separators in preview. See `makeinfo --help` for details."
+                },
+                "texinfo.preview.maxSize": {
+                    "type": "integer",
+                    "default": "2",
+                    "markdownDescription": "Max allowed size (in MiB) for the preview document."
+                },
+                "texinfo.preview.errorLimit": {
+                    "type": "integer",
+                    "default": 100,
+                    "markdownDescription": "Max tolerated number of errors when trying to display preview."
+                },
+                "texinfo.preview.force": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Preserve preview even if errors."
+                },
+                "texinfo.preview.noValidate": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Supress node cross-reference validation."
+                },
+                "texinfo.preview.noWarn": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Suppress warnings."
+                }
+            }
+        },
+        "languages": [
+            {
+                "id": "texinfo",
+                "aliases": [
+                    "Texinfo"
+                ],
+                "extensions": [
+                    ".texi",
+                    ".texinfo",
+                    ".txi"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "texinfo",
+                "scopeName": "text.texinfo",
+                "path": "./out/texinfo.tmGrammar.json",
+                "configuration": "./language-configuration.json"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run lint && npm run build",
+        "compile": "tsc -p ./",
+        "prepare": "sh ./scripts/prepare.sh",
+        "build": "npm run prepare && npm run compile",
+        "lint": "eslint src --ext ts",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "^14.11.2",
+        "@types/vscode": "^1.49.0",
+        "@typescript-eslint/eslint-plugin": "^3.8.0",
+        "@typescript-eslint/parser": "^3.8.0",
+        "eslint": "^7.10.0",
+        "typescript": "^4.0.3"
+    },
+    "dependencies": {
+        "cson": "^7.20.0",
+        "language-texinfo": "^1.0.0"
+    }
+}

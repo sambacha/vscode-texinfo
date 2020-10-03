@@ -1,0 +1,11 @@
+os:
+  - linux
+dist: bionic
+
+language: node_js
+node_js:
+  - node
+  - lts/*
+
+script:
+  - npm run vscode:prepublish
