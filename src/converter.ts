@@ -6,7 +6,7 @@
  */
 
 import { Options } from './options';
-import { exec } from './utils';
+import * as utils from './utils';
 
 /**
  * Texinfo to HTML converter.
@@ -19,9 +19,8 @@ export class Converter {
      * @param path Path to the Texinfo document.
      * @yields HTML code, or `undefined` if conversion fails.
      */
-    static async convert(path: string) {
-        const converter = new Converter(path);
-        return await converter.convert();
+    static async convertToHtml(path: string) {
+        return await new Converter().convert(path);
     }
 
     /**
@@ -29,18 +28,17 @@ export class Converter {
      */
     private readonly options = ['-o', '-', '--no-split', '--html'];
 
-    private constructor(path: string) {
+    private constructor() {
         Options.noHeaders && this.options.push('--no-headers');
         Options.force && this.options.push('--force');
         Options.noValidate && this.options.push('--no-validate');
         Options.noWarn && this.options.push('--no-warn');
         this.options.push(`--error-limit=${Options.errorLimit}`);
-        this.options.push(path);
     }
 
-    private async convert() {
+    private async convert(path: string) {
         const makeinfo = Options.makeinfo;
         const maxBuffer = Options.maxSize * 1024 * 1024;
-        return await exec(makeinfo, this.options, maxBuffer);
+        return await utils.exec(makeinfo, this.options.concat(path), maxBuffer);
     }
 }

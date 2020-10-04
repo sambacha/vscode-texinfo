@@ -6,8 +6,8 @@
  */
 
 import * as vscode from 'vscode';
-import { Preview } from './preview';
 import { Options } from './options';
+import { Preview } from './preview';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(

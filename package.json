@@ -80,6 +80,11 @@
                     "type": "boolean",
                     "default": false,
                     "markdownDescription": "Suppress warnings."
+                },
+                "texinfo.preview.displayImage": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Whether to display images in in the preview."
                 }
             }
         },
@@ -124,6 +129,7 @@
     },
     "dependencies": {
         "cson": "^7.20.0",
-        "language-texinfo": "^1.0.0"
+        "language-texinfo": "^1.0.0",
+        "node-html-parser": "^1.2.21"
     }
 }

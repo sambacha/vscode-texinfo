@@ -5,8 +5,9 @@
  * @license MIT
  */
 
-import * as vscode from 'vscode';
 import * as child_process from 'child_process';
+import * as htmlparser from 'node-html-parser';
+import * as vscode from 'vscode';
 
 /**
  * Open a prompt with two buttons, "Confirm" and "Cancel", and wait for user action.
@@ -41,4 +42,22 @@ export function exec(path: string, args: string[], maxBuffer: number) {
             }
         });
     });
+}
+
+/**
+ * Transform and replace the `src` attribute value of all `img` elements from given HTML code using given function.
+ * 
+ * @param htmlCode 
+ * @param transformer 
+ * @returns The HTML code after transformation.
+ */
+export function transformHtmlImageUri(htmlCode: string, transformer: (src: string) => string) {
+    const dom = htmlparser.parse(htmlCode);
+    const elements = dom.querySelectorAll('img');
+    elements.forEach((element) => {
+        const src = element.getAttribute('src');
+        src && element.setAttribute('src', transformer(src));
+    })
+    // If nothing is transformed, return the original HTML code, for better performance.
+    return elements.length === 0 ? htmlCode : dom.outerHTML;
 }

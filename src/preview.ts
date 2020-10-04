@@ -5,10 +5,11 @@
  * @license MIT
  */
 
-import * as vscode from 'vscode';
 import * as path from 'path';
+import * as vscode from 'vscode';
 import { Converter } from './converter';
-import { prompt } from './utils';
+import { Options } from './options';
+import * as utils from './utils';
 
 /**
  * Texinfo document preview.
@@ -25,7 +26,7 @@ export class Preview {
     static async show(editor: vscode.TextEditor) {
         const document = editor.document;
         if (document.isUntitled) {
-            if (!await prompt('Save this document to display preview.', 'Save')) {
+            if (!await utils.prompt('Save this document to display preview.', 'Save')) {
                 return;
             }
             if (!await document.save()) {
@@ -108,10 +109,18 @@ export class Preview {
         this.pendingUpdate = false;
         this.updateTitle();
 
-        const htmlCode = await Converter.convert(this.document.fileName);
+        let htmlCode = await Converter.convertToHtml(this.document.fileName);
         if (htmlCode === undefined) {
             vscode.window.showErrorMessage(`Failed to show preview for ${this.document.fileName}.`);
         } else {
+            if (Options.displayImage) {
+                const pathName = path.dirname(this.document.fileName);
+                // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
+                htmlCode = utils.transformHtmlImageUri(htmlCode, (src) => {
+                    const srcUri = vscode.Uri.file(pathName + '/' + src);
+                    return this.panel.webview.asWebviewUri(srcUri).toString();
+                });
+            }
             this.panel.webview.html = htmlCode;
         }
         this.updating = false;

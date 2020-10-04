@@ -55,6 +55,10 @@ export class Options {
         return Options.instance.getBoolean('preview.noWarn');
     }
 
+    static get displayImage() {
+        return Options.instance.getBoolean('preview.displayImage');
+    }
+
     private readonly configuration: vscode.WorkspaceConfiguration;
 
     private constructor(section: string) {
