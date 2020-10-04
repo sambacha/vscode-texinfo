@@ -11,7 +11,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/CismonX/vscode-texinfo"
+        "url": "https://github.com/texinfo-lang/vscode-texinfo"
     },
     "engines": {
         "vscode": "^1.49.0"
@@ -30,7 +30,7 @@
         "commands": [
             {
                 "command": "texinfo.showPreview",
-                "title": "Show preview (Texinfo)",
+                "title": "Show preview (as HTML)",
                 "icon": "$(open-preview)"
             }
         ],
@@ -111,7 +111,7 @@
         "compile": "tsc -p ./",
         "prepare": "sh ./scripts/prepare.sh",
         "build": "npm run prepare && npm run compile",
-        "lint": "eslint src --ext ts",
+        "lint": "eslint --ext ts --fix src",
         "watch": "tsc -watch -p ./"
     },
     "devDependencies": {

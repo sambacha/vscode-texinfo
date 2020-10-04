@@ -68,7 +68,7 @@ export class Preview {
 
     private readonly panel: vscode.WebviewPanel;
     
-    private readonly disposables = new Array<vscode.Disposable>();
+    private readonly disposables = <vscode.Disposable[]>[];
 
     /**
      * Whether the preview is updating.
@@ -83,14 +83,14 @@ export class Preview {
     private constructor(private readonly document: vscode.TextDocument) {
         this.panel = vscode.window.createWebviewPanel('texinfo.preview', '', vscode.ViewColumn.Beside);
         this.disposables.push(this.panel.onDidDispose(() => this.destroy()));
-        Preview.map.set(this.document, this);
+        Preview.map.set(document, this);
         this.updateWebview();
     }
 
-    private get title() {
+    private updateTitle() {
         const updating = this.updating ? '(Updating) ' : '';
         const fileName = path.basename(this.document.fileName);
-        return `${updating}Preview ${fileName}`;
+        this.panel.title = `${updating}Preview ${fileName}`;
     }
 
     private destroy() {
@@ -106,15 +106,17 @@ export class Preview {
         }
         this.updating = true;
         this.pendingUpdate = false;
-        this.panel.title = this.title;
+        this.updateTitle();
+
         const htmlCode = await Converter.convert(this.document.fileName);
         if (htmlCode === undefined) {
-            vscode.window.showErrorMessage(`Failed to show preview for file ${this.document.fileName}.`);
+            vscode.window.showErrorMessage(`Failed to show preview for ${this.document.fileName}.`);
         } else {
             this.panel.webview.html = htmlCode;
         }
         this.updating = false;
-        this.panel.title = this.title;
+        this.updateTitle();
+
         if (this.pendingUpdate) {
             this.updateWebview();
         }

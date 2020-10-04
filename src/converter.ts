@@ -14,9 +14,10 @@ import { exec } from './utils';
 export class Converter {
 
     /**
-     * Convert a texinfo document to HTML.
+     * Convert a Texinfo document to HTML.
      * 
-     * @param path Path to the Texinfo document to be converted.
+     * @param path Path to the Texinfo document.
+     * @yields HTML code, or `undefined` if conversion fails.
      */
     static async convert(path: string) {
         const converter = new Converter(path);
@@ -29,18 +30,10 @@ export class Converter {
     private readonly options = ['-o', '-', '--no-split', '--html'];
 
     private constructor(path: string) {
-        if (Options.noHeaders) {
-            this.options.push('--no-headers');
-        }
-        if (Options.force) {
-            this.options.push('--force');
-        }
-        if (Options.noValidate) {
-            this.options.push('--no-validate');
-        }
-        if (Options.noWarn) {
-            this.options.push('--no-warn');
-        }
+        Options.noHeaders && this.options.push('--no-headers');
+        Options.force && this.options.push('--force');
+        Options.noValidate && this.options.push('--no-validate');
+        Options.noWarn && this.options.push('--no-warn');
         this.options.push(`--error-limit=${Options.errorLimit}`);
         this.options.push(path);
     }
