@@ -31,13 +31,11 @@ export async function prompt(message: string, confirm: string) {
 export function exec(path: string, args: string[], maxBuffer: number) {
     return new Promise<string | undefined>((resolve) => {
         child_process.execFile(path, args, { maxBuffer: maxBuffer }, (error, stdout, stderr) => {
-            if (stderr) {
-                console.log(stderr);
-            }
             if (error) {
                 console.error(error);
                 resolve(undefined);
             } else {
+                stderr && console.log(stderr);
                 resolve(stdout);
             }
         });

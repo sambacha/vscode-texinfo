@@ -37,8 +37,7 @@ export class Converter {
     }
 
     private async convert(path: string) {
-        const makeinfo = Options.makeinfo;
         const maxBuffer = Options.maxSize * 1024 * 1024;
-        return await utils.exec(makeinfo, this.options.concat(path), maxBuffer);
+        return await utils.exec(Options.makeinfo, this.options.concat(path), maxBuffer);
     }
 }

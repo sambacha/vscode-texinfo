@@ -13,6 +13,27 @@
         "type": "git",
         "url": "https://github.com/texinfo-lang/vscode-texinfo"
     },
+    "devDependencies": {
+        "@types/node": "^14.11.2",
+        "@types/vscode": "^1.49.0",
+        "@typescript-eslint/eslint-plugin": "^3.8.0",
+        "@typescript-eslint/parser": "^3.8.0",
+        "eslint": "^7.10.0",
+        "typescript": "^4.0.3"
+    },
+    "dependencies": {
+        "cson": "^7.20.0",
+        "language-texinfo": "^1.0.0",
+        "node-html-parser": "^1.2.21"
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run lint && npm run build",
+        "compile": "tsc -p ./",
+        "prepare": "sh ./scripts/prepare.sh",
+        "build": "npm run prepare && npm run compile",
+        "lint": "eslint --ext ts --fix src",
+        "watch": "tsc -watch -p ./"
+    },
     "engines": {
         "vscode": "^1.49.0"
     },
@@ -30,11 +51,18 @@
         "commands": [
             {
                 "command": "texinfo.showPreview",
-                "title": "Show preview (as HTML)",
+                "title": "Show preview",
                 "icon": "$(open-preview)"
             }
         ],
         "menus": {
+            "commandPalette": [
+                {
+                    "command": "texinfo.showPreview",
+                    "when": "editorLangId == texinfo",
+                    "group": "navigation"
+                }
+            ],
             "editor/title": [
                 {
                     "command": "texinfo.showPreview",
@@ -43,6 +71,14 @@
                 }
             ]
         },
+        "keybindings": [
+            {
+                "command": "texinfo.showPreview",
+                "key": "ctrl+k v",
+                "mac": "cmd+k v",
+                "when": "editorLangId == texinfo"
+            }
+        ],
         "configuration": {
             "title": "Texinfo",
             "properties": {
@@ -110,26 +146,5 @@
                 "configuration": "./language-configuration.json"
             }
         ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run lint && npm run build",
-        "compile": "tsc -p ./",
-        "prepare": "sh ./scripts/prepare.sh",
-        "build": "npm run prepare && npm run compile",
-        "lint": "eslint --ext ts --fix src",
-        "watch": "tsc -watch -p ./"
-    },
-    "devDependencies": {
-        "@types/node": "^14.11.2",
-        "@types/vscode": "^1.49.0",
-        "@typescript-eslint/eslint-plugin": "^3.8.0",
-        "@typescript-eslint/parser": "^3.8.0",
-        "eslint": "^7.10.0",
-        "typescript": "^4.0.3"
-    },
-    "dependencies": {
-        "cson": "^7.20.0",
-        "language-texinfo": "^1.0.0",
-        "node-html-parser": "^1.2.21"
     }
 }
