@@ -13,6 +13,7 @@
         "type": "git",
         "url": "https://github.com/texinfo-lang/vscode-texinfo"
     },
+    "icon": "assets/texinfo.png",
     "devDependencies": {
         "@types/node": "^14.11.2",
         "@types/vscode": "^1.49.0",
