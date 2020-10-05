@@ -10,7 +10,7 @@ import * as vscode from 'vscode';
 let options: Options | undefined;
 
 /**
- * Get extension options.
+ * Fetch extension option values.
  * 
  * See `contributes.configuration` of package.json for details.
  */
