@@ -17,10 +17,7 @@ let options: Options | undefined;
 export class Options {
 
     private static get instance() {
-        if (options === undefined) {
-            options = new Options('texinfo');
-        }
-        return options;
+        return options ?? (options = new Options('texinfo'));
     }
 
     static clear() {

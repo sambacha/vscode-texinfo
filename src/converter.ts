@@ -17,7 +17,7 @@ export class Converter {
      * Convert a Texinfo document to HTML.
      * 
      * @param path Path to the Texinfo document.
-     * @yields HTML code, or `undefined` if conversion fails.
+     * @returns HTML code, or `undefined` if conversion fails.
      */
     static async convertToHtml(path: string) {
         return await new Converter().convert(path);

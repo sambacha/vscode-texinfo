@@ -14,7 +14,7 @@ import * as vscode from 'vscode';
  * 
  * @param message The message to be displayed on the prompt.
  * @param confirm Text to be displayed on the "Confirm" button.
- * @yields Whether the user clicked the "Confirm" button.
+ * @returns Whether the user clicked the "Confirm" button.
  */
 export async function prompt(message: string, confirm: string) {
     return confirm === await vscode.window.showInformationMessage(message, confirm, 'Cancel');
@@ -26,7 +26,7 @@ export async function prompt(message: string, confirm: string) {
  * @param path Path to the executable file.
  * @param args Arguments to be passed to the command.
  * @param maxBuffer Max output buffer size.
- * @yields The output data, or `undefined` if execution fails.
+ * @returns The output data, or `undefined` if execution fails.
  */
 export function exec(path: string, args: string[], maxBuffer: number) {
     return new Promise<string | undefined>((resolve) => {
@@ -55,7 +55,7 @@ export function transformHtmlImageUri(htmlCode: string, transformer: (src: strin
     elements.forEach((element) => {
         const src = element.getAttribute('src');
         src && element.setAttribute('src', transformer(src));
-    })
+    });
     // If nothing is transformed, return the original HTML code, for better performance.
     return elements.length === 0 ? htmlCode : dom.outerHTML;
 }

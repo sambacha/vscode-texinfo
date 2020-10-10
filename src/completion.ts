@@ -14,14 +14,13 @@ export class CompletionItemProvider implements vscode.CompletionItemProvider {
 
     private readonly completionItems = [
         command('c', 'Line comment'),
-        snippet('header', 'c', 'Declare header block', 1,
-            '@c %**start of header\n\n@c %**end of header',
+        snippet('header', 'c', 'Declare header block', 1, '@c %**start of header\n\n@c %**end of header',
             'c %**${1:start of header}\n$2\n@c %**${3:end of header}'),
         command('setfilename', 'Set output file name'),
         command('settitle', 'Set document title'),
         command('copying', 'Declare copying permissions', { sortOrder: 1 }),
         blockSnippet('copying', 'Declare copying permissions'),
-        command('copyright', 'The \'©\' symbol', { hasEmptyArguments: true }),
+        command('copyright', 'The "©" symbol', { hasEmptyArguments: true }),
         command('insertcopying', 'Include permissions text'),
         command('titlepage', 'Declare title page', { sortOrder: 1 }),
         blockSnippet('titlepage', 'Declare title page'),
@@ -76,10 +75,10 @@ function command(name: string, detail: string, extraArgs?: {
         label: '@' + name,
         kind: vscode.CompletionItemKind.Function,
         detail: detail,
-        sortText: name + extraArgs?.sortOrder?.toString() ?? '',
+        sortText: name + (extraArgs?.sortOrder?.toString() ?? ''),
         filterText: name,
-        insertText: name + extraArgs?.hasEmptyArguments ? '{}' : '',
-    }
+        insertText: name + (extraArgs?.hasEmptyArguments ? '{}' : ''),
+    };
 }
 
 function blockSnippet(name: string, detail: string): vscode.CompletionItem {
@@ -112,7 +111,7 @@ function snippet(
         sortText: keyword + sortOrder.toString(),
         filterText: keyword,
         insertText: new vscode.SnippetString(insertText),
-    }
+    };
 }
 
 /**
@@ -121,5 +120,5 @@ function snippet(
  * @param snippet The snippet code
  */
 function snippetDocumentation(snippet: string) {
-    return new vscode.MarkdownString(`\`\`\`texinfo\n${snippet}\n\`\`\``);
+    return new vscode.MarkdownString('```texinfo\n' + snippet + '\n```');
 }
