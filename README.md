@@ -7,12 +7,32 @@ Texinfo language support for Visual Studio Code.
 
 ## Features
 
-**Warning**: This extension is in the early stage of development. **DO NOT USE**.
+<details>
+<summary>Syntax Highlighting</summary>
+(Screenshots here...)
+</details>
+
+<details>
+<summary>Code Completion</summary>
+(Screenshots here...)
+</details>
+
+<details>
+<summary>Block Folding</summary>
+(Screenshots here...)
+</details>
+
+<details>
+<summary>Display Preview</summary>
+(Screenshots here...)
+</details>
 
 ## Requirements
 
-To enable the preview feature, the `makeinfo` command-line tool, which is a part of [GNU Texinfo](https://www.gnu.org/software/texinfo/), should be present on your system.
+The "Display Preview" feature depends on the `makeinfo` command-line tool, which is part of [GNU Texinfo](https://www.gnu.org/software/texinfo/).
 
 ## Extension Settings
 
-See VSCode settings for details.
+See `File -> Preferences -> Settings -> Extensions -> Texinfo` for details. The settings are self-explanatory.
+
+## Notes

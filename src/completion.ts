@@ -13,6 +13,13 @@ import * as vscode from 'vscode';
 export class CompletionItemProvider implements vscode.CompletionItemProvider {
 
     private readonly completionItems = [
+        command('ampchar', 'Insert an ampersand, "&"', { hasEmptyArguments: true }),
+        command('atchar', 'Insert an at sign, "@"', { hasEmptyArguments: true }),
+        command('backslashchar', 'Insert a blackslash, "\\"', { hasEmptyArguments: true }),
+        command('lbracechar', 'Insert a left brace, "{"', { hasEmptyArguments: true }),
+        command('rbracechar', 'Insert a right brace, "{"', { hasEmptyArguments: true }),
+        commandSnippet('abbr', 'Indicate a general abbreviation', 1, 'abbreviation', 'meaning'),
+        command('abbr', 'Indicate a general abbreviation', { sortOrder: 1 }),
         command('c', 'Line comment'),
         snippet('header', 'c', 'Declare header block', 1, '@c %**start of header\n\n@c %**end of header',
             'c %**${1:start of header}\n$2\n@c %**${3:end of header}'),
@@ -81,6 +88,28 @@ function command(name: string, detail: string, extraArgs?: {
     };
 }
 
+/**
+ * Build the completion item for a snippet of a command (with arguments).
+ * 
+ * @param name The command name.
+ * @param detail The command description.
+ * @param numArgsRequired Number of required arguments.
+ * @param args Argument names.
+ */
+function commandSnippet(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
+    const documentation = `@${name}{${args.map((arg, idx) => idx < numArgsRequired ? arg : '?' + arg).join(', ')}}`;
+    const optionalArgs = args.splice(numArgsRequired).map((arg, idx) => `\${${numArgsRequired + idx + 2}:${arg}}`);
+    const requiredArgs = args.map((arg, idx) => `\${${idx + 1}:${arg}}`);
+    const insertText = `${name}{${requiredArgs.join(', ')}\${${numArgsRequired + 1}:, ${optionalArgs.join(', ')}}}`;
+    return snippet(name, name, detail, 0, documentation, insertText);
+}
+
+/**
+ * Build the completion item for a snippet of a block.
+ * 
+ * @param name The snippet name.
+ * @param detail The snippet description.
+ */
 function blockSnippet(name: string, detail: string): vscode.CompletionItem {
     return snippet(name, name, detail, 0, `@${name}\n\n@end ${name}`, `${name}\n$1\n@end ${name}`);
 }
