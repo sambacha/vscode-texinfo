@@ -46,7 +46,16 @@
             "plugin:@typescript-eslint/recommended"
         ],
         "rules": {
-            "comma-dangle": ["warn", "always-multiline"],
+            "comma-dangle": [
+                "warn",
+                "always-multiline"
+            ],
+            "max-len": [
+                "warn",
+                {
+                    "code": 120
+                }
+            ],
             "@typescript-eslint/explicit-module-boundary-types": "off",
             "@typescript-eslint/semi": "warn"
         }
