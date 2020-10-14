@@ -5,6 +5,7 @@
  * @license MIT
  */
 
+import IntervalTree from '@flatten-js/interval-tree';
 import * as vscode from 'vscode';
 
 /**
@@ -35,7 +36,7 @@ export class FoldingRangeContext {
         if (event.document.languageId !== 'texinfo') {
             return;
         }
-        FoldingRangeContext.get(event.document)?.update(event.contentChanges);
+        FoldingRangeContext.get(event.document).update(event.contentChanges);
     }
 
     static close(document: vscode.TextDocument) {
@@ -46,9 +47,15 @@ export class FoldingRangeContext {
         FoldingRangeContext.map.clear();
     }
 
-    foldingRanges = <vscode.FoldingRange[]>[];
+    get foldingRanges(): vscode.FoldingRange[] {
+        return this.tempFoldingRanges ?? (this.tempFoldingRanges = this.intervalTree.values);
+    }
 
-    private commentRange?: vscode.FoldingRange;
+    private intervalTree = new IntervalTree();
+
+    private tempFoldingRanges?: vscode.FoldingRange[];
+
+    private commentRange?: [number, number];
 
     private headerStart?: number;
 
@@ -56,7 +63,9 @@ export class FoldingRangeContext {
 
     private constructor(private readonly document: vscode.TextDocument) {
         FoldingRangeContext.map.set(document, this);
+        console.log(Date.now());
         this.calculateFoldingRanges();
+        console.log(Date.now());
     }
 
     private calculateFoldingRanges() {
@@ -73,8 +82,8 @@ export class FoldingRangeContext {
             this.processBlock(lineText, lineNum);
         }
         if (this.commentRange !== undefined) {
-            if (this.commentRange.end - this.commentRange.start > 1) {
-                this.foldingRanges.push(this.commentRange);
+            if (this.commentRange[1] - this.commentRange[0] > 1) {
+                this.insertRange(this.commentRange);
             }
         }
     }
@@ -89,17 +98,17 @@ export class FoldingRangeContext {
                 if (this.headerStart === undefined) {
                     this.headerStart = lineNum;
                 } else {
-                    this.foldingRanges.push(new vscode.FoldingRange(lineNum, this.headerStart));
+                    this.insertRange([lineNum, this.headerStart]);
                     this.headerStart = undefined;
                 }
             }
             if (this.commentRange === undefined) {
-                this.commentRange = new vscode.FoldingRange(lineNum, lineNum, vscode.FoldingRangeKind.Comment);
-            } else if (this.commentRange.start - 1 === lineNum) {
-                this.commentRange.start = lineNum;
+                this.commentRange = [lineNum, lineNum];
+            } else if (this.commentRange[0] - 1 === lineNum) {
+                this.commentRange[0] = lineNum;
             } else {
-                this.foldingRanges.push(this.commentRange);
-                this.commentRange = new vscode.FoldingRange(lineNum, lineNum, vscode.FoldingRangeKind.Comment);
+                this.insertRange(this.commentRange, vscode.FoldingRangeKind.Comment);
+                this.commentRange = [lineNum, lineNum];
             }
             return true;
         }
@@ -115,15 +124,28 @@ export class FoldingRangeContext {
                 return;
             }
             if (lineText.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
-                this.foldingRanges.push(new vscode.FoldingRange(lineNum, closingBlock.line));
+                this.insertRange([lineNum, closingBlock.line]);
             } else {
                 this.closingBlocks.push(closingBlock);
             }
         }
     }
 
+    private insertRange(range: [start: number, end: number], kind?: vscode.FoldingRangeKind) {
+        const foldingRange = new vscode.FoldingRange(range[0], range[1], kind);
+        this.intervalTree.insert(range, foldingRange);
+    }
+
     private update(events: readonly vscode.TextDocumentContentChangeEvent[]) {
-        // console.log(events);
+        console.log(events);
+    }
+
+    private clear() {
+        this.intervalTree = new IntervalTree();
+        this.tempFoldingRanges = undefined;
+        this.commentRange = undefined;
+        this.headerStart = undefined;
+        this.closingBlocks = [];
     }
 }
 

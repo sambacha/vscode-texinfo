@@ -6,8 +6,8 @@
  */
 
 import * as vscode from 'vscode';
-import { Options } from './options';
-import { Preview } from './preview';
+import Options from './options';
+import Preview from './preview';
 import { CompletionItemProvider } from './completion';
 import { FoldingRangeProvider, FoldingRangeContext } from './folding';
 

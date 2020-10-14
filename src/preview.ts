@@ -7,14 +7,14 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { Converter } from './converter';
-import { Options } from './options';
+import Converter from './converter';
+import Options from './options';
 import * as utils from './utils';
 
 /**
  * Texinfo document preview.
  */
-export class Preview {
+export default class Preview {
 
     private static readonly map = new Map<vscode.TextDocument, Preview>();
 

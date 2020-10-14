@@ -18,7 +18,7 @@ Texinfo language support for Visual Studio Code.
 </details>
 
 <details>
-<summary>Block Folding</summary>
+<summary>Folding</summary>
 (Screenshots here...)
 </details>
 

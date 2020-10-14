@@ -8,7 +8,7 @@
 import * as vscode from 'vscode';
 
 /**
- * Texinfo language completion item provider.
+ * Provide code completion info for Texinfo source code.
  */
 export class CompletionItemProvider implements vscode.CompletionItemProvider {
 

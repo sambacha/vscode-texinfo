@@ -14,7 +14,7 @@ let options: Options | undefined;
  * 
  * See `contributes.configuration` of package.json for details.
  */
-export class Options {
+export default class Options {
 
     private static get instance() {
         return options ?? (options = new Options('texinfo'));

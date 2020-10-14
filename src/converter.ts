@@ -5,13 +5,13 @@
  * @license MIT
  */
 
-import { Options } from './options';
+import Options from './options';
 import * as utils from './utils';
 
 /**
  * Texinfo to HTML converter.
  */
-export class Converter {
+export default class Converter {
 
     /**
      * Convert a Texinfo document to HTML.
