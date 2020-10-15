@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
 export class FoldingRangeProvider implements vscode.FoldingRangeProvider {
 
     provideFoldingRanges(document: vscode.TextDocument) {
-        return FoldingRangeContext.get(document)?.foldingRanges;
+        return FoldingRangeContext.get(document).foldingRanges;
     }
 }
 
@@ -31,17 +31,17 @@ export class FoldingRangeContext {
      */
     static open(document: vscode.TextDocument) {
         if (document.languageId === 'texinfo') {
-            new FoldingRangeContext(document);
+            FoldingRangeContext.get(document);
         }
     }
 
     /**
-     * Get existing folding range context of a document. 
+     * Get existing folding range context of a document, or create one if not exist. 
      * 
      * @param document 
      */
     static get(document: vscode.TextDocument) {
-        return FoldingRangeContext.map.get(document);
+        return FoldingRangeContext.map.get(document) ?? new FoldingRangeContext(document);
     }
 
     /**
@@ -53,7 +53,7 @@ export class FoldingRangeContext {
         if (event.document.languageId !== 'texinfo') {
             return;
         }
-        FoldingRangeContext.get(event.document)?.update(event.contentChanges);
+        FoldingRangeContext.get(event.document).update(event.contentChanges);
     }
 
     /**
@@ -76,22 +76,20 @@ export class FoldingRangeContext {
      * Get VSCode folding ranges from the context.
      */
     get foldingRanges() {
-        return this.ranges.values;
+        if (this.bufferedFoldingRanges === undefined) {
+            this.calculateFoldingRanges();
+        }
+        return this.bufferedFoldingRanges;
     }
 
-    private readonly ranges = new FoldingRangeContainer();
+    private bufferedFoldingRanges?: vscode.FoldingRange[];
 
     private commentRange?: [number, number];
 
     private headerStart?: number;
 
-    private closingBlocks = <ClosingBlock[]>[];
-
     private constructor(private readonly document: vscode.TextDocument) {
         FoldingRangeContext.map.set(document, this);
-        console.log(Date.now());
-        this.updateFoldingRanges(0, this.document.lineCount - 1);
-        console.log(Date.now());
     }
 
     /**
@@ -100,24 +98,37 @@ export class FoldingRangeContext {
      * @param start Starting line number.
      * @param end Ending line number.
      */
-    private updateFoldingRanges(start: number, end: number) {
-        for (let idx = end; idx >= start; --idx) {
-            const line = this.document.lineAt(idx);
-            const lineText = line.text;
-            const lineNum = line.lineNumber;
-            if (!lineText.startsWith('@')) {
+    private calculateFoldingRanges() {
+        this.commentRange = undefined;
+        this.headerStart = undefined;
+        const closingBlocks = <{ name: string, line: number }[]>[];
+        for (let idx = this.document.lineCount - 1; idx >= 0; --idx) {
+            const line = this.document.lineAt(idx).text;
+            if (!line.startsWith('@')) {
                 continue;
             }
-            if (this.processComment(lineText, lineNum)) {
+            if (this.processComment(line, idx)) {
                 continue;
             }
-            this.processBlock(lineText, lineNum);
+            // Process block.
+            if (line.startsWith('end ', 1)) {
+                closingBlocks.push({ name: line.substring(5), line: idx });
+            } else {
+                const closingBlock = closingBlocks.pop();
+                if (closingBlock === undefined) {
+                    return;
+                }
+                if (line.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
+                    this.insertRange(idx, closingBlock.line);
+                } else {
+                    closingBlocks.push(closingBlock);
+                }
+            }
         }
         if (this.commentRange !== undefined) {
-            if (this.commentRange[1] - this.commentRange[0] > 1) {
-                this.ranges.insert(this.commentRange[0], this.commentRange[1]);
-            }
+            this.insertRange(this.commentRange[0], this.commentRange[1], vscode.FoldingRangeKind.Comment);
         }
+        return this.bufferedFoldingRanges;
     }
 
     private processComment(lineText: string, lineNum: number) {
@@ -130,7 +141,7 @@ export class FoldingRangeContext {
                 if (this.headerStart === undefined) {
                     this.headerStart = lineNum;
                 } else {
-                    this.ranges.insert(lineNum, this.headerStart);
+                    this.insertRange(lineNum, this.headerStart);
                     this.headerStart = undefined;
                 }
                 return true;
@@ -140,7 +151,7 @@ export class FoldingRangeContext {
             } else if (this.commentRange[0] - 1 === lineNum) {
                 this.commentRange[0] = lineNum;
             } else {
-                this.ranges.insert(this.commentRange[0], this.commentRange[1], vscode.FoldingRangeKind.Comment);
+                this.insertRange(this.commentRange[0], this.commentRange[1], vscode.FoldingRangeKind.Comment);
                 this.commentRange = [lineNum, lineNum];
             }
             return true;
@@ -148,109 +159,26 @@ export class FoldingRangeContext {
         return false;
     }
 
-    private processBlock(lineText: string, lineNum: number) {
-        if (lineText.startsWith('end ', 1)) {
-            this.closingBlocks.push({ name: lineText.substring(5), line: lineNum });
-        } else {
-            const closingBlock = this.closingBlocks.pop();
-            if (closingBlock === undefined) {
-                return;
-            }
-            if (lineText.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
-                this.ranges.insert(lineNum, closingBlock.line);
-            } else {
-                this.closingBlocks.push(closingBlock);
-            }
+    private insertRange(start: number, end: number, kind?: vscode.FoldingRangeKind) {
+        if (this.bufferedFoldingRanges === undefined) {
+            this.bufferedFoldingRanges = [];
         }
+        this.bufferedFoldingRanges.push(new vscode.FoldingRange(start, end, kind));
     }
 
+    /**
+     * Update folding range context based on document change event.
+     * 
+     * @param events Events describing the changes in the document.
+     */
     private update(events: readonly vscode.TextDocumentContentChangeEvent[]) {
-        console.log(events);
-    }
-}
-
-/**
- * Represents a Texinfo block marked "closing" by `@end` command.
- */
-interface ClosingBlock {
-
-    /**
-     * The name of the block.
-     */
-    name: string;
-
-    /**
-     * The terminating line number of the block.
-     */
-    line: number;
-}
-
-/**
- * Container which stores multiple ranges.
- * 
- * Used for incremental calculation of VSCode folding ranges to prevent full rescan on edit,
- * which could be catastrophic when dealing with large documents.
- */
-class FoldingRangeContainer {
-
-    private nodes = <FoldingRangeNode[]>[];
-
-    private bufferedValues?: vscode.FoldingRange[];
-
-    /**
-     * Insert a new range to the container. 
-     * 
-     * The new range **SHOULD NOT** overlap with existing ranges.
-     * 
-     * @param start Start of range.
-     * @param end End of range
-     * @param kind Type of VSCode folding range.
-     */
-    insert(start: number, end: number, kind?: vscode.FoldingRangeKind) {
-        if (this.nodes.length < end) {
-            this.nodes.push(...Array.from({ length: end - this.nodes.length + 1 }, () => new FoldingRangeNode()));
-        }
-        this.bufferedValues = undefined;
-        this.nodes[start].end = end;
-        this.nodes[start].kind = kind;
-        this.nodes[end].start = start;
-        this.nodes[end].kind = kind;
-    }
-
-    /**
-     * Get VSCode folding ranges from the container.
-     */
-    get values() {
-        if (this.bufferedValues !== undefined) {
-            return this.bufferedValues;
-        }
-        const values = <vscode.FoldingRange[]>[];
-        this.nodes.forEach((node, idx) => {
-            if (node.end !== undefined) {
-                values.push(new vscode.FoldingRange(idx, node.end, node.kind));
+        for (const event of events) {
+            const range = event.range;
+            const updatedLines = event.text.split(this.document.eol === vscode.EndOfLine.LF ? '\n' : '\r\n').length;
+            // Clear range buffer when line number changes.
+            if (updatedLines !== 1 || range.start.line !== range.end.line) {
+                this.bufferedFoldingRanges = undefined;
             }
-        });
-        return (this.bufferedValues = values);
+        }
     }
-}
-
-/**
- * Node of a folding range which represents a line in the document.
- */
-class FoldingRangeNode {
-
-    /**
-     * Corresponding start node index.
-     */
-    start?: number;
-
-    /**
-     * Corresponding end node index.
-     */
-    end?: number;
-
-    /**
-     * Type of VSCode folding range.
-     */
-    kind?: vscode.FoldingRangeKind;
 }
