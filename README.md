@@ -36,7 +36,7 @@ See `File -> Preferences -> Settings -> Extensions -> Texinfo` for details. The 
 
 * If syntax highlighting is not satisfactory, try another color theme where keyword/operator colors are distinct (e.g. Solarized Light/Dark, Monokai).
 * Preview content is updated on document save rather than document change.
-* For macOS users: Version of preinstalled GNU Texinfo is very old, use a latest one instead. This can be easily done by `brew install texinfo` and change extension setting `texinfo.makeinfo` value.
+* For macOS users: Preinstalled GNU Texinfo distribution is very old. Use a latest one instead. This can be easily done by `brew install texinfo` and change extension setting `texinfo.makeinfo` value.
 
 ## Future Plans
 

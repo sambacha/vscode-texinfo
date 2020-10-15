@@ -84,7 +84,7 @@ export class FoldingRangeContext {
 
     private bufferedFoldingRanges?: vscode.FoldingRange[];
 
-    private commentRange?: [number, number];
+    private commentRange?: { start: number, end: number };
 
     private headerStart?: number;
 
@@ -99,7 +99,6 @@ export class FoldingRangeContext {
      * @param end Ending line number.
      */
     private calculateFoldingRanges() {
-        this.commentRange = undefined;
         this.headerStart = undefined;
         const closingBlocks = <{ name: string, line: number }[]>[];
         for (let idx = this.document.lineCount - 1; idx >= 0; --idx) {
@@ -116,7 +115,7 @@ export class FoldingRangeContext {
             } else {
                 const closingBlock = closingBlocks.pop();
                 if (closingBlock === undefined) {
-                    return;
+                    continue;
                 }
                 if (line.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
                     this.insertRange(idx, closingBlock.line);
@@ -126,9 +125,9 @@ export class FoldingRangeContext {
             }
         }
         if (this.commentRange !== undefined) {
-            this.insertRange(this.commentRange[0], this.commentRange[1], vscode.FoldingRangeKind.Comment);
+            this.insertRange(this.commentRange.start, this.commentRange.end, vscode.FoldingRangeKind.Comment);
         }
-        return this.bufferedFoldingRanges;
+        this.commentRange = undefined;
     }
 
     private processComment(lineText: string, lineNum: number) {
@@ -147,12 +146,12 @@ export class FoldingRangeContext {
                 return true;
             }
             if (this.commentRange === undefined) {
-                this.commentRange = [lineNum, lineNum];
-            } else if (this.commentRange[0] - 1 === lineNum) {
-                this.commentRange[0] = lineNum;
+                this.commentRange = { start: lineNum, end: lineNum };
+            } else if (this.commentRange.start - 1 === lineNum) {
+                this.commentRange.start = lineNum;
             } else {
-                this.insertRange(this.commentRange[0], this.commentRange[1], vscode.FoldingRangeKind.Comment);
-                this.commentRange = [lineNum, lineNum];
+                this.insertRange(this.commentRange.start, this.commentRange.end, vscode.FoldingRangeKind.Comment);
+                this.commentRange = { start: lineNum, end: lineNum };
             }
             return true;
         }

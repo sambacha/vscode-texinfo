@@ -7,8 +7,6 @@
 
 import * as vscode from 'vscode';
 
-let options: Options | undefined;
-
 /**
  * Fetch extension option values.
  * 
@@ -16,12 +14,14 @@ let options: Options | undefined;
  */
 export default class Options {
 
+    private static singleton?: Options;
+
     private static get instance() {
-        return options ?? (options = new Options('texinfo'));
+        return Options.singleton ?? (Options.singleton = new Options('texinfo'));
     }
 
     static clear() {
-        options = undefined;
+        Options.singleton = undefined;
     }
 
     static get makeinfo() {

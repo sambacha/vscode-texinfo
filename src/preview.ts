@@ -126,8 +126,6 @@ export default class Preview {
         this.updating = false;
         this.updateTitle();
 
-        if (this.pendingUpdate) {
-            this.updateWebview();
-        }
+        this.pendingUpdate && this.updateWebview();
     }
 }

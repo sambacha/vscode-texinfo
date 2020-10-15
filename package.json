@@ -160,15 +160,14 @@
                     ".texinfo",
                     ".txi"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./language-config.json"
             }
         ],
         "grammars": [
             {
                 "language": "texinfo",
                 "scopeName": "text.texinfo",
-                "path": "./out/texinfo.tmGrammar.json",
-                "configuration": "./language-configuration.json"
+                "path": "./out/grammars/texinfo.json"
             }
         ]
     }
