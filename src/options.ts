@@ -44,12 +44,12 @@ export default class Options {
         return Options.instance.getBoolean('preview.force');
     }
 
-    static get noValidate() {
-        return Options.instance.getBoolean('preview.noValidate');
+    static get noValidation() {
+        return Options.instance.getBoolean('preview.noValidation');
     }
 
-    static get noWarn() {
-        return Options.instance.getBoolean('preview.noWarn');
+    static get noWarnings() {
+        return Options.instance.getBoolean('preview.noWarnings');
     }
 
     static get displayImage() {
@@ -62,15 +62,15 @@ export default class Options {
         this.configuration = vscode.workspace.getConfiguration(section);
     }
 
-    private getString(section: string) {
-        return this.configuration.get<string>(section) ?? '';
+    private getString(section: string): string {
+        return this.configuration.get(section) ?? '';
     }
 
-    private getBoolean(section: string) {
-        return this.configuration.get<boolean>(section) ?? false;
+    private getBoolean(section: string): boolean {
+        return this.configuration.get(section) ?? false;
     }
 
-    private getNumber(section: string) {
-        return this.configuration.get<number>(section) ?? 0;
+    private getNumber(section: string): number {
+        return this.configuration.get(section) ?? 0;
     }
 }

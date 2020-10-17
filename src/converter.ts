@@ -31,8 +31,8 @@ export default class Converter {
     private constructor() {
         Options.noHeaders && this.options.push('--no-headers');
         Options.force && this.options.push('--force');
-        Options.noValidate && this.options.push('--no-validate');
-        Options.noWarn && this.options.push('--no-warn');
+        Options.noValidation && this.options.push('--no-validate');
+        Options.noWarnings && this.options.push('--no-warn');
         this.options.push(`--error-limit=${Options.errorLimit}`);
     }
 

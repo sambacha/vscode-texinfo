@@ -1,5 +1,5 @@
 /**
- * extension.ts - Texinfo extension entry
+ * extension.ts - extension entry
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT
@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-    Preview.destroyAll();
+    Preview.clear();
     Options.clear();
     FoldingRangeContext.clear();
 }

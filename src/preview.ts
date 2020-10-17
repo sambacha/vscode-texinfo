@@ -54,7 +54,7 @@ export default class Preview {
         Preview.getByDocument(document)?.destroy();
     }
 
-    static destroyAll() {
+    static clear() {
         Preview.map.forEach((preview) => preview.destroy());
     }
     

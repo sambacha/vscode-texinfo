@@ -15,7 +15,7 @@
     },
     "icon": "assets/texinfo.png",
     "devDependencies": {
-        "@types/node": "^14.11.8",
+        "@types/node": "^14.11.10",
         "@types/vscode": "^1.50.0",
         "@typescript-eslint/eslint-plugin": "^3.8.0",
         "@typescript-eslint/parser": "^3.8.0",
@@ -110,42 +110,45 @@
                 "texinfo.makeinfo": {
                     "type": "string",
                     "default": "makeinfo",
-                    "markdownDescription": "Path to the `makeinfo` command."
+                    "markdownDescription": "Path to the `makeinfo` (or `texi2any`) command. If not located in `$PATH`, an absolute path should be specified.\n\nThe value should not contain any command-line arguments, just the filename."
                 },
                 "texinfo.preview.noHeaders": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Suppress node separators in preview. See `makeinfo --help` for details."
+                    "markdownDescription": "Suppress node separators in preview.\n\nThis corresponds to the `--no-headers` option of `makeinfo`."
                 },
                 "texinfo.preview.maxSize": {
                     "type": "integer",
                     "default": "2",
+                    "minimum": 1,
+                    "maximum": 16,
                     "markdownDescription": "Max allowed size (in MiB) for the preview document."
                 },
                 "texinfo.preview.errorLimit": {
                     "type": "integer",
                     "default": 100,
-                    "markdownDescription": "Max tolerated number of errors when trying to display preview."
+                    "minimum": 0,
+                    "markdownDescription": "Max tolerated number of errors when trying to display preview.\n\nThis corresponds to the `--error-limit=NUM` option of `makeinfo`."
                 },
                 "texinfo.preview.force": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Preserve preview even if errors."
+                    "markdownDescription": "Preserve preview even if errors.\n\nThis corresponds to the `--force` option of `makeinfo`."
                 },
-                "texinfo.preview.noValidate": {
+                "texinfo.preview.noValidation": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Supress node cross-reference validation."
+                    "markdownDescription": "Supress node cross-reference validation.\n\nThis corresponds to the `--no-validate` option of `makeinfo`."
                 },
-                "texinfo.preview.noWarn": {
+                "texinfo.preview.noWarnings": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Suppress warnings."
+                    "markdownDescription": "Suppress warnings.\n\nThis corresponds to the `--no-warn` option of `makeinfo`."
                 },
                 "texinfo.preview.displayImage": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Whether to display images in in the preview."
+                    "markdownDescription": "Whether to display images in in the preview.\n\nIf image display is not needed, turn off this option to improve preview performance."
                 }
             }
         },

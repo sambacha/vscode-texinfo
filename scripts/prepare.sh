@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-mkdir -p ./out/grammars
-
-# Convert TextMate grammar from CSON to JSON (VSCode cannot recognize CSON ones).
-TMGRAMMAR_CSON=./node_modules/language-texinfo/grammars/texinfo.cson
-TMGRAMMAR_JSON=./out/grammars/texinfo.json
-cson2json $TMGRAMMAR_CSON > $TMGRAMMAR_JSON
+SRC_PATH=./node_modules/language-texinfo
+DEST_PATH=./out/grammars
+mkdir -p $DEST_PATH
+cp $SRC_PATH/LICENSE.md $DEST_PATH
+# Convert TextMate grammar from CSON to JSON, as VSCode cannot recognize CSON ones.
+cson2json $SRC_PATH/grammars/texinfo.cson > $DEST_PATH/texinfo.json

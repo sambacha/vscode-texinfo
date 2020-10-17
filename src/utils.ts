@@ -1,5 +1,5 @@
 /**
- * utils.ts - Helper functions
+ * utils.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT

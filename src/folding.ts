@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
 export class FoldingRangeProvider implements vscode.FoldingRangeProvider {
 
     provideFoldingRanges(document: vscode.TextDocument) {
-        return FoldingRangeContext.get(document).foldingRanges;
+        return FoldingRangeContext.get(document).values;
     }
 }
 
@@ -30,9 +30,7 @@ export class FoldingRangeContext {
      * @param document 
      */
     static open(document: vscode.TextDocument) {
-        if (document.languageId === 'texinfo') {
-            FoldingRangeContext.get(document);
-        }
+        document.languageId === 'texinfo' && FoldingRangeContext.get(document);
     }
 
     /**
@@ -50,10 +48,9 @@ export class FoldingRangeContext {
      * @param event Change event of a document.
      */
     static update(event: vscode.TextDocumentChangeEvent) {
-        if (event.document.languageId !== 'texinfo') {
-            return;
+        if (event.document.languageId === 'texinfo') {
+            FoldingRangeContext.get(event.document).update(event.contentChanges);
         }
-        FoldingRangeContext.get(event.document).update(event.contentChanges);
     }
 
     /**
@@ -75,14 +72,11 @@ export class FoldingRangeContext {
     /**
      * Get VSCode folding ranges from the context.
      */
-    get foldingRanges() {
-        if (this.bufferedFoldingRanges === undefined) {
-            this.calculateFoldingRanges();
-        }
-        return this.bufferedFoldingRanges;
+    get values() {
+        return this.foldingRanges ?? (this.foldingRanges = this.calculateFoldingRanges());
     }
 
-    private bufferedFoldingRanges?: vscode.FoldingRange[];
+    private foldingRanges?: vscode.FoldingRange[];
 
     private commentRange?: { start: number, end: number };
 
@@ -128,6 +122,7 @@ export class FoldingRangeContext {
             this.insertRange(this.commentRange.start, this.commentRange.end, vscode.FoldingRangeKind.Comment);
         }
         this.commentRange = undefined;
+        return this.foldingRanges;
     }
 
     private processComment(lineText: string, lineNum: number) {
@@ -159,10 +154,7 @@ export class FoldingRangeContext {
     }
 
     private insertRange(start: number, end: number, kind?: vscode.FoldingRangeKind) {
-        if (this.bufferedFoldingRanges === undefined) {
-            this.bufferedFoldingRanges = [];
-        }
-        this.bufferedFoldingRanges.push(new vscode.FoldingRange(start, end, kind));
+        (this.foldingRanges ?? (this.foldingRanges = [])).push(new vscode.FoldingRange(start, end, kind));
     }
 
     /**
@@ -171,12 +163,14 @@ export class FoldingRangeContext {
      * @param events Events describing the changes in the document.
      */
     private update(events: readonly vscode.TextDocumentContentChangeEvent[]) {
+        if (this.foldingRanges === undefined) {
+            return;
+        }
         for (const event of events) {
-            const range = event.range;
             const updatedLines = event.text.split(this.document.eol === vscode.EndOfLine.LF ? '\n' : '\r\n').length;
-            // Clear range buffer when line number changes.
-            if (updatedLines !== 1 || range.start.line !== range.end.line) {
-                this.bufferedFoldingRanges = undefined;
+            // Clear folding range buffer when line count changes.
+            if (updatedLines !== 1 || event.range.start.line !== event.range.end.line) {
+                this.foldingRanges = undefined;
             }
         }
     }
