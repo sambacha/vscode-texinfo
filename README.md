@@ -11,7 +11,7 @@ Texinfo language support for Visual Studio Code.
   * Provided by the same [TextMate grammar](https://github.com/Alhadis/language-texinfo/blob/v1.0.0/grammars/texinfo.cson) as [used in GitHub](https://github.com/github/linguist/pull/4589).
 * **Code Completion**
   * Completion for most @\-commands.
-  * Code snippets for blocks and commands with arguments.
+  * Code snippets for blocks and brace commands.
 * **Folding**
   * Fold on blocks, headers and multiline comments.
 * **Preview**

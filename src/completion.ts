@@ -12,25 +12,73 @@ import * as vscode from 'vscode';
  */
 export class CompletionItemProvider implements vscode.CompletionItemProvider {
 
-    private readonly completionItems = [
+    /**
+     * Full list of completion items.
+     * 
+     * Excerpted from the {@link https://www.gnu.org/software/texinfo/manual/texinfo GNU Texinfo manual},
+     * which is licensed under the GNU Free Documentation License.
+     */
+    private readonly completionItems = <vscode.CompletionItem[]> [
         command('ampchar', 'Insert an ampersand, "&"', { hasEmptyArguments: true }),
         command('atchar', 'Insert an at sign, "@"', { hasEmptyArguments: true }),
         command('backslashchar', 'Insert a blackslash, "\\"', { hasEmptyArguments: true }),
         command('lbracechar', 'Insert a left brace, "{"', { hasEmptyArguments: true }),
         command('rbracechar', 'Insert a right brace, "{"', { hasEmptyArguments: true }),
-        commandSnippet('abbr', 'Indicate a general abbreviation', 1, 'abbreviation', 'meaning'),
-        command('abbr', 'Indicate a general abbreviation', { sortOrder: 1 }),
-        command('c', 'Line comment'),
+        command('AA', 'Generate the uppercase Scandinavian A-ring letter, "Å"', { hasEmptyArguments: true }),
+        command('aa', 'Generate the lowercase Scandinavian A-ring letter, "å"', { hasEmptyArguments: true }),
+        ...braceCommand('abbr', 'Indicate a general abbreviation', 1, 'abbreviation', 'meaning'),
+        ...braceCommand('acronym', 'Indicate an acronym in all capital letters', 1, 'acronym', 'meaning'),
+        command('AE', 'Generate the uppercase AE ligatures, "Æ"', { hasEmptyArguments: true }),
+        command('ae', 'Generate the lowercase AE ligatures, "æ"', { hasEmptyArguments: true }),
+        command('afivepaper', 'Change page dimensions for the A5 paper size'),
+        command('afourlatex', 'Change page dimensions for the A4 paper size'),
+        command('afourpaper', 'Change page dimensions for the A4 paper size'),
+        command('afourwide', 'Change page dimensions for the A4 paper size'),
+        snippet('alias', 'alias', 'Defines a new command to be just like an existing one', 0, '@alias new=existing',
+            'alias ${1:new}=${2:existing}'),
+        command('alias', 'Defines a new command to be just like an existing one', { sortOrder: 1 }),
+        ...lineCommandEnum('allowcodebreaks', 'Control breaking at "-" and "_" in TeX', 'true', 'false'),
+        ...braceCommand('anchor', 'Define current location for use as a cross-reference target', 1, 'name'),
+        command('appendix', 'Begin an appendix'),
+        command('appendixsec', 'Begin an appendix section within an appendix'),
+        command('appendixsection', 'Begin an appendix section within an appendix'),
+        command('appendixsubsec', 'Begin an appendix subsection'),
+        command('appendixsubsubsec', 'Begin an appendix subsubsection'),
+        command('arrow', 'Generate a right arrow glyph, "→"', { hasEmptyArguments: true }),
+        command('asis', 'Print the table’s first column without highlighting'),
+        command('author', 'Set the names of the author(s)'),
+        ...braceCommand('b', 'Set text in a bold font', 1, 'text'),
+        ...blockCommand('copying', 'Declare copying permissions'),
+        command('bullet', 'Generate a large round dot, "•"', { hasEmptyArguments: true }),
+        command('bye', 'stop formatting'),
+        command('c', 'Begin a line comment'),
         snippet('header', 'c', 'Declare header block', 1, '@c %**start of header\n\n@c %**end of header',
             'c %**${1:start of header}\n$2\n@c %**${3:end of header}'),
+        ...braceCommand('caption', 'Define the full caption for a @float', 1, 'definition'),
+        ...blockCommand('cartouche', 'Highlight by drawing a box with rounded corners around it'),
+        command('center', 'Center the line of text following the command'),
+        command('centerchap', 'Like @chapter, but centers the chapter title'),
+        command('chapheading', 'Print an unnumbered chapter-like heading, but omit from the table of contents'),
+        command('chapter', 'Begin a numbered chapter'),
+        command('cindex', 'Add entry to the index of concepts'),
+        ...braceCommand('cite', 'Highlight the name of a reference', 1, 'reference'),
+        command('clear', 'Unset flag'),
+        command('click', 'Represent a single "click" in a GUI', { hasEmptyArguments: true }),
+        ...braceCommand('clicksequence', 'Represent a sequence of clicks in a GUI', 1, 'actions'),
+        command('clickstyle', 'Execute command on each @click'),
+        ...braceCommand('code', 'Indicate text which is a piece of code', 0, 'sample-code'),
+        ...lineCommandEnum('codequotebacktick', 'Control output of "`" in code examples', 'on', 'off'),
+        ...lineCommandEnum('codequoteundirected', 'Control output of "\'" in code examples', 'on', 'off'),
+        command('comma', 'Insert a comma character, ","', { hasEmptyArguments: true }),
+        ...braceCommand('command', 'Indicate a command name', 1, 'command-name'),
+        command('comment', 'Begin a line comment'),
+        command('contents', "Print a complete table of contents."),
+        ...blockCommand('copying', 'Specify copyright holders and copying conditions'),
+        command('copyright', 'The copyright symbol, "©"', { hasEmptyArguments: true }),
         command('setfilename', 'Set output file name'),
         command('settitle', 'Set document title'),
-        command('copying', 'Declare copying permissions', { sortOrder: 1 }),
-        blockSnippet('copying', 'Declare copying permissions'),
-        command('copyright', 'The "©" symbol', { hasEmptyArguments: true }),
         command('insertcopying', 'Include permissions text'),
-        command('titlepage', 'Declare title page', { sortOrder: 1 }),
-        blockSnippet('titlepage', 'Declare title page'),
+        ...blockCommand('titlepage', 'Declare title page'),
     ];
 
     provideCompletionItems(
@@ -88,6 +136,21 @@ function command(name: string, detail: string, extraArgs?: {
     };
 }
 
+function blockCommand(name: string, detail: string) {
+    return [blockSnippet(name, detail), command(name, detail, { sortOrder: 1 })];
+}
+
+function braceCommand(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
+    return [commandSnippet(name, detail, numArgsRequired, ...args), command(name, detail, { sortOrder: 1 })];
+}
+
+function lineCommandEnum(name: string, detail: string, ...items: string[]) {
+    return [
+        snippet(name, name, detail, 0, `@${name} ${items.join('/')}`, `${name} \${1|${items.join(',')}|}`),
+        command(name, detail, { sortOrder: 1}),
+    ];
+}
+
 /**
  * Build the completion item for a snippet of a command (with arguments).
  * 
@@ -100,7 +163,8 @@ function commandSnippet(name: string, detail: string, numArgsRequired: number, .
     const documentation = `@${name}{${args.map((arg, idx) => idx < numArgsRequired ? arg : '?' + arg).join(', ')}}`;
     const optionalArgs = args.splice(numArgsRequired).map((arg, idx) => `\${${numArgsRequired + idx + 2}:${arg}}`);
     const requiredArgs = args.map((arg, idx) => `\${${idx + 1}:${arg}}`);
-    const insertText = `${name}{${requiredArgs.join(', ')}\${${numArgsRequired + 1}:, ${optionalArgs.join(', ')}}}`;
+    const optionalText = optionalArgs.length === 0 ? '' : `\${${numArgsRequired + 1}:, ${optionalArgs.join(', ')}}`;
+    const insertText = `${name}{${requiredArgs.join(', ')}${optionalText}}`;
     return snippet(name, name, detail, 0, documentation, insertText);
 }
 
@@ -110,7 +174,7 @@ function commandSnippet(name: string, detail: string, numArgsRequired: number, .
  * @param name The snippet name.
  * @param detail The snippet description.
  */
-function blockSnippet(name: string, detail: string): vscode.CompletionItem {
+function blockSnippet(name: string, detail: string) {
     return snippet(name, name, detail, 0, `@${name}\n\n@end ${name}`, `${name}\n$1\n@end ${name}`);
 }
 
