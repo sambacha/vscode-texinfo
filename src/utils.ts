@@ -32,7 +32,7 @@ export function exec(path: string, args: string[], maxBuffer: number) {
     return new Promise<string | undefined>((resolve) => {
         child_process.execFile(path, args, { maxBuffer: maxBuffer }, (error, stdout, stderr) => {
             if (error) {
-                console.error(error);
+                console.error(stderr ? stderr : error);
                 resolve(undefined);
             } else {
                 stderr && console.log(stderr);

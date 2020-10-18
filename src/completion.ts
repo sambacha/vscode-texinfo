@@ -8,7 +8,7 @@
 import * as vscode from 'vscode';
 
 /**
- * Provide code completion info for Texinfo source code.
+ * Provide code completion info for Texinfo documents.
  */
 export class CompletionItemProvider implements vscode.CompletionItemProvider {
 
@@ -53,7 +53,7 @@ export class CompletionItemProvider implements vscode.CompletionItemProvider {
         command('bye', 'stop formatting'),
         command('c', 'Begin a line comment'),
         snippet('header', 'c', 'Declare header block', 1, '@c %**start of header\n\n@c %**end of header',
-            'c %**${1:start of header}\n$2\n@c %**${3:end of header}'),
+            'c %**${1:start of header}\n$3\n@c %**${2:end of header}'),
         ...braceCommand('caption', 'Define the full caption for a @float', 1, 'definition'),
         ...blockCommand('cartouche', 'Highlight by drawing a box with rounded corners around it'),
         command('center', 'Center the line of text following the command'),
@@ -136,14 +136,32 @@ function command(name: string, detail: string, extraArgs?: {
     };
 }
 
+/**
+ * Build the completion items for a block command.
+ * 
+ * @param name The command name
+ * @param detail The command description
+ */
 function blockCommand(name: string, detail: string) {
     return [blockSnippet(name, detail), command(name, detail, { sortOrder: 1 })];
 }
 
+/**
+ * Build the completion items for a brace command.
+ * 
+ * @param name The command name
+ * @param detail The command description
+ */
 function braceCommand(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
     return [commandSnippet(name, detail, numArgsRequired, ...args), command(name, detail, { sortOrder: 1 })];
 }
 
+/**
+ * Build the completion items for a line command where the argument is an enum.
+ * 
+ * @param name The command name
+ * @param detail The command description
+ */
 function lineCommandEnum(name: string, detail: string, ...items: string[]) {
     return [
         snippet(name, name, detail, 0, `@${name} ${items.join('/')}`, `${name} \${1|${items.join(',')}|}`),
@@ -152,7 +170,7 @@ function lineCommandEnum(name: string, detail: string, ...items: string[]) {
 }
 
 /**
- * Build the completion item for a snippet of a command (with arguments).
+ * Build the completion item for a snippet of a brace command.
  * 
  * @param name The command name.
  * @param detail The command description.

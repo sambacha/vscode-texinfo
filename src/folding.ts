@@ -8,7 +8,7 @@
 import * as vscode from 'vscode';
 
 /**
- * Provide folding range info for Texinfo source code.
+ * Provide folding range info for Texinfo documents.
  */
 export class FoldingRangeProvider implements vscode.FoldingRangeProvider {
 
