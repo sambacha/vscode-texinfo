@@ -39,45 +39,52 @@ export class CompletionItemProvider implements vscode.CompletionItemProvider {
         command('alias', 'Defines a new command to be just like an existing one', { sortOrder: 1 }),
         ...lineCommandEnum('allowcodebreaks', 'Control breaking at "-" and "_" in TeX', 'true', 'false'),
         ...braceCommand('anchor', 'Define current location for use as a cross-reference target', 1, 'name'),
-        command('appendix', 'Begin an appendix'),
-        command('appendixsec', 'Begin an appendix section within an appendix'),
-        command('appendixsection', 'Begin an appendix section within an appendix'),
-        command('appendixsubsec', 'Begin an appendix subsection'),
-        command('appendixsubsubsec', 'Begin an appendix subsubsection'),
+        ...lineCommand('appendix', 'Begin an appendix', 'title'),
+        ...lineCommand('appendixsec', 'Begin an appendix section within an appendix', 'title'),
+        ...lineCommand('appendixsection', 'Begin an appendix section within an appendix', 'title'),
+        ...lineCommand('appendixsubsec', 'Begin an appendix subsection', 'title'),
+        ...lineCommand('appendixsubsubsec', 'Begin an appendix subsubsection', 'title'),
         command('arrow', 'Generate a right arrow glyph, "→"', { hasEmptyArguments: true }),
         command('asis', 'Print the table’s first column without highlighting'),
-        command('author', 'Set the names of the author(s)'),
+        ...lineCommand('author', 'Set the names of the author(s)', 'author-name'),
         ...braceCommand('b', 'Set text in a bold font', 1, 'text'),
         ...blockCommand('copying', 'Declare copying permissions'),
         command('bullet', 'Generate a large round dot, "•"', { hasEmptyArguments: true }),
         command('bye', 'stop formatting'),
-        command('c', 'Begin a line comment'),
-        snippet('header', 'c', 'Declare header block', 1, '@c %**start of header\n\n@c %**end of header',
+        ...lineCommand('c', 'Begin a line comment', 'comment'),
+        snippet('header', 'c', 'Declare header block', 2, '@c %**start of header\n\n@c %**end of header',
             'c %**${1:start of header}\n$3\n@c %**${2:end of header}'),
         ...braceCommand('caption', 'Define the full caption for a @float', 1, 'definition'),
         ...blockCommand('cartouche', 'Highlight by drawing a box with rounded corners around it'),
-        command('center', 'Center the line of text following the command'),
-        command('centerchap', 'Like @chapter, but centers the chapter title'),
-        command('chapheading', 'Print an unnumbered chapter-like heading, but omit from the table of contents'),
-        command('chapter', 'Begin a numbered chapter'),
-        command('cindex', 'Add entry to the index of concepts'),
+        ...lineCommand('center', 'Center the line of text following the command', 'text-line'),
+        ...lineCommand('centerchap', 'Like @chapter, but centers the chapter title', 'text-line'),
+        ...lineCommand('chapheading', 'Print an unnumbered chapter-like heading', 'title'),
+        ...lineCommand('chapter', 'Begin a numbered chapter', 'title'),
+        ...lineCommand('cindex', 'Add entry to the index of concepts', 'entry'),
         ...braceCommand('cite', 'Highlight the name of a reference', 1, 'reference'),
-        command('clear', 'Unset flag'),
+        ...lineCommand('clear', 'Unset flag', 'flag'),
         command('click', 'Represent a single "click" in a GUI', { hasEmptyArguments: true }),
         ...braceCommand('clicksequence', 'Represent a sequence of clicks in a GUI', 1, 'actions'),
-        command('clickstyle', 'Execute command on each @click'),
+        ...lineCommand('clickstyle', 'Execute command on each @click', '@command'),
         ...braceCommand('code', 'Indicate text which is a piece of code', 0, 'sample-code'),
         ...lineCommandEnum('codequotebacktick', 'Control output of "`" in code examples', 'on', 'off'),
         ...lineCommandEnum('codequoteundirected', 'Control output of "\'" in code examples', 'on', 'off'),
         command('comma', 'Insert a comma character, ","', { hasEmptyArguments: true }),
         ...braceCommand('command', 'Indicate a command name', 1, 'command-name'),
-        command('comment', 'Begin a line comment'),
+        ...lineCommand('comment', 'Begin a line comment', 'comment'),
         command('contents', "Print a complete table of contents."),
         ...blockCommand('copying', 'Specify copyright holders and copying conditions'),
         command('copyright', 'The copyright symbol, "©"', { hasEmptyArguments: true }),
-        command('setfilename', 'Set output file name'),
-        command('settitle', 'Set document title'),
-        command('insertcopying', 'Include permissions text'),
+        ...lineCommand('defcodeindex', 'Define a new index, print entries in an @code font', 'index-name'),
+        ...lineCommand('defcv', 'Format a description for a variable associated with a class',
+            'category', 'class', 'name'),
+        ...lineCommand('defcvx', 'Format a description for a variable associated with a class',
+            'category', 'class', 'name'),
+        ...lineCommand('deffn', 'Format a description for a function', 'category', 'name', 'arguments'),
+        ...lineCommand('deffnx', 'Format a description for a function', 'category', 'name', 'arguments'),
+        ...lineCommand('setfilename', 'Provide a name for the output files', 'info-file-name'),
+        ...lineCommand('settitle', 'Specify the title for page headers', 'title'),
+        command('insertcopying', 'Insert previously defined @copying text'),
         ...blockCommand('titlepage', 'Declare title page'),
     ];
 
@@ -139,8 +146,8 @@ function command(name: string, detail: string, extraArgs?: {
 /**
  * Build the completion items for a block command.
  * 
- * @param name The command name
- * @param detail The command description
+ * @param name
+ * @param detail
  */
 function blockCommand(name: string, detail: string) {
     return [blockSnippet(name, detail), command(name, detail, { sortOrder: 1 })];
@@ -149,18 +156,29 @@ function blockCommand(name: string, detail: string) {
 /**
  * Build the completion items for a brace command.
  * 
- * @param name The command name
- * @param detail The command description
+ * @param name
+ * @param detail
  */
 function braceCommand(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
-    return [commandSnippet(name, detail, numArgsRequired, ...args), command(name, detail, { sortOrder: 1 })];
+    return [braceCommandSnippet(name, detail, numArgsRequired, ...args), command(name, detail, { sortOrder: 1 })];
+}
+
+/**
+ * Build the completion items for a line command with arguments.
+ * 
+ * @param name
+ * @param detail
+ * @param args
+ */
+function lineCommand(name: string, detail: string, ...args: string[]) {
+    return [lineCommandSnippet(name, detail, ...args), command(name, detail, { sortOrder: 1 })];
 }
 
 /**
  * Build the completion items for a line command where the argument is an enum.
  * 
- * @param name The command name
- * @param detail The command description
+ * @param name
+ * @param detail
  */
 function lineCommandEnum(name: string, detail: string, ...items: string[]) {
     return [
@@ -177,13 +195,25 @@ function lineCommandEnum(name: string, detail: string, ...items: string[]) {
  * @param numArgsRequired Number of required arguments.
  * @param args Argument names.
  */
-function commandSnippet(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
+function braceCommandSnippet(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
     const documentation = `@${name}{${args.map((arg, idx) => idx < numArgsRequired ? arg : '?' + arg).join(', ')}}`;
     const optionalArgs = args.splice(numArgsRequired).map((arg, idx) => `\${${numArgsRequired + idx + 2}:${arg}}`);
     const requiredArgs = args.map((arg, idx) => `\${${idx + 1}:${arg}}`);
     const optionalText = optionalArgs.length === 0 ? '' : `\${${numArgsRequired + 1}:, ${optionalArgs.join(', ')}}`;
     const insertText = `${name}{${requiredArgs.join(', ')}${optionalText}}`;
     return snippet(name, name, detail, 0, documentation, insertText);
+}
+
+/**
+ * Build the completion item for a snippet of a brace command.
+ * 
+ * @param name The command name.
+ * @param detail The command description.
+ * @param args Argument names.
+ */
+function lineCommandSnippet(name: string, detail: string, ...args: string[]) {
+    const argsIndexed = args.map((arg, idx) => `\${${idx + 1}:${arg}}`);
+    return snippet(name, name, detail, 0, `@${name} ${args.join(' ')}`, `${name} ${argsIndexed.join(' ')}`);
 }
 
 /**
@@ -228,7 +258,7 @@ function snippet(
 /**
  * Wraps Texinfo snippet code into a Markdown code block for documentation.
  * 
- * @param snippet The snippet code
+ * @param snippet The snippet code.
  */
 function snippetDocumentation(snippet: string) {
     return new vscode.MarkdownString('```texinfo\n' + snippet + '\n```');
