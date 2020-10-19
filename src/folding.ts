@@ -95,17 +95,32 @@ export class FoldingRangeContext {
     private calculateFoldingRanges() {
         this.headerStart = undefined;
         const closingBlocks = <{ name: string, line: number }[]>[];
+        let verbatim = false;
         for (let idx = this.document.lineCount - 1; idx >= 0; --idx) {
             const line = this.document.lineAt(idx).text;
             if (!line.startsWith('@')) {
                 continue;
             }
-            if (this.processComment(line, idx)) {
-                continue;
+            if (!verbatim) {
+                if (line === '@bye') {
+                    // Abort anything after `@bye`.
+                    this.foldingRanges = undefined;
+                    this.commentRange = undefined;
+                    this.headerStart = undefined;
+                    continue;
+                }
+                if (this.processComment(line, idx)) {
+                    continue;
+                }
             }
             // Process block.
-            if (line.startsWith('end ', 1)) {
-                closingBlocks.push({ name: line.substring(5), line: idx });
+            if (line.startsWith('@end ')) {
+                if (verbatim) {
+                    continue;
+                }
+                const name = line.substring(5);
+                name === 'verbatim' && (verbatim = true);
+                closingBlocks.push({ name: name, line: idx });
             } else {
                 const closingBlock = closingBlocks.pop();
                 if (closingBlock === undefined) {
@@ -113,6 +128,8 @@ export class FoldingRangeContext {
                 }
                 if (line.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
                     this.insertRange(idx, closingBlock.line);
+                    // If `verbatim == true` goes here, this line must be the `@verbatim` line.
+                    verbatim = false;
                 } else {
                     closingBlocks.push(closingBlock);
                 }
@@ -120,13 +137,13 @@ export class FoldingRangeContext {
         }
         if (this.commentRange !== undefined) {
             this.insertRange(this.commentRange.start, this.commentRange.end, vscode.FoldingRangeKind.Comment);
+            this.commentRange = undefined;
         }
-        this.commentRange = undefined;
         return this.foldingRanges;
     }
 
     private processComment(lineText: string, lineNum: number) {
-        if (lineText.startsWith('c', 1)) {
+        if (lineText.startsWith('@c')) {
             if (!lineText.startsWith(' ', 2) && !lineText.startsWith('omment ', 2)) {
                 return false;
             }
