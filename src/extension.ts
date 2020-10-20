@@ -11,6 +11,7 @@ import Options from './options';
 import Preview from './preview';
 import { CompletionItemProvider } from './completion';
 import { FoldingRangeProvider } from './folding';
+import { DocumentSymbolProvider } from './symbol';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -21,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerTextEditorCommand('texinfo.showPreview', Preview.show),
         vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(), '@'),
         vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider()),
+        vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider()),
     );
 }
 
