@@ -17,7 +17,7 @@ export default class Options {
     private static singleton?: Options;
 
     private static get instance() {
-        return Options.singleton ?? (Options.singleton = new Options('texinfo'));
+        return Options.singleton ??= new Options('texinfo');
     }
 
     static clear() {

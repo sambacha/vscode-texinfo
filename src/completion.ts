@@ -94,21 +94,17 @@ export class CompletionItemProvider implements vscode.CompletionItemProvider {
         token: vscode.CancellationToken,
         context: vscode.CompletionContext,
     ) {
+        // Triggered in the middle of a word.
         if (context.triggerKind === vscode.CompletionTriggerKind.Invoke) {
             const wordRange = document.getWordRangeAtPosition(position);
-            if (wordRange === undefined) {
-                return undefined;
-            }
+            if (wordRange === undefined) return undefined;
+            // Normalize position so that it can be treated as triggered by '@' character.
             position = wordRange.start;
-            if (document.getText(new vscode.Range(position.translate(0, -1), position)) !== '@') {
-                return undefined;
-            }
+            if (document.getText(new vscode.Range(position.translate(0, -1), position)) !== '@') return undefined;
         }
-        if (position.character === 1) {
-            return this.completionItems;
-        }
+        if (position.character === 1) return this.completionItems;
+        // Check whether the '@' character is escaped.
         if (document.getText(new vscode.Range(position.translate(0, -2), position.translate(0, -1))) === '@') {
-            // The '@' character is escaped.
             return undefined;
         } else {
             return this.completionItems;

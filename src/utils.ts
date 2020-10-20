@@ -29,7 +29,7 @@ export async function prompt(message: string, confirm: string) {
  * @returns The output data, or `undefined` if execution fails.
  */
 export function exec(path: string, args: string[], maxBuffer: number) {
-    return new Promise<string | undefined>((resolve) => {
+    return new Promise<string | undefined>(resolve => {
         child_process.execFile(path, args, { maxBuffer: maxBuffer }, (error, stdout, stderr) => {
             if (error) {
                 console.error(stderr ? stderr : error);
@@ -52,7 +52,7 @@ export function exec(path: string, args: string[], maxBuffer: number) {
 export function transformHtmlImageUri(htmlCode: string, transformer: (src: string) => string) {
     const dom = htmlparser.parse(htmlCode);
     const elements = dom.querySelectorAll('img');
-    elements.forEach((element) => {
+    elements.forEach(element => {
         const src = element.getAttribute('src');
         src && element.setAttribute('src', transformer(src));
     });
