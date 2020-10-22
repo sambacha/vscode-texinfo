@@ -7,6 +7,7 @@
 
 import * as vscode from 'vscode';
 import Document from './document';
+import Logger from './logger';
 import Options from './options';
 import Preview from './preview';
 import { CompletionItemProvider } from './completion';
@@ -28,5 +29,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {
     Document.clear();
+    Logger.destroy();
     Options.clear();
 }

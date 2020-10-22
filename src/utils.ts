@@ -8,16 +8,19 @@
 import * as child_process from 'child_process';
 import * as htmlparser from 'node-html-parser';
 import * as vscode from 'vscode';
+import Logger from './logger';
 
 /**
  * Open a prompt with two buttons, "Confirm" and "Cancel", and wait for user action.
  * 
  * @param message The message to be displayed on the prompt.
  * @param confirm Text to be displayed on the "Confirm" button.
+ * @param error Whether the prompt is shown as an error message. Default false.
  * @returns Whether the user clicked the "Confirm" button.
  */
-export async function prompt(message: string, confirm: string) {
-    return confirm === await vscode.window.showInformationMessage(message, confirm, 'Cancel');
+export async function prompt(message: string, confirm: string, error = false) {
+    const func = error ? vscode.window.showErrorMessage : vscode.window.showInformationMessage;
+    return confirm === await func(message, confirm, 'Cancel');
 }
 
 /**
@@ -32,10 +35,10 @@ export function exec(path: string, args: string[], maxBuffer: number) {
     return new Promise<string | undefined>(resolve => {
         child_process.execFile(path, args, { maxBuffer: maxBuffer }, (error, stdout, stderr) => {
             if (error) {
-                console.error(stderr ? stderr : error);
+                Logger.log(stderr ? stderr : error.message);
                 resolve(undefined);
             } else {
-                stderr && console.log(stderr);
+                stderr && Logger.log(stderr);
                 resolve(stdout);
             }
         });

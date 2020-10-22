@@ -80,7 +80,8 @@ export default class Preview {
 
         let htmlCode = await Converter.convertToHtml(this.document.fileName);
         if (htmlCode === undefined) {
-            vscode.window.showErrorMessage(`Failed to show preview for ${this.document.fileName}.`);
+            prompt(`Failed to show preview for ${this.document.fileName}.`, 'Show log', true)
+                .then(result => result && Logger.show());
         } else {
             if (Options.displayImage) {
                 const pathName = path.dirname(this.document.fileName);
