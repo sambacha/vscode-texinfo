@@ -7,6 +7,7 @@
 
 import * as vscode from 'vscode';
 import Document from './document';
+import { Range } from './utils';
 
 /**
  * Provide folding range info for Texinfo documents.
@@ -27,14 +28,20 @@ export class FoldingRangeContext {
      * Get VSCode folding ranges from the context.
      */
     get values() {
-        return this.foldingRanges ?? (this.foldingRanges = this.calculateFoldingRanges());
+        return this.foldingRanges ??= this.calculateFoldingRanges();
     }
 
     private foldingRanges?: FoldingRange[];
 
-    private commentRange?: { start: number, end: number };
+    private commentRange?: Range;
 
     private headerStart?: number;
+
+    private closingChapter?: number;
+
+    private closingSection?: number;
+
+    private closingSubsection?: number;
 
     /**
      * Update folding range context based on document change event.
@@ -64,12 +71,14 @@ export class FoldingRangeContext {
         this.foldingRanges = [];
         this.headerStart = undefined;
         const closingBlocks = <{ name: string, line: number }[]>[];
+        let lastLine = this.document.lineCount - 1;
         let verbatim = false;
-        for (let idx = this.document.lineCount - 1; idx >= 0; --idx) {
+        for (let idx = lastLine; idx >= 0; --idx) {
             const line = this.document.lineAt(idx).text;
             if (!line.startsWith('@')) continue;
             if (!verbatim) {
                 if (line === '@bye') {
+                    lastLine = idx;
                     // Abort anything after `@bye`.
                     this.foldingRanges = [];
                     this.commentRange = undefined;
@@ -84,17 +93,19 @@ export class FoldingRangeContext {
                 const name = line.substring(5);
                 name === 'verbatim' && (verbatim = true);
                 closingBlocks.push({ name: name, line: idx });
-            } else {
-                const closingBlock = closingBlocks.pop();
-                if (closingBlock === undefined) continue;
-                if (line.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
-                    this.addRange(idx, closingBlock.line, { name: closingBlock.name });
-                    // If `verbatim == true` goes here, this line must be the `@verbatim` line.
-                    verbatim = false;
-                } else {
-                    closingBlocks.push(closingBlock);
-                }
+                continue;
             }
+            if (!verbatim && this.processNode(line, idx, lastLine)) continue;
+            const closingBlock = closingBlocks.pop();
+            if (closingBlock === undefined) continue;
+            if (line.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
+                this.addRange(idx, closingBlock.line, { name: closingBlock.name });
+                // If `verbatim == true` goes here, this line must be the `@verbatim` line.
+                verbatim = false;
+            } else {
+                closingBlocks.push(closingBlock);
+            }
+            
         }
         return this.foldingRanges;
     }
@@ -125,19 +136,59 @@ export class FoldingRangeContext {
         return false;
     }
 
-    private addRange(start: number, end: number, extraArgs: { name?: string, kind?: vscode.FoldingRangeKind }) {
-        (this.foldingRanges ??= []).push(new FoldingRange(extraArgs.name ?? '', start, end, extraArgs.kind));
+    private processNode(lineText: string, lineNum: number, lastLineNum: number) {
+        if (lineText.startsWith('@subsection ')) {
+            const detail = lineText.substring(12);
+            this.addRange(lineNum, this.closingSubsection ?? lastLineNum, { name: 'subsection', detail: detail });
+            this.closingSubsection = this.getLastTextLine(lineNum - 1);
+            return true;
+        } else if (lineText.startsWith('@section ')) {
+            const detail = lineText.substring(9);
+            this.addRange(lineNum, this.closingSection ?? lastLineNum, { name: 'section', detail: detail });
+            this.closingSubsection = this.closingSection = this.getLastTextLine(lineNum - 1);
+            return true;
+        } else if (lineText.startsWith('@chapter ')) {
+            const detail = lineText.substring(9);
+            this.addRange(lineNum, this.closingChapter ?? lastLineNum, { name: 'chapter', detail: detail });
+            this.closingSubsection = this.closingSection = this.closingChapter = this.getLastTextLine(lineNum - 1);
+            return true;
+        }
+        return false;
+    }
+
+    private getLastTextLine(lineNum: number, limit = 3) {
+        for (let idx = lineNum; idx > lineNum - limit; --idx) {
+            const line = this.document.lineAt(idx).text;
+            if (line.startsWith('@node ')) return idx - 1;
+            if (line === '') return idx; 
+        }
+        return lineNum;
+    }
+
+    private addRange(start: number, end: number, extraArgs: {
+        name?: string,
+        detail?: string,
+        kind?: vscode.FoldingRangeKind 
+    }) {
+        (this.foldingRanges ??= [])
+            .push(new FoldingRange(extraArgs.name ?? '', extraArgs.detail ?? '', start, end, extraArgs.kind));
     }
 
     constructor(private readonly document: vscode.TextDocument) {}
 }
 
 /**
- * VSCode folding range with name.
+ * VSCode folding range with name and description.
  */
 export class FoldingRange extends vscode.FoldingRange {
 
-    constructor(readonly name: string, start: number, end: number, kind?: vscode.FoldingRangeKind) {
+    constructor(
+        readonly name: string,
+        readonly detail: string,
+        start: number,
+        end: number,
+        kind?: vscode.FoldingRangeKind,
+    ) {
         super(start, end, kind);
     }
 }

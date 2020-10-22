@@ -13,7 +13,8 @@ Texinfo language support for Visual Studio Code.
   * Completion for most @\-commands.
   * Code snippets for block and brace commands.
 * **Folding**
-  * Fold on blocks, headers and multiline comments.
+  * Fold on nodes, block commands, headers and multiline comments.
+  * Breadcrumb navigation of folding blocks.
 * **Preview**
   * Display HTML preview in a webview.
   * Texinfo to HTML conversion is provided by [GNU Texinfo](https://www.gnu.org/software/texinfo).
