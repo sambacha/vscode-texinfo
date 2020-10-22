@@ -9,8 +9,9 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import Converter from './converter';
 import Document from './document';
+import Logger from './logger';
 import Options from './options';
-import * as utils from './utils';
+import { prompt, transformHtmlImageUri } from './utils';
 
 /**
  * Texinfo document preview.
@@ -25,11 +26,11 @@ export default class Preview {
     static async show(editor: vscode.TextEditor) {
         const document = editor.document;
         const documentContext = Document.get(document);
-        if (documentContext === undefined) {
-            return;
-        }
+        if (documentContext === undefined) return;
+        // Only show preview for saved files, as we're not gonna send document content to `makeinfo` via STDIN.
+        // Instead, the file will be loaded from disk.
         if (document.isUntitled) {
-            if (!await utils.prompt('Save this document to display preview.', 'Save')) return;
+            if (!await prompt('Save this document to display preview.', 'Save')) return;
             if (!await document.save()) return;
         }
         documentContext.initPreview().panel.reveal();
@@ -54,6 +55,7 @@ export default class Preview {
     constructor(private readonly documentContext: Document) {
         this.panel = vscode.window.createWebviewPanel('texinfo.preview', '', vscode.ViewColumn.Beside);
         this.disposables.push(this.panel.onDidDispose(() => this.close()));
+        this.updateTitle();
         this.updateWebview();
     }
 
@@ -76,8 +78,8 @@ export default class Preview {
         }
         this.updating = true;
         this.pendingUpdate = false;
-        this.updateTitle();
-
+        // Inform the user that the preview is updating if `makeinfo` takes too long.
+        setTimeout(() => this.updating && this.updateTitle(), 500);
         let htmlCode = await Converter.convertToHtml(this.document.fileName);
         if (htmlCode === undefined) {
             prompt(`Failed to show preview for ${this.document.fileName}.`, 'Show log', true)
@@ -86,7 +88,7 @@ export default class Preview {
             if (Options.displayImage) {
                 const pathName = path.dirname(this.document.fileName);
                 // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
-                htmlCode = utils.transformHtmlImageUri(htmlCode, src => {
+                htmlCode = transformHtmlImageUri(htmlCode, src => {
                     const srcUri = vscode.Uri.file(pathName + '/' + src);
                     return this.panel.webview.asWebviewUri(srcUri).toString();
                 });
@@ -95,7 +97,6 @@ export default class Preview {
         }
         this.updating = false;
         this.updateTitle();
-
         this.pendingUpdate && this.updateWebview();
     }
 }

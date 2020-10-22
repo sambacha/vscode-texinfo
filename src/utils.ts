@@ -24,7 +24,7 @@ export async function prompt(message: string, confirm: string, error = false) {
 }
 
 /**
- * Execute command and get output.
+ * Execute command and fetch output.
  * 
  * @param path Path to the executable file.
  * @param args Arguments to be passed to the command.
@@ -32,7 +32,7 @@ export async function prompt(message: string, confirm: string, error = false) {
  * @returns The output data, or `undefined` if execution fails.
  */
 export function exec(path: string, args: string[], maxBuffer: number) {
-    return new Promise<string | undefined>(resolve => {
+    return new Promise<Optional<string>>(resolve => {
         child_process.execFile(path, args, { maxBuffer: maxBuffer }, (error, stdout, stderr) => {
             if (error) {
                 Logger.log(stderr ? stderr : error.message);
@@ -62,3 +62,7 @@ export function transformHtmlImageUri(htmlCode: string, transformer: (src: strin
     // If nothing is transformed, return the original HTML code, for better performance.
     return elements.length === 0 ? htmlCode : dom.outerHTML;
 }
+
+export type Optional<T> = T | undefined;
+
+export type Range = { start: number, end: number };

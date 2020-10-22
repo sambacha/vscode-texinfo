@@ -62,15 +62,15 @@ export default class Options {
         this.configuration = vscode.workspace.getConfiguration(section);
     }
 
-    private getString(section: string): string {
-        return this.configuration.get(section) ?? '';
+    private getString(section: string) {
+        return this.configuration.get(section, '');
     }
 
-    private getBoolean(section: string): boolean {
-        return this.configuration.get(section) ?? false;
+    private getBoolean(section: string) {
+        return this.configuration.get(section, false);
     }
 
-    private getNumber(section: string): number {
-        return this.configuration.get(section) ?? 0;
+    private getNumber(section: string) {
+        return this.configuration.get(section, 0);
     }
 }

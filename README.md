@@ -11,12 +11,12 @@ Texinfo language support for Visual Studio Code.
   * Provided by the same [TextMate grammar](https://github.com/Alhadis/language-texinfo/blob/v1.0.0/grammars/texinfo.cson) as [used in GitHub](https://github.com/github/linguist/pull/4589).
 * **Code Completion**
   * Completion for most @\-commands.
-  * Code snippets for blocks and brace commands.
+  * Code snippets for block and brace commands.
 * **Folding**
   * Fold on blocks, headers and multiline comments.
 * **Preview**
   * Display HTML preview in a webview.
-  * Texinfo to HTML conversion is provided by [GNU Texinfo](https://www.gnu.org/software/texinfo/).
+  * Texinfo to HTML conversion is provided by [GNU Texinfo](https://www.gnu.org/software/texinfo).
 
 <details>
 <summary>Screenshots:</summary>
@@ -40,4 +40,4 @@ See `File -> Preferences -> Settings -> Extensions -> Texinfo` for details. The 
 
 ## Future Plans
 
-* Implement [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) for the Texinfo language, preferably by extending GNU Texinfo, to alleviate the limitations of the current implementaion.
+* Implement [Language Server Protocol](https://microsoft.github.io/language-server-protocol) for the Texinfo language, preferably by extending GNU Texinfo, to alleviate the limitations of the current implementaion.

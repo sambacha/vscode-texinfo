@@ -6,7 +6,7 @@
  */
 
 import Options from './options';
-import * as utils from './utils';
+import { exec } from './utils';
 
 /**
  * Texinfo to HTML converter.
@@ -38,6 +38,6 @@ export default class Converter {
 
     private async convert(path: string) {
         const maxBuffer = Options.maxSize * 1024 * 1024;
-        return await utils.exec(Options.makeinfo, this.options.concat(path), maxBuffer);
+        return await exec(Options.makeinfo, this.options.concat(path), maxBuffer);
     }
 }
