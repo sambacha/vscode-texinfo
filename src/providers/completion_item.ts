@@ -1,5 +1,5 @@
 /**
- * completion.ts
+ * providers/completion_item.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT
@@ -10,7 +10,7 @@ import * as vscode from 'vscode';
 /**
  * Provide code completion info for Texinfo documents.
  */
-export class CompletionItemProvider implements vscode.CompletionItemProvider {
+export default class CompletionItemProvider implements vscode.CompletionItemProvider {
 
     /**
      * Full list of completion items.

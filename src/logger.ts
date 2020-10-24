@@ -10,7 +10,7 @@ import * as vscode from 'vscode';
 /**
  * Logger which prints message to VSCode output channel.
  */
-export default class Logger {
+export default class Logger implements vscode.Disposable {
 
     private static singleton?: Logger;
 
@@ -18,23 +18,23 @@ export default class Logger {
         return Logger.singleton ??= new Logger();
     }
 
-    static destroy() {
-        Logger.instance.outputChannel.dispose();
-        Logger.singleton = undefined;
+    static log(message: string) {
+        const dateTime = new Date().toLocaleString(undefined, { hour12: false });
+        Logger.instance.outputChannel.appendLine(`[ ${dateTime} ]\n${message}`);
+    }
+
+    static show() {
+        Logger.instance.outputChannel.show(true);
     }
 
     private outputChannel: vscode.OutputChannel;
 
+    dispose() {
+        Logger.instance.outputChannel.dispose();
+        Logger.singleton = undefined;
+    }
+
     private constructor() {
         this.outputChannel = vscode.window.createOutputChannel('Texinfo');
-    }
-
-    log(message: string) {
-        const dateTime = new Date().toLocaleString(undefined, { hour12: false });
-        this.outputChannel.appendLine(`[ ${dateTime} ]\n${message}`);
-    }
-
-    show() {
-        this.outputChannel.show(true);
     }
 }

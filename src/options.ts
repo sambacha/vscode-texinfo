@@ -12,16 +12,12 @@ import * as vscode from 'vscode';
  * 
  * See `contributes.configuration` of package.json for details.
  */
-export default class Options {
+export default class Options implements vscode.Disposable {
 
     private static singleton?: Options;
 
-    private static get instance() {
+    static get instance() {
         return Options.singleton ??= new Options('texinfo');
-    }
-
-    static clear() {
-        Options.singleton = undefined;
     }
 
     static get makeinfo() {
@@ -33,7 +29,7 @@ export default class Options {
     }
 
     static get maxSize() {
-        return Options.instance.getNumber('preview.maxSize');
+        return Options.instance.getNumber('preview.maxSize') * 1024 * 1024;
     }
 
     static get errorLimit() {
@@ -56,6 +52,10 @@ export default class Options {
         return Options.instance.getBoolean('preview.displayImage');
     }
 
+    static clear() {
+        Options.singleton = undefined;
+    }
+
     private readonly configuration: vscode.WorkspaceConfiguration;
 
     private constructor(section: string) {
@@ -72,5 +72,9 @@ export default class Options {
 
     private getNumber(section: string) {
         return this.configuration.get(section, 0);
+    }
+
+    dispose() {
+        Options.singleton = undefined;
     }
 }

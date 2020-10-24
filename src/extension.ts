@@ -1,37 +1,30 @@
 /**
- * extension.ts - extension entry
+ * extension.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT
  */
 
 import * as vscode from 'vscode';
+import ContextMapping from './context_mapping';
 import Diagnosis from './diagnosis';
-import Document from './document';
 import Logger from './logger';
 import Options from './options';
-import Preview from './preview';
-import { CompletionItemProvider } from './completion';
-import { FoldingRangeProvider } from './folding';
-import { DocumentSymbolProvider } from './symbol';
+import PreviewContext from './context/preview';
+import CompletionItemProvider from './providers/completion_item';
+import DocumentSymbolProvider from './providers/document_symbol';
+import FoldingRangeProvider from './providers/folding_range';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(Document.of),
-        vscode.workspace.onDidChangeTextDocument(Document.update),
-        vscode.workspace.onDidSaveTextDocument(Document.save),
-        vscode.workspace.onDidCloseTextDocument(Document.close),
+        ContextMapping.instance, Diagnosis.instance, Logger.instance, Options.instance,
+        vscode.workspace.onDidChangeTextDocument(ContextMapping.onDocumentUpdate),
+        vscode.workspace.onDidSaveTextDocument(ContextMapping.onDocumentSave),
+        vscode.workspace.onDidCloseTextDocument(ContextMapping.onDocumentClose),
         vscode.workspace.onDidChangeConfiguration(Options.clear),
-        vscode.commands.registerTextEditorCommand('texinfo.showPreview', Preview.show),
+        vscode.commands.registerTextEditorCommand('texinfo.showPreview', PreviewContext.showPreview),
         vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(), '@'),
-        vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider()),
         vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider()),
-        Diagnosis.instance,
+        vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider()),
     );
-}
-
-export function deactivate() {
-    Document.clear();
-    Logger.destroy();
-    Options.clear();
 }

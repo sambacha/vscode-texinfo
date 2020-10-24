@@ -1,28 +1,17 @@
 /**
- * folding.ts
+ * context/folding_range.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT
  */
 
 import * as vscode from 'vscode';
-import Document from './document';
-import { Range } from './utils';
-
-/**
- * Provide folding range info for Texinfo documents.
- */
-export class FoldingRangeProvider implements vscode.FoldingRangeProvider {
-
-    provideFoldingRanges(document: vscode.TextDocument) {
-        return Document.of(document).foldingRange.values;
-    }
-}
+import { FoldingRange, Range } from '../utils/types';
 
 /**
  * Stores information about folding ranges for a document.
  */
-export class FoldingRangeContext {
+export default class FoldingRangeContext {
 
     /**
      * Get VSCode folding ranges from the context.
@@ -105,36 +94,39 @@ export class FoldingRangeContext {
             } else {
                 closingBlocks.push(closingBlock);
             }
-            
+        }
+        if (this.commentRange !== undefined) {
+            this.addRange(this.commentRange.start, this.commentRange.end, { kind: vscode.FoldingRangeKind.Comment });
+            this.commentRange = undefined;
         }
         return this.foldingRanges;
     }
 
     private processComment(lineText: string, lineNum: number) {
-        if (lineText.startsWith('@c')) {
-            if (!lineText.startsWith(' ', 2) && !lineText.startsWith('omment ', 2)) return false;
-            // Check for opening/closing header.
-            if (lineText.startsWith('%**', lineText[2] === ' ' ? 3 : 9)) {
-                if (this.headerStart === undefined) {
-                    this.headerStart = lineNum;
-                } else {
-                    this.addRange(lineNum, this.headerStart, { kind: vscode.FoldingRangeKind.Region });
-                    this.headerStart = undefined;
-                }
-                return true;
-            }
-            if (this.commentRange === undefined) {
-                this.commentRange = { start: lineNum, end: lineNum };
-            } else if (this.commentRange.start - 1 === lineNum) {
-                this.commentRange.start = lineNum;
+        if (!lineText.startsWith('@c')) return false;
+        if (!lineText.startsWith(' ', 2) && !lineText.startsWith('omment ', 2)) return false;
+        // Check for opening/closing header.
+        if (lineText.startsWith('%**', lineText[2] === ' ' ? 3 : 9)) {
+            if (this.headerStart === undefined) {
+                this.headerStart = lineNum;
+            } else {
+                this.addRange(lineNum, this.headerStart, { kind: vscode.FoldingRangeKind.Region });
+                this.headerStart = undefined;
             }
             return true;
-        } else if (this.commentRange !== undefined) {
+        }
+        if (this.commentRange === undefined) {
+            this.commentRange = { start: lineNum, end: lineNum };
+        } else if (this.commentRange.start - 1 === lineNum) {
+            this.commentRange.start = lineNum;
+        } else {
             this.addRange(this.commentRange.start, this.commentRange.end, { kind: vscode.FoldingRangeKind.Comment });
             this.commentRange = undefined;
         }
-        return false;
+        return true;
     }
+
+    constructor(private readonly document: vscode.TextDocument) {}
 
     private processNode(lineText: string, lineNum: number, lastLineNum: number) {
         if (lineText.startsWith('@subsection ')) {
@@ -172,23 +164,5 @@ export class FoldingRangeContext {
     }) {
         (this.foldingRanges ??= [])
             .push(new FoldingRange(extraArgs.name ?? '', extraArgs.detail ?? '', start, end, extraArgs.kind));
-    }
-
-    constructor(private readonly document: vscode.TextDocument) {}
-}
-
-/**
- * VSCode folding range with name and description.
- */
-export class FoldingRange extends vscode.FoldingRange {
-
-    constructor(
-        readonly name: string,
-        readonly detail: string,
-        start: number,
-        end: number,
-        kind?: vscode.FoldingRangeKind,
-    ) {
-        super(start, end, kind);
     }
 }

@@ -1,29 +1,19 @@
 /**
- * symbol.ts
+ * context/document_symbol.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT
  */
 
 import * as vscode from 'vscode';
-import Document from './document';
-import { FoldingRange } from './folding';
-import { lineNumToRange, Optional } from './utils';
-
-/**
- * Provide document symbol information for Texinfo documents.
- */
-export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
-
-    provideDocumentSymbols(document: vscode.TextDocument) {
-        return Document.of(document).symbol.values;
-    }
-}
+import DocumentContext from './document';
+import { lineNumToRange } from '../utils/misc';
+import { FoldingRange, Optional } from '../utils/types';
 
 /**
  * Context for symbols in a Texinfo document.
  */
-export class DocumentSymbolContext {
+export default class DocumentSymbolContext {
 
     private document = this.documentContext.document;
 
@@ -40,6 +30,8 @@ export class DocumentSymbolContext {
         this.symbols = undefined;
     }
 
+    constructor(private readonly documentContext: DocumentContext) {}
+
     /**
      * Calculate document symbols based on folding ranges.
      */
@@ -49,8 +41,6 @@ export class DocumentSymbolContext {
             .forEach(range => range.kind ?? (ranges[range.start] = range));
         return this.symbols = foldingRangeToSymbols(ranges, 0, ranges.length);
     }
-
-    constructor(private readonly documentContext: Document) {}
 }
 
 type RangeNode = Optional<FoldingRange>;
