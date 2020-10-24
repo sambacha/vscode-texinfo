@@ -53,7 +53,8 @@ export default class Preview {
     private pendingUpdate = false;
 
     constructor(private readonly documentContext: Document) {
-        this.panel = vscode.window.createWebviewPanel('texinfo.preview', '', vscode.ViewColumn.Beside);
+        this.panel = vscode.window.createWebviewPanel('texinfo.preview', '', vscode.ViewColumn.Beside,
+            { enableFindWidget: true, retainContextWhenHidden: true });
         this.disposables.push(this.panel.onDidDispose(() => this.close()));
         this.updateTitle();
         this.updateWebview();

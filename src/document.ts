@@ -32,7 +32,7 @@ export default class Document {
     static update(event: vscode.TextDocumentChangeEvent) {
         const documentContext = Document.get(event.document);
         if (documentContext?.foldingRange.update(event.contentChanges)) {
-            documentContext.symbol.update(documentContext.foldingRange.values);
+            documentContext.symbol.clear();
         }
     }
 

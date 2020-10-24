@@ -8,7 +8,6 @@
 import * as child_process from 'child_process';
 import * as htmlparser from 'node-html-parser';
 import * as vscode from 'vscode';
-import Logger from './logger';
 
 /**
  * Open a prompt with two buttons, "Confirm" and "Cancel", and wait for user action.
@@ -32,14 +31,12 @@ export async function prompt(message: string, confirm: string, error = false) {
  * @returns The output data, or `undefined` if execution fails.
  */
 export function exec(path: string, args: string[], maxBuffer: number) {
-    return new Promise<Optional<string>>(resolve => {
+    return new Promise<ExecResult>(resolve => {
         child_process.execFile(path, args, { maxBuffer: maxBuffer }, (error, stdout, stderr) => {
             if (error) {
-                Logger.log(stderr ? stderr : error.message);
-                resolve(undefined);
+                resolve({ error: stderr ? stderr : error.message });
             } else {
-                stderr && Logger.log(stderr);
-                resolve(stdout);
+                resolve({ data: stdout, error: stderr });
             }
         });
     });
@@ -64,5 +61,7 @@ export function transformHtmlImageUri(htmlCode: string, transformer: (src: strin
 }
 
 export type Optional<T> = T | undefined;
+
+export type ExecResult = { data?: string, error: string };
 
 export type Range = { start: number, end: number };
