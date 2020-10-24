@@ -6,6 +6,7 @@
  */
 
 import * as vscode from 'vscode';
+import Diagnosis from './diagnosis';
 import Document from './document';
 import Logger from './logger';
 import Options from './options';
@@ -25,6 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(), '@'),
         vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider()),
         vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider()),
+        Diagnosis.instance,
     );
 }
 

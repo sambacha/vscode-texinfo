@@ -8,7 +8,7 @@
 import * as vscode from 'vscode';
 import Document from './document';
 import { FoldingRange } from './folding';
-import { Optional } from './utils';
+import { lineNumToRange, Optional } from './utils';
 
 /**
  * Provide document symbol information for Texinfo documents.
@@ -60,11 +60,8 @@ function foldingRangeToSymbols(ranges: readonly RangeNode[], start: number, end:
     for (let idx = start; idx < end; ++idx) {
         const node = ranges[idx];
         if (node === undefined) continue;
-        const startPosition = new vscode.Position(idx, 0);
-        const endFirstLine = new vscode.Position(idx, Number.MAX_SAFE_INTEGER);
-        const endLastLine = new vscode.Position(node.end, Number.MAX_SAFE_INTEGER);
-        const range = new vscode.Range(startPosition, endLastLine);
-        const selectionRange = new vscode.Range(startPosition, endFirstLine);
+        const range = lineNumToRange(idx, node.end);
+        const selectionRange = lineNumToRange(idx);
         const symbol = new vscode.DocumentSymbol('@' + node.name, node.detail,
             vscode.SymbolKind.String, range, selectionRange);
         symbol.children = foldingRangeToSymbols(ranges, idx + 1, node.end);

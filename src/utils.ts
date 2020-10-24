@@ -60,6 +60,22 @@ export function transformHtmlImageUri(htmlCode: string, transformer: (src: strin
     return elements.length === 0 ? htmlCode : dom.outerHTML;
 }
 
+/**
+ * Convert line numbers to VSCode range.
+ * 
+ * @param startLine 
+ * @param endLine Default to `startLine`.
+ */
+export function lineNumToRange(startLine: number, endLine = startLine) {
+    const startPosition = new vscode.Position(startLine, 0);
+    const endPosition = new vscode.Position(endLine, Number.MAX_SAFE_INTEGER);
+    return new vscode.Range(startPosition, endPosition);
+}
+
+export function isDefined<T>(value: T | undefined): value is T {
+    return value !== undefined;
+}
+
 export type Optional<T> = T | undefined;
 
 export type ExecResult = { data?: string, error: string };
