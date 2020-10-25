@@ -1,5 +1,5 @@
 /**
- * context/folding_range.ts
+ * contexts/folding_range.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT

@@ -1,5 +1,5 @@
 /**
- * context/preview.ts
+ * contexts/preview.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT

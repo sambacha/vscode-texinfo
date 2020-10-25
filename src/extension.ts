@@ -10,7 +10,7 @@ import ContextMapping from './context_mapping';
 import Diagnosis from './diagnosis';
 import Logger from './logger';
 import Options from './options';
-import PreviewContext from './context/preview';
+import PreviewContext from './contexts/preview';
 import CompletionItemProvider from './providers/completion_item';
 import DocumentSymbolProvider from './providers/document_symbol';
 import FoldingRangeProvider from './providers/folding_range';

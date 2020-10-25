@@ -6,7 +6,7 @@
  */
 
 import * as vscode from 'vscode';
-import DocumentContext from './context/document';
+import DocumentContext from './contexts/document';
 
 /**
  * Manage mappings between Texinfo documents and corresponding contexts.

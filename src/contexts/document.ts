@@ -1,5 +1,5 @@
 /**
- * context/document.ts
+ * contexts/document.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT

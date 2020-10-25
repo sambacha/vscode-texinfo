@@ -1,5 +1,5 @@
 /**
- * context/document_symbol.ts
+ * contexts/document_symbol.ts
  * 
  * @author CismonX <admin@cismon.net>
  * @license MIT
