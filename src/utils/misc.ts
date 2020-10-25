@@ -30,16 +30,16 @@ export function exec(path: string, args: string[], maxBuffer: number) {
 }
 
 /**
- * Open a prompt with two buttons, "Confirm" and "Cancel", and wait for user action.
+ * Open a prompt with a button, and wait for user action.
  * 
  * @param message The message to be displayed on the prompt.
- * @param confirm Text to be displayed on the "Confirm" button.
+ * @param label Text to be displayed on the button.
  * @param error Whether the prompt is shown as an error message. Default false.
- * @returns Whether the user clicked the "Confirm" button.
+ * @returns Whether the user clicked the button.
  */
-export async function prompt(message: string, confirm: string, error = false) {
+export async function prompt(message: string, label: string, error = false) {
     const func = error ? vscode.window.showErrorMessage : vscode.window.showInformationMessage;
-    return confirm === await func(message, confirm, 'Cancel');
+    return label === await func(message, label);
 }
 
 /**

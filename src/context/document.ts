@@ -10,6 +10,9 @@ import DocumentSymbolContext from './document_symbol';
 import FoldingRangeContext from './folding_range';
 import PreviewContext from './preview';
 
+/**
+ * Holds all contexts for a Texinfo document.
+ */
 export default class DocumentContext {
 
     readonly foldingRange = new FoldingRangeContext(this.document);

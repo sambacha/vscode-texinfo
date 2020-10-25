@@ -14,6 +14,12 @@ import { FoldingRange, Range } from '../utils/types';
 export default class FoldingRangeContext {
 
     /**
+     * Regex for matching subsection/section/chapter (-like) commands.
+     */
+    private static nodeMatcher = new RegExp('^@(?:(subsection|unnumberedsubsec|appendixsubsec|subheading)|' +
+        '(section|unnumberedsec|appendixsec|heading)|(chapter|unnumbered|appendix|majorheading|chapheading)) (.*)$');
+
+    /**
      * Get VSCode folding ranges from the context.
      */
     get values() {
@@ -58,8 +64,8 @@ export default class FoldingRangeContext {
      */
     private calculateFoldingRanges() {
         this.foldingRanges = [];
-        this.headerStart = undefined;
-        const closingBlocks = <{ name: string, line: number }[]>[];
+        this.clearTemporaries();
+        let closingBlocks = <ClosingBlock[]>[];
         let lastLine = this.document.lineCount - 1;
         let verbatim = false;
         for (let idx = lastLine; idx >= 0; --idx) {
@@ -70,8 +76,8 @@ export default class FoldingRangeContext {
                     lastLine = idx;
                     // Abort anything after `@bye`.
                     this.foldingRanges = [];
-                    this.commentRange = undefined;
-                    this.headerStart = undefined;
+                    closingBlocks = [];
+                    this.clearTemporaries();
                     continue;
                 }
                 if (this.processComment(line, idx)) continue;
@@ -97,7 +103,6 @@ export default class FoldingRangeContext {
         }
         if (this.commentRange !== undefined) {
             this.addRange(this.commentRange.start, this.commentRange.end, { kind: vscode.FoldingRangeKind.Comment });
-            this.commentRange = undefined;
         }
         return this.foldingRanges;
     }
@@ -129,19 +134,23 @@ export default class FoldingRangeContext {
     constructor(private readonly document: vscode.TextDocument) {}
 
     private processNode(lineText: string, lineNum: number, lastLineNum: number) {
-        if (lineText.startsWith('@subsection ')) {
-            const detail = lineText.substring(12);
-            this.addRange(lineNum, this.closingSubsection ?? lastLineNum, { name: 'subsection', detail: detail });
+        const result = lineText.match(FoldingRangeContext.nodeMatcher);
+        if (result === null) return false;
+        // Subsection level node.
+        if (result[1] !== undefined) {
+            this.addRange(lineNum, this.closingSubsection ?? lastLineNum, { name: result[1], detail: result[4] });
             this.closingSubsection = this.getLastTextLine(lineNum - 1);
             return true;
-        } else if (lineText.startsWith('@section ')) {
-            const detail = lineText.substring(9);
-            this.addRange(lineNum, this.closingSection ?? lastLineNum, { name: 'section', detail: detail });
+        }
+        // Section level node.
+        if (result[2] !== undefined) {
+            this.addRange(lineNum, this.closingSection ?? lastLineNum, { name: result[2], detail: result[4] });
             this.closingSubsection = this.closingSection = this.getLastTextLine(lineNum - 1);
             return true;
-        } else if (lineText.startsWith('@chapter ')) {
-            const detail = lineText.substring(9);
-            this.addRange(lineNum, this.closingChapter ?? lastLineNum, { name: 'chapter', detail: detail });
+        }
+        // Chapter level node.
+        if (result[3] !== undefined) {
+            this.addRange(lineNum, this.closingChapter ?? lastLineNum, { name: result[3], detail: result[4] });
             this.closingSubsection = this.closingSection = this.closingChapter = this.getLastTextLine(lineNum - 1);
             return true;
         }
@@ -165,4 +174,12 @@ export default class FoldingRangeContext {
         (this.foldingRanges ??= [])
             .push(new FoldingRange(extraArgs.name ?? '', extraArgs.detail ?? '', start, end, extraArgs.kind));
     }
+
+    private clearTemporaries() {
+        this.commentRange = undefined;
+        this.headerStart = undefined;
+        this.closingSubsection = this.closingSection = this.closingChapter = undefined;
+    }
 }
+
+type ClosingBlock = { name: string, line: number };
