@@ -19,14 +19,11 @@ export default class DocumentSymbolContext {
 
     private documentSymbols?: vscode.DocumentSymbol[];
 
-    private foldingRanges?: readonly FoldingRange[];
-
     get values() {
         return this.documentSymbols ??= this.calculcateDocumentSymbols();
     }
 
     clear() {
-        this.foldingRanges = undefined;
         this.documentSymbols = undefined;
     }
 
@@ -37,9 +34,8 @@ export default class DocumentSymbolContext {
      */
     private calculcateDocumentSymbols() {
         const ranges = Array<RangeNode>(this.document.lineCount);
-        (this.foldingRanges ??= this.documentContext.foldingRange.values)
-            .forEach(range => range.kind ?? (ranges[range.start] = range));
-        return this.documentSymbols = foldingRangeToSymbols(ranges, 0, ranges.length);
+        this.documentContext.foldingRange.values.forEach(range => range.kind ?? (ranges[range.start] = range));
+        return foldingRangeToSymbols(ranges, 0, ranges.length);
     }
 }
 

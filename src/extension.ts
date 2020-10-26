@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidSaveTextDocument(ContextMapping.onDocumentSave),
         vscode.workspace.onDidCloseTextDocument(ContextMapping.onDocumentClose),
         vscode.workspace.onDidChangeConfiguration(Options.clear),
-        vscode.commands.registerTextEditorCommand('texinfo.showPreview', PreviewContext.showPreview),
+        vscode.commands.registerTextEditorCommand('texinfo.preview.show', PreviewContext.showPreview),
         vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(), '@'),
         vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider()),
         vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider()),

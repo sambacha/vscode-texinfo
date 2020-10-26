@@ -6,6 +6,7 @@
  */
 
 import * as htmlparser from 'node-html-parser';
+import { Operator } from './types';
 
 /**
  * DOM manipulation utilities.
@@ -33,7 +34,7 @@ export default class DOM {
      * 
      * @param transformer 
      */
-    transformImageUri(transformer: (src: string) => string) {
+    transformImageUri(transformer: Operator<string>) {
         const elements = this.value.querySelectorAll('img');
         if (elements.length === 0) return;
         elements.forEach(element => {

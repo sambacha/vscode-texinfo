@@ -6,7 +6,7 @@
  */
 
 import * as vscode from 'vscode';
-import { FoldingRange, Range } from '../utils/types';
+import { FoldingRange, Range, NamedLine } from '../utils/types';
 
 /**
  * Stores information about folding ranges for a document.
@@ -23,7 +23,7 @@ export default class FoldingRangeContext {
      * Get VSCode folding ranges from the context.
      */
     get values() {
-        return this.foldingRanges ??= this.calculateFoldingRanges();
+        return this.foldingRanges ?? this.calculateFoldingRanges();
     }
 
     private foldingRanges?: FoldingRange[];
@@ -65,7 +65,7 @@ export default class FoldingRangeContext {
     private calculateFoldingRanges() {
         this.foldingRanges = [];
         this.clearTemporaries();
-        let closingBlocks = <ClosingBlock[]>[];
+        let closingBlocks = <NamedLine[]>[];
         let lastLine = this.document.lineCount - 1;
         let verbatim = false;
         for (let idx = lastLine; idx >= 0; --idx) {
@@ -172,7 +172,7 @@ export default class FoldingRangeContext {
         kind?: vscode.FoldingRangeKind 
     }) {
         (this.foldingRanges ??= [])
-            .push(new FoldingRange(extraArgs.name ?? '', extraArgs.detail ?? '', start, end, extraArgs.kind));
+            .push({ name: extraArgs.name ?? '', detail: extraArgs.detail ?? '', start, end, kind: extraArgs.kind });
     }
 
     private clearTemporaries() {
@@ -181,5 +181,3 @@ export default class FoldingRangeContext {
         this.closingSubsection = this.closingSection = this.closingChapter = undefined;
     }
 }
-
-type ClosingBlock = { name: string, line: number };
