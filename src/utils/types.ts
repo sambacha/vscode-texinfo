@@ -19,6 +19,8 @@ export type ExecResult = { data?: string, error: string };
 
 export type FoldingRange = vscode.FoldingRange & { name: string, detail: string };
 
+export type CompletionItem = vscode.CompletionItem & { snippet?: boolean };
+
 export function isDefined<T>(value: Optional<T>): value is T {
     return value !== undefined;
 }

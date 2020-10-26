@@ -24,6 +24,14 @@ export default class Options implements vscode.Disposable {
         return Options.instance.getString('makeinfo');
     }
 
+    static get enableSnippets() {
+        return Options.instance.getBoolean('completion.enableSnippets');
+    }
+
+    static get hideSnippetCommands() {
+        return Options.instance.getBoolean('completion.hideSnippetCommands');
+    }
+
     static get noHeaders() {
         return Options.instance.getBoolean('preview.noHeaders');
     }

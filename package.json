@@ -112,6 +112,16 @@
                     "default": "makeinfo",
                     "markdownDescription": "Path to the `makeinfo` (or `texi2any`) command. If not located in `$PATH`, an absolute path should be specified.\n\nThe value should not contain any command-line arguments, just the filename."
                 },
+                "texinfo.completion.enableSnippets": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show snippets in code completion items.\n\nIf disabled, only commands are shown."
+                },
+                "texinfo.completion.hideSnippetCommands": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "When snippet is enabled, hide the snippets' corresponding commands from completion items."
+                },
                 "texinfo.preview.noHeaders": {
                     "type": "boolean",
                     "default": false,
