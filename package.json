@@ -40,6 +40,7 @@
     },
     "eslintConfig": {
         "root": true,
+        "ignorePatterns": "out/**",
         "parser": "@typescript-eslint/parser",
         "plugins": [
             "@typescript-eslint"
@@ -176,7 +177,7 @@
                     ".texinfo",
                     ".txi"
                 ],
-                "configuration": "./language-config.json"
+                "configuration": "./language-configuration.json"
             }
         ],
         "grammars": [

@@ -13,9 +13,6 @@ const config: webpack.Configuration = {
     devtool: 'source-map',
     optimization: {
         concatenateModules: true,
-        innerGraph: true,
-        mergeDuplicateChunks: true,
-        mangleExports: true,
         minimize: true,
     },
     externals: {

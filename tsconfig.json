@@ -4,17 +4,17 @@
         "target": "ES2019",
         "outDir": "out",
         "lib": [
-            "ES2019"
+            "ES2019",
         ],
         "esModuleInterop": true,
         "strictNullChecks": true,
         "sourceMap": true,
         "rootDir": "src",
         "strict": true,
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
     },
     "exclude": [
         "node_modules",
-        "*.config.ts"
-    ]
+        "*.config.ts",
+    ],
 }
