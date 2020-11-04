@@ -33,15 +33,13 @@ export default class DocumentSymbolContext {
      * Calculate document symbols based on folding ranges.
      */
     private calculcateDocumentSymbols() {
-        const ranges = Array<RangeNode>(this.document.lineCount);
+        const ranges = Array<Optional<FoldingRange>>(this.document.lineCount);
         this.documentContext.foldingRange.values.forEach(range => range.kind ?? (ranges[range.start] = range));
         return foldingRangeToSymbols(ranges, 0, ranges.length);
     }
 }
 
-type RangeNode = Optional<FoldingRange>;
-
-function foldingRangeToSymbols(ranges: readonly RangeNode[], start: number, end: number) {
+function foldingRangeToSymbols(ranges: readonly Optional<FoldingRange>[], start: number, end: number) {
     const symbols = <vscode.DocumentSymbol[]>[];
     for (let idx = start; idx < end; ++idx) {
         const node = ranges[idx];
