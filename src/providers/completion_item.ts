@@ -134,6 +134,40 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...lineCommand('documentencoding', 'Declare the input encoding', 'enc'),
             ...lineCommand('documentlanguage', 'Declares the current document locale', 'll_CC'),
             ...braceCommand('dotaccent', 'Generate a dot accent over the character', 1, 'c'),
+            ...braceCommandEnum('dotless', 'Generate dotless i, "ı", or dotless j, "ȷ"', 'i', 'j'),
+            command('dots', 'Generate an ellipsis, "…"', { hasEmptyArguments: true }),
+            ...braceCommand('email', 'Indicate an electronic mail address', 1, 'address', 'displayed-text'),
+            ...braceCommand('emph', 'Emphasize text', 1, 'text'),
+            ...lineCommand('end', 'Ends a block command environment', 'environment'),
+            command('enddots', 'Generate an end-of-sentence ellipsis, "..."', { hasEmptyArguments: true }),
+            ...blockCommand('enumerate', 'Begin a numbered list, using @item for each entry'),
+            ...braceCommand('env', 'Indicate an environment variable name', 1, 'environment-variable'),
+            command('equiv', 'Insert a glyph indicating exact equivalence, "≡"', { hasEmptyArguments: true }),
+            command('error', 'Indicate that the following text is an error message, "error→"',
+                { hasEmptyArguments: true }),
+            ...braceCommand('errormsg', 'Report message as an error to standard error, and exit unsuccessfully',
+                1, 'msg'),
+            command('euro', 'Generate the Euro currency sign, "€"', { hasEmptyArguments: true }),
+
+            ...blockCommand('example', 'Indicate an example'),
+            ...lineCommand('exampleindent', 'Indent example-like environments by number of spaces', 'indent'),
+            command('exclamdown', 'Generate an upside-down exclamation mark, "¡"', { hasEmptyArguments: true }),
+            ...lineCommand('exdent', 'Remove any indentation a line might have', 'line-of-text'),
+            command('expansion', 'Indicate the result of a macro expansion with a glyph, "→"',
+                { hasEmptyArguments: true }),
+            ...braceCommand('file', 'Highlight the name of a file', 1, 'filename'),
+            command('finalout', 'Prevent TeX from printing large black warning rectangles beside over-wide lines'),
+            ...lineCommand('findex', 'Add entry to the index of functions', 'entry'),
+            ...lineCommandEnum('firstparagraphindent', 'Control indentation of the first paragraph after ' +
+                'section headers', 'none', 'insert'),
+            ...blockCommand('float', 'Environment to define floating material'),
+            ...blockCommand('flushleft', 'Left justify every line while leaving the right end ragged'),
+            ...blockCommand('flushright', 'Right justify every line while leaving the left end ragged'),
+            ...lineCommandEnum('fonttextsize', 'Change the size of the main body font in the TeX output', '10', '11'),
+            ...braceCommand('footnote', 'Enter a footnote', 1, 'footnote-text'),
+            ...lineCommandEnum('footnotestyle', "Specify an Info file's footnote style", 'end', 'separate'),
+            ...blockCommand('format', 'Begin a kind of example, but do not indent'),
+            ...lineCommandEnum('frenchspacing', 'Control spacing after punctuation', 'on', 'off'),
 
             ...lineCommand('setfilename', 'Provide a name for the output files', 'info-file-name'),
             ...lineCommand('settitle', 'Specify the title for page headers', 'title'),
@@ -225,6 +259,20 @@ function blockCommand(name: string, detail: string) {
  */
 function braceCommand(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
     return [braceCommandSnippet(name, detail, numArgsRequired, ...args), command(name, detail, { snippet: true })];
+}
+
+/**
+ * Build the completion items for a brace command where the argument is an enum.
+ * 
+ * @param name 
+ * @param detail 
+ * @param items 
+ */
+function braceCommandEnum(name: string, detail: string, ...items: string[]) {
+    return [
+        snippet(name, name, detail, 0, `@${name}{${items.join('/')}}`, `${name}{\${1|${items.join(',')}|}}`),
+        command(name, detail, { snippet: true }),
+    ];
 }
 
 /**
