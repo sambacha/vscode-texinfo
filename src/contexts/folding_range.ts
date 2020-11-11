@@ -6,17 +6,21 @@
  */
 
 import * as vscode from 'vscode';
+import { lineNumToRange } from '../utils/misc';
 import { FoldingRange, Range, NamedLine } from '../utils/types';
 
 /**
  * Stores information about folding ranges for a document.
+ * 
+ * Actually, more than folding ranges (e.g. code lens) is handled within this context, so I believe
+ * we should use another name...
  */
 export default class FoldingRangeContext {
 
     /**
      * Regex for matching subsection/section/chapter (-like) commands.
      */
-    private static nodeMatcher = new RegExp('^@(?:(subsection|unnumberedsubsec|appendixsubsec|subheading)|' +
+    private static readonly nodeFormat = RegExp('^@(?:(node)|(subsection|unnumberedsubsec|appendixsubsec|subheading)|' +
         '(section|unnumberedsec|appendixsec|heading)|(chapter|unnumbered|appendix|majorheading|chapheading)) (.*)$');
 
     /**
@@ -26,7 +30,17 @@ export default class FoldingRangeContext {
         return this.foldingRanges ?? this.calculateFoldingRanges();
     }
 
+    /**
+     * Get node values of document as VSCode code lenses.
+     */
+    get nodeValues() {
+        this.foldingRanges ?? this.calculateFoldingRanges();
+        return this.nodes;
+    }
+
     private foldingRanges?: FoldingRange[];
+
+    private nodes = <vscode.CodeLens[]>[];
 
     private commentRange?: Range;
 
@@ -50,6 +64,7 @@ export default class FoldingRangeContext {
             // Clear cached folding range when line count changes.
             if (updatedLines !== 1 || event.range.start.line !== event.range.end.line) {
                 this.foldingRanges = undefined;
+                this.nodes = [];
                 return true;
             }
         }
@@ -134,23 +149,32 @@ export default class FoldingRangeContext {
     constructor(private readonly document: vscode.TextDocument) {}
 
     private processNode(lineText: string, lineNum: number, lastLineNum: number) {
-        const result = lineText.match(FoldingRangeContext.nodeMatcher);
+        const result = lineText.match(FoldingRangeContext.nodeFormat);
         if (result === null) return false;
-        // Subsection level node.
+        // Node identifier.
         if (result[1] !== undefined) {
-            this.addRange(lineNum, this.closingSubsection ?? lastLineNum, { name: result[1], detail: result[4] });
+            this.nodes.push(new vscode.CodeLens(lineNumToRange(lineNum), {
+                title: '$(search-goto-file) Goto node in preview',
+                command: 'texinfo.preview.goto',
+                arguments: [this.document, result[5]],
+            }));
+            return true;
+        }
+        // Subsection level node.
+        if (result[2] !== undefined) {
+            this.addRange(lineNum, this.closingSubsection ?? lastLineNum, { name: result[2], detail: result[5] });
             this.closingSubsection = this.getLastTextLine(lineNum - 1);
             return true;
         }
         // Section level node.
-        if (result[2] !== undefined) {
-            this.addRange(lineNum, this.closingSection ?? lastLineNum, { name: result[2], detail: result[4] });
+        if (result[3] !== undefined) {
+            this.addRange(lineNum, this.closingSection ?? lastLineNum, { name: result[3], detail: result[5] });
             this.closingSubsection = this.closingSection = this.getLastTextLine(lineNum - 1);
             return true;
         }
         // Chapter level node.
-        if (result[3] !== undefined) {
-            this.addRange(lineNum, this.closingChapter ?? lastLineNum, { name: result[3], detail: result[4] });
+        if (result[4] !== undefined) {
+            this.addRange(lineNum, this.closingChapter ?? lastLineNum, { name: result[4], detail: result[5] });
             this.closingSubsection = this.closingSection = this.closingChapter = this.getLastTextLine(lineNum - 1);
             return true;
         }
@@ -178,6 +202,7 @@ export default class FoldingRangeContext {
     private clearTemporaries() {
         this.commentRange = undefined;
         this.headerStart = undefined;
+        this.nodes = [];
         this.closingSubsection = this.closingSection = this.closingChapter = undefined;
     }
 }

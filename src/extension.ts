@@ -11,6 +11,7 @@ import Diagnosis from './diagnosis';
 import Logger from './logger';
 import Options from './options';
 import PreviewContext from './contexts/preview';
+import CodeLensProvider from './providers/code_lens';
 import CompletionItemProvider from './providers/completion_item';
 import DocumentSymbolProvider from './providers/document_symbol';
 import FoldingRangeProvider from './providers/folding_range';
@@ -23,6 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidCloseTextDocument(ContextMapping.onDocumentClose),
         vscode.workspace.onDidChangeConfiguration(Options.clear),
         vscode.commands.registerTextEditorCommand('texinfo.preview.show', PreviewContext.showPreview),
+        vscode.commands.registerCommand('texinfo.preview.goto', PreviewContext.gotoPreview),
+        vscode.languages.registerCodeLensProvider('texinfo', new CodeLensProvider()),
         vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(), '@'),
         vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider()),
         vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider()),

@@ -13,7 +13,7 @@ import Diagnosis from '../diagnosis';
 import Logger from '../logger';
 import Options from '../options';
 import Converter from '../utils/converter';
-import { prompt } from '../utils/misc';
+import { getNodeHtmlRef, prompt } from '../utils/misc';
 import { Operator, Optional } from '../utils/types';
 
 /**
@@ -35,6 +35,17 @@ export default class PreviewContext {
             if (!await document.save()) return;
         }
         ContextMapping.getDocumentContext(document).initPreview().panel.reveal();
+    }
+
+    /**
+     * Jump to the corresponding section of document preview by node name.
+     * 
+     * @param document 
+     * @param nodeName 
+     */
+    static gotoPreview(document: vscode.TextDocument, nodeName: string) {
+        ContextMapping.getDocumentContext(document).initPreview().panel.webview
+            .postMessage({ command: 'goto', value: getNodeHtmlRef(nodeName) });
     }
 
     private readonly document = this.documentContext.document;
@@ -70,7 +81,8 @@ export default class PreviewContext {
         this.pendingUpdate = false;
         // Inform the user that the preview is updating if `makeinfo` takes too long.
         setTimeout(() => this.updating && this.updateTitle(), 500);
-        const { data, error } = await new Converter(this.document.fileName, this.imageTransformer).convert();
+        const { data, error } = await new Converter(this.document.fileName, this.imageTransformer, this.script)
+            .convert();
         if (error) {
             Logger.log(error);
             Diagnosis.update(this.document, error);
@@ -97,15 +109,25 @@ export default class PreviewContext {
     }
 
     private get imageTransformer(): Optional<Operator<string>> {
-        if (!Options.displayImage) {
-            return undefined;
-        }
+        if (!Options.displayImage) return undefined;
         const pathName = path.dirname(this.document.fileName);
         return src => {
             const srcUri = vscode.Uri.file(pathName + '/' + src);
             // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
             return this.panel.webview.asWebviewUri(srcUri).toString();
         };
+    }
+
+    private get script() {
+        if (!Options.enableCodeLens) return undefined;
+        return "window.addEventListener('message', event => {" +
+            "const message = event.data;" +
+            "switch (message.command) {" +
+                "case 'goto':" +
+                    "window.location.hash = message.value;" +
+                    "break;" +
+            "}" +
+        "})";
     }
 
     private updateTitle() {

@@ -82,6 +82,10 @@
                 "command": "texinfo.preview.show",
                 "title": "Show preview",
                 "icon": "$(open-preview)"
+            },
+            {
+                "command": "texinfo.preview.goto",
+                "title": "Goto node in preview"
             }
         ],
         "menus": {
@@ -89,6 +93,11 @@
                 {
                     "command": "texinfo.preview.show",
                     "when": "editorLangId == texinfo",
+                    "group": "navigation"
+                },
+                {
+                    "command": "texinfo.preview.goto",
+                    "when": "false",
                     "group": "navigation"
                 }
             ],
@@ -115,6 +124,11 @@
                     "type": "string",
                     "default": "makeinfo",
                     "markdownDescription": "Path to the `makeinfo` (or `texi2any`) command. If not located in `$PATH`, an absolute path should be specified.\n\nThe value should not contain any command-line arguments, just the filename."
+                },
+                "texinfo.enableCodeLens": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Enable code lens on node identifiers which jumps to the corresponding nodes in preview."
                 },
                 "texinfo.completion.enableSnippets": {
                     "type": "boolean",
