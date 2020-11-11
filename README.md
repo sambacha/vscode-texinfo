@@ -22,6 +22,21 @@ Texinfo language support for Visual Studio Code.
 <details>
 <summary>Screenshots:</summary>
 
+Display preview:
+![preview](https://user-images.githubusercontent.com/19173506/98842831-15355880-2485-11eb-9a12-a709d930ac05.png)
+
+Code completion:
+![completion](https://user-images.githubusercontent.com/19173506/98842873-254d3800-2485-11eb-8cef-78a534b08b84.png)
+
+Breadcrumb navigation:
+![navigation](https://user-images.githubusercontent.com/19173506/98842850-1ebec080-2485-11eb-8da7-2d167ea86ccf.png)
+
+Folding:
+![folding](https://user-images.githubusercontent.com/19173506/98842863-21b9b100-2485-11eb-85f9-d6c9d317d307.png)
+
+Analytics:
+![analytics](https://user-images.githubusercontent.com/19173506/98842883-28482880-2485-11eb-9399-6046e8873014.png)
+
 </details>
 
 ## Requirements
