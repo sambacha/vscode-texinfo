@@ -100,7 +100,7 @@ export default class FoldingRangeContext {
             // Process block.
             if (line.startsWith('@end ')) {
                 if (verbatim) continue;
-                const name = line.substring(5);
+                const name = line.substring(5).trimRight();
                 name === 'verbatim' && (verbatim = true);
                 closingBlocks.push({ name: name, line: idx });
                 continue;
