@@ -148,7 +148,10 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...braceCommand('errormsg', 'Report message as an error to standard error, and exit unsuccessfully',
                 1, 'msg'),
             command('euro', 'Generate the Euro currency sign, "€"', { hasEmptyArguments: true }),
-
+            ...headingFootingCommand('evenfooting', 'Generate page footers that are the same for even-numbered pages'),
+            ...headingFootingCommand('evenheading', 'Generate page headers that are the same for even-numbered pages'),
+            ...headingFootingCommand('everyfooting', 'Generate page footers that are the same for every pages'),
+            ...headingFootingCommand('everyheading', 'Generate page headers that are the same for every pages'),
             ...blockCommand('example', 'Indicate an example'),
             ...lineCommand('exampleindent', 'Indent example-like environments by number of spaces', 'indent'),
             command('exclamdown', 'Generate an upside-down exclamation mark, "¡"', { hasEmptyArguments: true }),
@@ -168,7 +171,7 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...lineCommandEnum('footnotestyle', "Specify an Info file's footnote style", 'end', 'separate'),
             ...blockCommand('format', 'Begin a kind of example, but do not indent'),
             ...lineCommandEnum('frenchspacing', 'Control spacing after punctuation', 'on', 'off'),
-
+            ...blockCommand('ftable', 'Begin a two-column table, using @item for each entry', 'formatting-command'),
             command('geq', 'Generate a greater-than-or-equal sign, "≥"', { hasEmptyArguments: true }),
             ...blockCommand('group', 'Disallow page breaks within following text'),
             command('guillemetleft', 'Double angle quotation mark, "«"', { hasEmptyArguments: true }),
@@ -186,7 +189,10 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...blockCommand('html', 'Enter HTML completely'),
             ...braceCommand('hyphenation', 'Tell TeX how to hyphenate words', 1, 'hy-phen-a-ted words'),
             ...braceCommand('i', 'Set text in an italic font', 1, 'text'),
-
+            ...blockCommand('ifclear', 'If the Texinfo variable is not set, format the following text', 'txivar'),
+            ...blockCommand('ifcommanddefined', 'If the Texinfo code is defined, format the follow text', 'txicmd'),
+            ...blockCommand('ifcommandnotdefined', 'If the Texinfo code is not defined, format the follow text',
+                'txicmd'),
             ...blockCommand('ifdocbook', 'Begin text that will appear only in DocBook format'),
             ...blockCommand('ifhtml', 'Begin text that will appear only in HTML format'),
             ...blockCommand('ifinfo', 'Begin text that will appear only in Info format'),
@@ -217,6 +223,21 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             command('insertcopying', 'Insert previously defined @copying text'),
             command('item', 'Indicate the beginning of a marked paragraph, or the beginning of the text of a ' +
                 'first column entry for a table'),
+            ...blockCommand('itemize', 'Begin an unordered list', 'mark-generating-character-or-command'),
+            command('itemx', 'Like @item but do not generate extra vertical space above the item text'),
+            ...braceCommand('kbd', 'Indicate characters of input to be typed by users', 1, 'keyboard-characters'),
+            ...lineCommandEnum('kbdinputstyle', 'Specify when @kbd should use a font distinct from @code',
+                'code', 'distinct', 'example'),
+            ...braceCommand('key', 'Indicate the name of a key on a keyboard', 1, 'key-name'),
+            ...lineCommand('kindex', 'Add entry to the index of keys', 'entry'),
+            command('L', 'Generate the uppercase Polish suppressed-L letter, "Ł"', { hasEmptyArguments: true }),
+            command('l', 'Generate the lowercase Polish suppressed-L letter, "ł"', { hasEmptyArguments: true }),
+            command('LaTeX', 'Generate the LaTeX logo', { hasEmptyArguments: true }),
+            command('leq', 'Generate a less-than-or-equal sign, "≤"', { hasEmptyArguments: true }),
+            ...blockCommand('lisp', 'Begin an example of Lisp code'),
+            command('listoffloats', 'Produce a table-of-contents-like listing of floats'),
+            command('lowersections', 'Change subsequent chapters to sections, sections to subsections'),
+            ...blockCommand('macro', 'Define a new Texinfo command', 'macroname', 'params'),
 
             ...lineCommand('setfilename', 'Provide a name for the output files', 'info-file-name'),
             ...lineCommand('settitle', 'Specify the title for page headers', 'title'),
@@ -294,9 +315,10 @@ function command(name: string, detail: string, extraArgs?: {
  * 
  * @param name
  * @param detail
+ * @param args
  */
-function blockCommand(name: string, detail: string) {
-    return [blockSnippet(name, detail), command(name, detail, { snippet: true })];
+function blockCommand(name: string, detail: string, ...args: string[]) {
+    return [blockSnippet(name, detail, ...args), command(name, detail, { snippet: true })];
 }
 
 /**
@@ -304,6 +326,7 @@ function blockCommand(name: string, detail: string) {
  * 
  * @param name
  * @param detail
+ * @param args
  */
 function braceCommand(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
     return [braceCommandSnippet(name, detail, numArgsRequired, ...args), command(name, detail, { snippet: true })];
@@ -359,6 +382,20 @@ function lineCommandEnum(name: string, detail: string, ...items: string[]) {
 }
 
 /**
+ * Build the completion items for heading/footing commands.
+ * 
+ * @param name 
+ * @param detail 
+ */
+function headingFootingCommand(name: string, detail: string) {
+    return [
+        snippet(name, name, detail, 0, `@${name} left @| center @| right`,
+            name + ' ${1:left} @| ${2:center} @| ${3:right}'),
+        command(name, detail, { snippet: true }),
+    ];
+}
+
+/**
  * Build the completion item for a snippet of a brace command.
  * 
  * @param name The command name.
@@ -383,8 +420,8 @@ function braceCommandSnippet(name: string, detail: string, numArgsRequired: numb
  * @param args Argument names.
  */
 function lineCommandSnippet(name: string, detail: string, ...args: string[]) {
-    const argsIndexed = args.map((arg, idx) => `\${${idx + 1}:${arg}}`);
-    return snippet(name, name, detail, 0, `@${name} ${args.join(' ')}`, `${name} ${argsIndexed.join(' ')}`);
+    const argsIndexed = args.map((arg, idx) => `\${${idx + 1}:${arg}}`).join(' ');
+    return snippet(name, name, detail, 0, `@${name} ${args.join(' ')}`, `${name} ${argsIndexed}`);
 }
 
 /**
@@ -393,8 +430,10 @@ function lineCommandSnippet(name: string, detail: string, ...args: string[]) {
  * @param name The snippet name.
  * @param detail The snippet description.
  */
-function blockSnippet(name: string, detail: string) {
-    return snippet(name, name, detail, 0, `@${name}\n\n@end ${name}`, `${name}\n$1\n@end ${name}`);
+function blockSnippet(name: string, detail: string, ...args: string[]) {
+    const argsIndexed = args.map((arg, idx) => `\${${idx + 1}:${arg}}`).join(' ');
+    return snippet(name, name, detail, 0, `@${name} ${args.join(' ')}\n\n@end ${name}`,
+        `${name} ${argsIndexed}\n$${args.length + 1}\n@end ${name}`);
 }
 
 /**
