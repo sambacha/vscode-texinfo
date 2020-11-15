@@ -125,6 +125,8 @@ export default class PreviewContext {
             "switch (message.command) {" +
                 "case 'goto':" +
                     "window.location.hash = message.value;" +
+                    // We may want to scroll to the same node again.
+                    "history.pushState('', '', window.location.pathname);" +
                     "break;" +
             "}" +
         "})";
