@@ -3,7 +3,7 @@
     "displayName": "Texinfo Language Support",
     "description": "Provides basic editing experience for Texinfo documents, including syntax highlighting, code completion, HTML preview, etc.",
     "publisher": "cismonx",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "author": {
         "name": "CismonX",
         "email": "admin@cismon.net",
@@ -16,21 +16,21 @@
     },
     "icon": "assets/texinfo.png",
     "devDependencies": {
-        "@types/node": "^14.14.7",
+        "@types/node": "^14.14.10",
         "@types/terser-webpack-plugin": "^5.0.2",
         "@types/vscode": "~1.40.0",
         "@types/webpack": "^4.41.25",
-        "@typescript-eslint/eslint-plugin": "^4.7.0",
-        "@typescript-eslint/parser": "^4.7.0",
+        "@typescript-eslint/eslint-plugin": "^4.8.2",
+        "@typescript-eslint/parser": "^4.8.2",
         "cson": "^7.20.0",
-        "eslint": "^7.13.0",
+        "eslint": "^7.14.0",
         "json": "^10.0.0",
         "language-texinfo": "^1.0.0",
         "node-html-parser": "^2.0.0",
         "ts-loader": "^8.0.11",
         "ts-node": "^9.0.0",
-        "typescript": "^4.0.5",
-        "webpack": "^5.4.0",
+        "typescript": "^4.1.2",
+        "webpack": "^5.9.0",
         "webpack-cli": "^4.2.0"
     },
     "scripts": {
@@ -178,7 +178,7 @@
                 "texinfo.preview.displayImage": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Whether to display images in in the preview.\n\nIf image display is not needed, turn off this option to improve preview performance."
+                    "markdownDescription": "Display images in in preview.\n\nIf image display is not needed, turn off this option to improve preview performance."
                 }
             }
         },

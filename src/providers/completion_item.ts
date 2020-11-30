@@ -73,7 +73,7 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             command('click', 'Represent a single "click" in a GUI', { hasEmptyBrace: true }),
             ...braceCommand('clicksequence', 'Represent a sequence of clicks in a GUI', 1, 'actions'),
             ...lineCommand('clickstyle', 'Execute command on each @click', '@command'),
-            ...braceCommand('code', 'Indicate text which is a piece of code', 0, 'sample-code'),
+            ...braceCommand('code', 'Indicate text which is a piece of code', 1, 'sample-code'),
             ...lineCommandEnum('codequotebacktick', 'Control output of "`" in code examples', 'on', 'off'),
             ...lineCommandEnum('codequoteundirected', 'Control output of "\'" in code examples', 'on', 'off'),
             command('comma', 'Insert a comma character, ","', { hasEmptyBrace: true }),
