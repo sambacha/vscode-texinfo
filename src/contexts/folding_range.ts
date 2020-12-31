@@ -154,7 +154,7 @@ export default class FoldingRangeContext {
         // Node identifier.
         if (result[1] !== undefined) {
             this.nodes.push(new vscode.CodeLens(lineNumToRange(lineNum), {
-                title: '$(search-goto-file) Goto node in preview',
+                title: '$(go-to-file) Goto node in preview',
                 command: 'texinfo.preview.goto',
                 arguments: [this.document, result[5]],
             }));
