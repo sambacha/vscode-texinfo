@@ -3,7 +3,7 @@
     "displayName": "Texinfo Language Support",
     "description": "Provides basic editing experience for Texinfo documents, including syntax highlighting, code completion, HTML preview, etc.",
     "publisher": "cismonx",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": {
         "name": "CismonX",
         "email": "admin@cismon.net",
