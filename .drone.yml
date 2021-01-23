@@ -1,0 +1,9 @@
+kind: pipeline
+type: docker
+name: default
+steps:
+  - name: build
+    image: node:14.15.4
+    commands:
+      - npm ci
+      - npm run vscode:prepublish

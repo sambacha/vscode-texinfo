@@ -12,7 +12,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/texinfo-lang/vscode-texinfo"
+        "url": "https://git.cismon.net/CismonX/vscode-texinfo"
     },
     "icon": "assets/texinfo.png",
     "devDependencies": {
