@@ -120,7 +120,7 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...lineCommandX('defun', 'Format a description for a function', 'function-name', 'arguments'),
             ...lineCommandX('defvar', 'Format a description for a variable', 'variable-name'),
             ...lineCommandX('defvr', 'Format a description for any kind of variable', 'category', 'name'),
-            command('detailmenu', 'Mark the (optional) detailed node listing in a master menu'),
+            ...blockCommand('detailmenu', 'Mark the (optional) detailed node listing in a master menu'),
             ...braceCommand('dfn', 'Indicate the introductory or defining use of a term', 1, 'term'),
             command('DH', 'Generate the uppercase Icelandic letter eth, "Ð", ð', { hasEmptyBrace: true }),
             command('dh', 'Generate the lower Icelandic letter eth, "ð"', { hasEmptyBrace: true }),
