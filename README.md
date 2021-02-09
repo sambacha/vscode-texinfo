@@ -1,6 +1,6 @@
 # vscode-texinfo
 
-[![Build Status](https://drone.cismon.net/api/badges/CismonX/vscode-texinfo/status.svg)](https://drone.cismon.net/CismonX/vscode-texinfo)
+[![Build Status](https://shields.io/drone/build/CismonX/vscode-texinfo?server=https%3A%2F%2Fdrone.cismon.net)](https://drone.cismon.net/CismonX/vscode-texinfo)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Texinfo language support for Visual Studio Code.
