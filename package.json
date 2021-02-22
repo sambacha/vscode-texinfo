@@ -179,6 +179,11 @@
                     "type": "boolean",
                     "default": false,
                     "markdownDescription": "Display images in in preview.\n\nIf image display is not needed, turn off this option to improve preview performance."
+                },
+                "texinfo.preview.customCSS": {
+                    "type": "string",
+                    "default": "",
+                    "markdownDescription": "URI of custom CSS for preview.\n\nA good example is https://www.gnu.org/software/gnulib/manual.css"
                 }
             }
         },

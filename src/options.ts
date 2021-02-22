@@ -64,6 +64,10 @@ export default class Options implements vscode.Disposable {
         return Options.instance.getBoolean('preview.displayImage');
     }
 
+    static get customCSS() {
+        return Options.instance.getString('preview.customCSS');
+    }
+
     static clear() {
         Options.singleton = undefined;
     }

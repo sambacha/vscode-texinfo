@@ -5,6 +5,8 @@
  * @license MIT
  */
 
+import * as vscode from 'vscode';
+import Logger from '../logger';
 import Options from '../options';
 import DOM from './dom';
 import { exec } from './misc';
@@ -20,6 +22,25 @@ export default class Converter {
      */
     private readonly options = ['-o', '-', '--no-split', '--html'];
 
+    private includeCustomCSS(cssFileURI: string) {
+        try {
+            const uri = vscode.Uri.parse(cssFileURI, true);
+            switch (uri.scheme) {
+                case 'file':
+                    this.options.push(`--css-include=${uri.path}`);
+                    break;
+                case 'http':
+                case 'https':
+                    this.options.push(`--css-ref=${uri.toString()}`);
+                    break;
+                default:
+                    throw URIError;
+            }
+        } catch (e) {
+            Logger.log(`Cannot load custom CSS. Invalid URI: '${cssFileURI}'`);
+        }
+    }
+
     constructor(
         private readonly path: string,
         private readonly imgTransformer?: Operator<string>,
@@ -29,6 +50,7 @@ export default class Converter {
         Options.force && this.options.push('--force');
         Options.noValidation && this.options.push('--no-validate');
         Options.noWarnings && this.options.push('--no-warn');
+        Options.customCSS && this.includeCustomCSS(Options.customCSS);
         this.options.push(`--error-limit=${Options.errorLimit}`);
     }
 
