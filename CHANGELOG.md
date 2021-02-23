@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.4 - 02/23/2021
+
+* Support loading custom CSS for HTML preview
+  * Configure with `texinfo.preview.customCSS`
+* Update dependencies
+  * Not updating `node-html-parser` to v3.0+, as it bloats the webpack-ed code significantly :(
+
 ## v0.1.3 - 02/09/2021
 
 * Fix completion of block command `@detailmenu`.

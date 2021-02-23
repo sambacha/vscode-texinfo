@@ -13,6 +13,7 @@ Texinfo language support for Visual Studio Code.
   * Completion and code snippets for most @\-commands.
 * **Preview**
   * Display HTML preview in a webview.
+  * Support loading custom CSS for preview.
   * Texinfo to HTML conversion is provided by [GNU Texinfo](https://www.gnu.org/software/texinfo).
 * **Folding**
   * Fold on nodes, block commands and multiline comments.
@@ -54,6 +55,10 @@ See `File -> Preferences -> Settings -> Extensions -> Texinfo` for details. The 
 * If syntax highlighting is not satisfactory, try another color theme (e.g. Solarized Light/Dark, Monokai) where keyword/operator colors are distinct.
 * Preview content is updated on document save rather than document change, as Texinfo documents tend to be rather large, and incremental conversion is not yet supported.
 * For macOS users: Preinstalled GNU Texinfo distribution is very old. Use a latest one instead. This can be easily done by `brew install texinfo` and change extension setting `texinfo.makeinfo` value.
+
+## Contributing
+
+Send an email to [bug-report@cismon.net](mailto:bug-report@cismon.net) to report bugs or submit patches.
 
 ## Future Plans
 
