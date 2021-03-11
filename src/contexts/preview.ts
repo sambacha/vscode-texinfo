@@ -81,8 +81,8 @@ export default class PreviewContext {
         this.pendingUpdate = false;
         // Inform the user that the preview is updating if `makeinfo` takes too long.
         setTimeout(() => this.updating && this.updateTitle(), 500);
-        const { data, error } = await new Converter(this.document.fileName, this.imageTransformer, this.script)
-            .convert();
+        const { data, error } = await new Converter(this.document.fileName)
+            .convertToHtml(this.imageTransformer, this.script);
         if (error) {
             Logger.log(error);
             Diagnosis.update(this.document, error);

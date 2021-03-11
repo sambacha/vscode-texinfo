@@ -13,25 +13,20 @@ import { exec } from './misc';
 import { Operator } from './types';
 
 /**
- * Texinfo to HTML converter.
+ * Converter which converts file from Texinfo to other formats.
  */
 export default class Converter {
 
-    /**
-     * The options to be passed to the `makeinfo` command.
-     */
-    private readonly options = ['-o', '-', '--no-split', '--html'];
-
-    private includeCustomCSS(cssFileURI: string) {
+    private includeCustomCSS(cssFileURI: string, options: string[]) {
         try {
             const uri = vscode.Uri.parse(cssFileURI, true);
             switch (uri.scheme) {
                 case 'file':
-                    this.options.push(`--css-include=${uri.path}`);
+                    options.push(`--css-include=${uri.path}`);
                     break;
                 case 'http':
                 case 'https':
-                    this.options.push(`--css-ref=${uri.toString()}`);
+                    options.push(`--css-ref=${uri.toString()}`);
                     break;
                 default:
                     throw URIError;
@@ -41,26 +36,24 @@ export default class Converter {
         }
     }
 
-    constructor(
-        private readonly path: string,
-        private readonly imgTransformer?: Operator<string>,
-        private readonly insertScript?: string,
-    ) {
-        Options.noHeaders && this.options.push('--no-headers');
-        Options.force && this.options.push('--force');
-        Options.noValidation && this.options.push('--no-validate');
-        Options.noWarnings && this.options.push('--no-warn');
-        Options.customCSS && this.includeCustomCSS(Options.customCSS);
-        this.options.push(`--error-limit=${Options.errorLimit}`);
-    }
+    constructor(private readonly path: string) {}
 
-    async convert() {
-        const result = await exec(Options.makeinfo, this.options.concat(this.path), Options.maxSize);
+    async convertToHtml(
+        imgTransformer?: Operator<string>,
+        insertScript?: string,
+    ) {
+        const options = ['-o', '-', '--no-split', '--html', `--error-limit=${Options.errorLimit}`];
+        Options.noHeaders && options.push('--no-headers');
+        Options.force && options.push('--force');
+        Options.noValidation && options.push('--no-validate');
+        Options.noWarnings && options.push('--no-warn');
+        Options.customCSS && this.includeCustomCSS(Options.customCSS, options);
+        const result = await exec(Options.makeinfo, options.concat(this.path), Options.maxSize);
         if (result.data !== undefined) {
             // No worry about performance here, as the DOM is lazily initialized.
             const dom = new DOM(result.data);
-            this.imgTransformer && dom.transformImageUri(this.imgTransformer);
-            this.insertScript && dom.insertScript(this.insertScript);
+            imgTransformer && dom.transformImageUri(imgTransformer);
+            insertScript && dom.insertScript(insertScript);
             result.data = dom.outerHTML;
         }
         return result;
