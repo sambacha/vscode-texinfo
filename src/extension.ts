@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 import ContextMapping from './context_mapping';
 import Diagnosis from './diagnosis';
+import Indicator from './indicator';
 import Logger from './logger';
 import Options from './options';
 import PreviewContext from './contexts/preview';
@@ -18,7 +19,8 @@ import FoldingRangeProvider from './providers/folding_range';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
-        ContextMapping.instance, Diagnosis.instance, Logger.instance, Options.instance,
+        ContextMapping.instance, Diagnosis.instance, Indicator.instance, Logger.instance, Options.instance,
+        vscode.window.onDidChangeActiveTextEditor(Indicator.onTextEditorChange),
         vscode.workspace.onDidChangeTextDocument(ContextMapping.onDocumentUpdate),
         vscode.workspace.onDidSaveTextDocument(ContextMapping.onDocumentSave),
         vscode.workspace.onDidCloseTextDocument(ContextMapping.onDocumentClose),
