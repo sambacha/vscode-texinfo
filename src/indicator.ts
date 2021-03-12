@@ -15,6 +15,11 @@ export default class Indicator implements vscode.Disposable {
 
     private statusBarItem: vscode.StatusBarItem;
 
+    static async click() {
+        await Indicator.instance.updateStatus();
+        Indicator.instance.refresh(vscode.window.activeTextEditor);
+    }
+
     private refresh(editor?: vscode.TextEditor) {
         if (editor === undefined || editor.document.languageId != 'texinfo') {
             this.statusBarItem.hide();
@@ -23,7 +28,7 @@ export default class Indicator implements vscode.Disposable {
         }
     }
 
-    public async updateStatus() {
+    async updateStatus() {
         const output = await exec(Options.makeinfo, ['--version'], Options.maxSize);
         const result = output.data?.match(/\(GNU texinfo\) (.*)\n/);
         let tooltip = '', icon: string, version = '';
@@ -31,8 +36,7 @@ export default class Indicator implements vscode.Disposable {
             version = result[1];
             if (!isNaN(+version) && +version < 6.7) {
                 icon = '$(warning)';
-                tooltip = `GNU Texinfo (${Options.makeinfo}) is outdated.\n` +
-                    'Please upgrade to the latest version (6.7).';
+                tooltip = `GNU Texinfo (${Options.makeinfo}) is outdated (${version} < 6.7).`;
             } else {
                 icon = '$(check)';
             }
@@ -42,9 +46,10 @@ export default class Indicator implements vscode.Disposable {
         }
         this.statusBarItem.text = `${icon} GNU Texinfo ${version}`;
         this.statusBarItem.tooltip = tooltip;
+        this.statusBarItem.command = 'texinfo.indicator.click';
     }
 
-    public static onTextEditorChange(editor?: vscode.TextEditor) {
+    static onTextEditorChange(editor?: vscode.TextEditor) {
         Indicator.instance.refresh(editor);
     }
 

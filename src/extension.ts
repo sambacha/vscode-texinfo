@@ -27,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidChangeConfiguration(Options.clear),
         vscode.commands.registerTextEditorCommand('texinfo.preview.show', PreviewContext.showPreview),
         vscode.commands.registerCommand('texinfo.preview.goto', PreviewContext.gotoPreview),
+        vscode.commands.registerCommand('texinfo.indicator.click', Indicator.click),
         vscode.languages.registerCodeLensProvider('texinfo', new CodeLensProvider()),
         vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(), '@'),
         vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider()),

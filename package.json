@@ -88,6 +88,10 @@
             {
                 "command": "texinfo.preview.goto",
                 "title": "Goto node in preview"
+            },
+            {
+                "command": "texinfo.indicator.click",
+                "title": "Refresh indicator status"
             }
         ],
         "menus": {
@@ -99,6 +103,11 @@
                 },
                 {
                     "command": "texinfo.preview.goto",
+                    "when": "false",
+                    "group": "navigation"
+                },
+                {
+                    "command": "texinfo.indicator.click",
                     "when": "false",
                     "group": "navigation"
                 }
