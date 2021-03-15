@@ -23,6 +23,20 @@ export default class FoldingRangeContext {
     private static readonly nodeFormat = RegExp('^@(?:(node)|(subsection|unnumberedsubsec|appendixsubsec|subheading)|' +
         '(section|unnumberedsec|appendixsec|heading)|(chapter|unnumbered|appendix|majorheading|chapheading)) (.*)$');
 
+    private foldingRanges?: FoldingRange[];
+
+    private nodes = <vscode.CodeLens[]>[];
+
+    private commentRange?: Range;
+
+    private headerStart?: number;
+
+    private closingChapter?: number;
+
+    private closingSection?: number;
+
+    private closingSubsection?: number;
+
     /**
      * Get VSCode folding ranges from the context.
      */
@@ -37,20 +51,6 @@ export default class FoldingRangeContext {
         this.foldingRanges ?? this.calculateFoldingRanges();
         return this.nodes;
     }
-
-    private foldingRanges?: FoldingRange[];
-
-    private nodes = <vscode.CodeLens[]>[];
-
-    private commentRange?: Range;
-
-    private headerStart?: number;
-
-    private closingChapter?: number;
-
-    private closingSection?: number;
-
-    private closingSubsection?: number;
 
     /**
      * Update folding range context based on document change event.
@@ -70,6 +70,8 @@ export default class FoldingRangeContext {
         }
         return false;
     }
+
+    constructor(private readonly document: vscode.TextDocument) {}
 
     /**
      * Calculate and update folding ranges for the document.
@@ -145,8 +147,6 @@ export default class FoldingRangeContext {
         }
         return true;
     }
-
-    constructor(private readonly document: vscode.TextDocument) {}
 
     private processNode(lineText: string, lineNum: number, lastLineNum: number) {
         const result = lineText.match(FoldingRangeContext.nodeFormat);

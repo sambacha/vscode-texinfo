@@ -38,10 +38,7 @@ export default class Converter {
 
     constructor(private readonly path: string) {}
 
-    async convertToHtml(
-        imgTransformer?: Operator<string>,
-        insertScript?: string,
-    ) {
+    async convertToHtml(imgTransformer?: Operator<string>, insertScript?: string) {
         const options = ['-o', '-', '--no-split', '--html', `--error-limit=${Options.errorLimit}`];
         Options.noHeaders && options.push('--no-headers');
         Options.force && options.push('--force');

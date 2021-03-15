@@ -29,12 +29,12 @@ export default class Logger implements vscode.Disposable {
 
     private outputChannel: vscode.OutputChannel;
 
+    private constructor() {
+        this.outputChannel = vscode.window.createOutputChannel('Texinfo');
+    }
+
     dispose() {
         Logger.instance.outputChannel.dispose();
         Logger.singleton = undefined;
-    }
-
-    private constructor() {
-        this.outputChannel = vscode.window.createOutputChannel('Texinfo');
     }
 }

@@ -9,16 +9,27 @@ import * as vscode from 'vscode';
 import Options from './options';
 import { exec } from './utils/misc';
 
+/**
+ * Shows whether GNU Texinfo is properly installed and configured.
+ */
 export default class Indicator implements vscode.Disposable {
 
     private static singleton?: Indicator;
-
-    private statusBarItem: vscode.StatusBarItem;
 
     static async click() {
         await Indicator.instance.updateStatus();
         Indicator.instance.refresh(vscode.window.activeTextEditor);
     }
+
+    static onTextEditorChange(editor?: vscode.TextEditor) {
+        Indicator.instance.refresh(editor);
+    }
+
+    static get instance() {
+        return this.singleton ??= new Indicator();
+    }
+
+    private statusBarItem: vscode.StatusBarItem;
 
     private refresh(editor?: vscode.TextEditor) {
         if (editor === undefined || editor.document.languageId != 'texinfo') {
@@ -28,7 +39,7 @@ export default class Indicator implements vscode.Disposable {
         }
     }
 
-    async updateStatus() {
+    private async updateStatus() {
         const output = await exec(Options.makeinfo, ['--version'], Options.maxSize);
         const result = output.data?.match(/\(GNU texinfo\) (.*)\n/);
         let tooltip = '', icon: string, version = '';
@@ -47,14 +58,6 @@ export default class Indicator implements vscode.Disposable {
         this.statusBarItem.text = `${icon} GNU Texinfo ${version}`;
         this.statusBarItem.tooltip = tooltip;
         this.statusBarItem.command = 'texinfo.indicator.click';
-    }
-
-    static onTextEditorChange(editor?: vscode.TextEditor) {
-        Indicator.instance.refresh(editor);
-    }
-
-    static get instance() {
-        return this.singleton ??= new Indicator();
     }
 
     private constructor() {

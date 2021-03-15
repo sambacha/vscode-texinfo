@@ -64,6 +64,30 @@ export default class PreviewContext {
      */
     private pendingUpdate = false;
 
+    private get imageTransformer(): Optional<Operator<string>> {
+        if (!Options.displayImage) return undefined;
+        const pathName = path.dirname(this.document.fileName);
+        return src => {
+            const srcUri = vscode.Uri.file(pathName + '/' + src);
+            // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
+            return this.panel.webview.asWebviewUri(srcUri).toString();
+        };
+    }
+
+    private get script() {
+        if (!Options.enableCodeLens) return undefined;
+        return "window.addEventListener('message', event => {" +
+            "const message = event.data;" +
+            "switch (message.command) {" +
+                "case 'goto':" +
+                    "window.location.hash = message.value;" +
+                    // We may want to scroll to the same node again.
+                    "history.pushState('', '', window.location.pathname);" +
+                    "break;" +
+            "}" +
+        "})";
+    }
+
     close() {
         this.disposables.forEach(event => event.dispose());
         this.panel.dispose();
@@ -106,30 +130,6 @@ export default class PreviewContext {
         this.disposables.push(this.panel.onDidDispose(() => this.close()));
         this.updateTitle();
         this.updateWebview();
-    }
-
-    private get imageTransformer(): Optional<Operator<string>> {
-        if (!Options.displayImage) return undefined;
-        const pathName = path.dirname(this.document.fileName);
-        return src => {
-            const srcUri = vscode.Uri.file(pathName + '/' + src);
-            // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
-            return this.panel.webview.asWebviewUri(srcUri).toString();
-        };
-    }
-
-    private get script() {
-        if (!Options.enableCodeLens) return undefined;
-        return "window.addEventListener('message', event => {" +
-            "const message = event.data;" +
-            "switch (message.command) {" +
-                "case 'goto':" +
-                    "window.location.hash = message.value;" +
-                    // We may want to scroll to the same node again.
-                    "history.pushState('', '', window.location.pathname);" +
-                    "break;" +
-            "}" +
-        "})";
     }
 
     private updateTitle() {

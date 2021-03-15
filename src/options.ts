@@ -74,10 +74,6 @@ export default class Options implements vscode.Disposable {
 
     private readonly configuration: vscode.WorkspaceConfiguration;
 
-    private constructor(section: string) {
-        this.configuration = vscode.workspace.getConfiguration(section);
-    }
-
     private getString(section: string) {
         return this.configuration.get(section, '');
     }
@@ -88,6 +84,10 @@ export default class Options implements vscode.Disposable {
 
     private getNumber(section: string) {
         return this.configuration.get(section, 0);
+    }
+
+    private constructor(section: string) {
+        this.configuration = vscode.workspace.getConfiguration(section);
     }
 
     dispose() {
