@@ -1,9 +1,10 @@
-.vscode/**
-src/**
-scripts/**
+**/*.map
+**/*.ts
+**/tsconfig.json
+.drone.yml
 .gitignore
 .gitattributes
 .travis.yml
-**/tsconfig.json
-**/*.map
-**/*.ts
+.vscode/**
+src/**
+scripts/**
