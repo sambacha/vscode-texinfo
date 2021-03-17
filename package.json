@@ -9,7 +9,7 @@
         "email": "admin@cismon.net",
         "url": "https://cismon.net"
     },
-    "license": "MIT",
+    "license": "GPL-3.0-or-later",
     "repository": {
         "type": "git",
         "url": "https://git.cismon.net/CismonX/vscode-texinfo"
