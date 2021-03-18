@@ -33,8 +33,13 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
     /**
      * Full list of completion items.
      * 
-     * Excerpted from the {@link https://www.gnu.org/software/texinfo/manual/texinfo GNU Texinfo manual},
-     * which is licensed under the GNU Free Documentation License.
+     * Note: Descriptions of completion items for @-commands are excerpted from the
+     * {@link https://www.gnu.org/software/texinfo/manual/texinfo GNU Texinfo manual},
+     * which is licensed under the GNU Free Documentation License, version 1.3.
+     * 
+     * According to GFDL, this usage is considered "aggregation with independent work",
+     * which means that GFDL applies to lines 48-398 of this file, while the remainder
+     * is under GPL like other source code files of the project.
      */
     private get values() {
         const enableSnippets = Options.enableSnippets;
