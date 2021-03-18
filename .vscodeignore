@@ -8,11 +8,14 @@
 
 **/*.map
 **/*.ts
-**/tsconfig.json
+**/*.vsce-pre-package-backup
 .drone.yml
 .gitignore
 .gitattributes
 .travis.yml
-.vscode/**
-src/**
-scripts/**
+.vscode/
+LICENSE_NOTICE.md
+node_modules/
+src/
+scripts/
+tsconfig.json

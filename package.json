@@ -35,6 +35,7 @@
     },
     "scripts": {
         "vscode:prepublish": "webpack --mode production",
+        "package": "sh ./scripts/package.sh",
         "build": "webpack --mode development",
         "prepare": "sh ./scripts/prepare.sh",
         "lint": "eslint --ext ts --fix src",
