@@ -15,10 +15,6 @@ file format restrictions.
 
 ```text
 assets/texinfo.png
-language-configuration.json
-package.json
-package-lock.json
-tsconfig.json
 ```
 
 They should be treated as if they each contains the following text:

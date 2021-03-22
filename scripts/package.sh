@@ -11,9 +11,9 @@ BACKUP_SUFFIX=vsce-pre-package-backup
 JSON_FILES=(package.json language-configuration.json)
 for file in ${JSON_FILES[@]}; do
     mv $file $file.$BACKUP_SUFFIX
-    json -j0 -f $file.$BACKUP_SUFFIX > $file
+    json5 -o $file $file.$BACKUP_SUFFIX
 done
-json -j0 -I -e 'delete this.eslintConfig; delete this.devDependencies;' -f package.json
+json -j0 -I -e 'delete this.eslintConfig; delete this.devDependencies; delete this._copyrightNotice' -f package.json
 vsce package --baseContentUrl=`json -f package.json repository.url`
 for file in ${JSON_FILES[@]}; do
     mv $file.$BACKUP_SUFFIX $file
