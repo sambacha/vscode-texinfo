@@ -11,8 +11,8 @@ type: docker
 name: default
 steps:
   - name: build
-    image: node:14.15.4
+    image: node:14.16
     commands:
       - npm -g install vsce
-      - npm ci
+      - npm --unsafe-perm ci
       - npm run package
