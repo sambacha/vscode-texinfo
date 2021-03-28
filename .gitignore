@@ -8,5 +8,6 @@
 
 *.vsix
 .vscode/
+doc/version.texi
 node_modules/
 out/

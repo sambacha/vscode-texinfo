@@ -1,0 +1,75 @@
+\input texinfo  @c -*-texinfo-*-
+
+@c %**start of header
+@setfilename vscode-texinfo.info
+@include version.texi
+@settitle vscode-texinfo v@value{VERSION} User Manual
+@c %**end of header
+
+@copying
+This manual is for vscode-texinfo, an extension of Visual Studio Code.
+
+Copyright @copyright{} 2021  CismonX <admin@@cismon.net>
+
+@quotation
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty, provided the copyright notice and
+this notice are preserved. This file is offered as-is, without any warranty.
+@end quotation
+@end copying
+
+@titlepage
+@title vscode-texinfo
+@subtitle Texinfo Support for Visual Studio Code, version @value{VERSION}
+@author CismonX
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+
+@end titlepage
+
+
+@summarycontents
+@contents
+
+@ifnottex
+@node Top
+@top vscode-texinfo
+
+This manual is for vscode-texinfo, an extension of Visual Studio Code.
+
+Copyright @copyright{} 2021  CismonX <admin@@cismon.net>
+
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty, provided the copyright notice and
+this notice are preserved. This file is offered as-is, without any warranty.
+
+@end ifnottex
+
+
+@menu
+* Overview::        Brief overview of vscode-texinfo.
+* Installation::    Install vscode-texinfo.
+* Basic Usage::     Basic features of vscode-texinfo.
+* Advanced Usage::  Advanced features of vscode-texinfo.
+@end menu
+
+
+@node Overview
+@chapter Overview
+
+
+@node Installation
+@chapter Installation
+
+
+@node Basic Usage
+@chapter Basic Usage
+
+
+@node Advanced Usage
+@chapter Advanced Usage
+
+
+@bye
