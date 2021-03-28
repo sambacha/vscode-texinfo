@@ -13,8 +13,8 @@ for file in ${JSON_FILES[@]}; do
     mv $file $file.$BACKUP_SUFFIX
     json5 -o $file $file.$BACKUP_SUFFIX
 done
-json -j0 -I -e 'delete this.eslintConfig; delete this.devDependencies; delete this._copyrightNotice' -f package.json
-vsce package --baseContentUrl=`json -f package.json repository.url`
+json -j0 -I -e "$(cat ./scripts/package-json-cleanup.js)" -f package.json
+vsce package --baseContentUrl=$(json -f package.json repository.url)
 for file in ${JSON_FILES[@]}; do
     mv $file.$BACKUP_SUFFIX $file
 done
