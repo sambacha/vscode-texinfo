@@ -16,9 +16,10 @@
         "url": "https://cismon.net"
     },
     "license": "GPL-3.0-or-later",
+    "homepage": "https://sv.gnu.org/p/vscode-texinfo",
     "repository": {
         "type": "git",
-        "url": "https://git.cismon.net/CismonX/vscode-texinfo"
+        "url": "https://git.sv.gnu.org/cgit/vscode-texinfo.git"
     },
     "icon": "assets/texinfo.png",
     "devDependencies": {
