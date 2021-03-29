@@ -157,12 +157,52 @@ Finally, build the project:
 npm run package
 @end example
 
-If the operation is successful, a @code{texinfo-@{VERSION@}.vsix} will be
-generated under the root directory of the project.
+If the operation is successful, a @code{texinfo-@{VERSION@}.vsix} file will be
+generated under the root directory of the repository.
 
 
 @node Basic Usage
 @chapter Basic Usage
+
+There are several basic features of vscode-texinfo which can be used
+out-of-the-box.
+
+@menu
+* Syntax Highlighting::    Syntax highlighting for Texinfo documents.
+* Code Completion::        Show completion list for @@-commands.
+* Block Folding::          Collapse or expand code blocks.
+* Breadcrumb Navigation::  Navigate between different contexts.
+@end menu
+
+
+@node Syntax Highlighting
+@section Syntax Highlighting
+
+The syntax highlighting solution is provided by
+@url{https://github.com/Alhadis/language-texinfo, this TextMate Grammar}, which
+is originally made for Atom, and also used in GitHub Linguist.
+
+To enable Texinfo syntax highlighting when editing a file, it should be
+recognized as a Texinfo document by Visual Studio Code. For file names with
+suffix @code{.texi}, @code{.txi} or @code{.texinfo}, this process should be
+automatic. If not, find and click the status bar item with ``Select Language
+Mode'' tooltip, then choose ``Texinfo'' in the menu which just popped up.
+
+If syntax highlighting does not look satisfactory, try another color theme
+where keyword/operator colors are distinct. Some good examples are Solarized
+Light/Dark, Monokai, etc.
+
+
+@node Code Completion
+@section Code Completion
+
+
+@node Block Folding
+@section Block Folding
+
+
+@node Breadcrumb Navigation
+@section Breadcrumb Navigation
 
 
 @node Advanced Usage

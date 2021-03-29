@@ -20,7 +20,7 @@ Major features include:
 * Syntax Highlighting
 * Code Completion
 * HTML Preview
-* Folding & Breadcrumb Navigation
+* Block Folding & Breadcrumb Navigation
 * Diagnostics
 
 ## Documentation
