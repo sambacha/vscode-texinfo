@@ -19,7 +19,7 @@
     "homepage": "https://sv.gnu.org/p/vscode-texinfo",
     "repository": {
         "type": "git",
-        "url": "https://git.sv.gnu.org/cgit/vscode-texinfo.git"
+        "url": "https://git.sv.gnu.org/cgit/vscode-texinfo.git/tree"
     },
     "icon": "assets/texinfo.png",
     "devDependencies": {
