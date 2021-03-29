@@ -68,8 +68,8 @@ One of the main reasons is the lack of editor support. While Emacs does offer a
 developers.
 
 We believe that Texinfo deserves more users, for it is an excellent format for
-writing software manuals, as well as other technical materials. We choose
-Visual Studio Code, one of the most popular source code editors as of 2020, and
+writing software manuals, as well as other technical materials. We chose Visual
+Studio Code, one of the most popular source code editors as of 2020, and
 developed this very extension, vscode-texinfo, which provides some useful
 features for Visual Studio Code in regard to the Texinfo format, in the hope
 that more developers can benefit from it.
@@ -113,20 +113,52 @@ or the proprietary Visual Studio Marketplace. Click the ``Extensions'' tab on
 Visual Studio Code's sidebar, type ``texinfo'' and you can find and install
 this extension.
 
-You can also download the @code{.vsix} file of a release, or build it from
-source, and then manually install it to Visual Studio Code (via command
-palette: @code{Extensions: Install from VSIX...}).
+You can also download the @code{.vsix} file, and manually install it to Visual
+Studio Code (via command palette: @code{Extensions: Install from VSIX...}).
 
-Before you manually install a @code{.vsix} file, you may check whether the file
-matches the signature:
+Before you manually install a @code{.vsix} file downloaded from a third party,
+you should check whether the file matches the signature:
 
 @example
 wget -O cismonx.gpg.asc "https://sv.gnu.org/people/viewgpg.php?user_id=214244"
 gpg --import cismonx.gpg.asc
 
-wget https://download.sv.gnu.org/releases/vscode-texinfo/texinfo-0.2.0.vsix.sig.asc
+wget https://dl.sv.gnu.org/releases/vscode-texinfo/texinfo-0.2.0.vsix.sig.asc
 gpg --verify texinfo-0.2.0.vsix.sig.asc texinfo-0.2.0.vsix
 @end example
+
+@menu
+* Build from Source:: Build vscode-texinfo from source code.
+@end menu
+
+
+@node Build from Source
+@section Build from Source
+
+You can generate the @code{.vsix} file from the source code of vscode-texinfo.
+
+First, clone the source code repository:
+
+@example
+git clone https://git.sv.gnu.org/git/vscode-texinfo.git
+cd vscode-texinfo
+@end example
+
+Then, install dependencies via Node Package Manager:
+
+@example
+npm -g install vsce
+npm ci
+@end example
+
+Finally, build the project:
+
+@example
+npm run package
+@end example
+
+If the operation is successful, a @code{texinfo-@{VERSION@}.vsix} will be
+generated under the root directory of the project.
 
 
 @node Basic Usage
