@@ -130,7 +130,7 @@
         },
         "keybindings": [
             {
-                "command": "texinfo.preview.html.show",
+                "command": "texinfo.preview.show",
                 "key": "ctrl+k v",
                 "mac": "cmd+k v",
                 "when": "editorLangId == texinfo"
