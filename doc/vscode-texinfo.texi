@@ -59,9 +59,74 @@ this notice are preserved. This file is offered as-is, without any warranty.
 @node Overview
 @chapter Overview
 
+Texinfo is a typesetting language designed for writing software manuals. It's
+the official documention format for GNU projects, but not as popular in modern
+non-GNU free software projects.
+
+One of the main reasons is the lack of editor support. While Emacs does offer a
+``texinfo-mode'', however, Emacs is not widely used among average software
+developers.
+
+We believe that Texinfo deserves more users, for it is an excellent format for
+writing software manuals, as well as other technical materials. We choose
+Visual Studio Code, one of the most popular source code editors as of 2020, and
+developed this very extension, vscode-texinfo, which provides some useful
+features for Visual Studio Code in regard to the Texinfo format, in the hope
+that more developers can benefit from it.
+
+vscode-texinfo is free software. You can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+@menu
+* Contributing::  Contribute to vscode-texinfo.
+@end menu
+
+
+@node Contributing
+@section Contributing
+
+This project is hosted on @url{https://sv.gnu.org/p/vscode-texinfo, Savannah},
+where contribution takes place. Any kind of contribution is welcome, including
+bug reports, patches, and general discussions regarding the usage of
+vscode-texinfo.
+
+Before you submit something, please make sure that you have read this manual,
+and no one else has posted the same content.
+
 
 @node Installation
 @chapter Installation
+
+vscode-texinfo cannot be run standalone. It can only be used as an extension of
+Visual Studio Code.
+
+It is recommended to use a free distribution of Visual Studio Code,
+@url{https://github.com/VSCodium/vscodium, VSCodium}, instead of the official
+binary release, which is proprietary. You can also build it from
+@url{https://github.com/microsoft/vscode, source} yourself.
+
+The easiest way to install vscode-texinfo is from the extension marketplace,
+either @url{https://open-vsx.org/extension/CismonX/texinfo, Open VSX Registry},
+or the proprietary Visual Studio Marketplace. Click the ``Extensions'' tab on
+Visual Studio Code's sidebar, type ``texinfo'' and you can find and install
+this extension.
+
+You can also download the @code{.vsix} file of a release, or build it from
+source, and then manually install it to Visual Studio Code (via command
+palette: @code{Extensions: Install from VSIX...}).
+
+Before you manually install a @code{.vsix} file, you may check whether the file
+matches the signature:
+
+@example
+wget -O cismonx.gpg.asc "https://sv.gnu.org/people/viewgpg.php?user_id=214244"
+gpg --import cismonx.gpg.asc
+
+wget https://download.sv.gnu.org/releases/vscode-texinfo/texinfo-0.2.0.vsix.sig.asc
+gpg --verify texinfo-0.2.0.vsix.sig.asc texinfo-0.2.0.vsix
+@end example
 
 
 @node Basic Usage
