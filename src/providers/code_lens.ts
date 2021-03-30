@@ -21,6 +21,7 @@
 
 import * as vscode from 'vscode';
 import ContextMapping from '../context_mapping';
+import Indicator from '../indicator';
 import Options from '../options';
 
 /**
@@ -30,6 +31,7 @@ export default class CodeLensProvider implements vscode.CodeLensProvider {
     
     provideCodeLenses(document: vscode.TextDocument) {
         if (!Options.enableCodeLens) return undefined;
+        if (!Indicator.instance.canDisplayPreview) return undefined;
         return ContextMapping.getDocumentContext(document).foldingRange.nodeValues;
     }
 }

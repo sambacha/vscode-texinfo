@@ -45,6 +45,12 @@ export default class Indicator implements vscode.Disposable {
 
     private statusBarItem: vscode.StatusBarItem;
 
+    private gnuTexinfoAvailable = false;
+
+    get canDisplayPreview() {
+        return this.gnuTexinfoAvailable;
+    }
+
     private refresh(editor?: vscode.TextEditor) {
         if (editor === undefined || editor.document.languageId != 'texinfo') {
             this.statusBarItem.hide();
@@ -65,9 +71,11 @@ export default class Indicator implements vscode.Disposable {
             } else {
                 icon = '$(check)';
             }
+            this.gnuTexinfoAvailable = true;
         } else {
             icon = '$(close)';
             tooltip = `GNU Texinfo (${Options.makeinfo}) is not correctly installed or configured.`;
+            this.gnuTexinfoAvailable = false;
         }
         this.statusBarItem.text = `${icon} GNU Texinfo ${version}`;
         this.statusBarItem.tooltip = tooltip;
