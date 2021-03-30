@@ -110,8 +110,8 @@ binary release, which is proprietary. You can also build it from
 The easiest way to install vscode-texinfo is from the extension marketplace,
 either @url{https://open-vsx.org/extension/CismonX/texinfo, Open VSX Registry},
 or the proprietary Visual Studio Marketplace. Click the ``Extensions'' tab on
-Visual Studio Code's sidebar, type ``texinfo'' and you can find and install
-this extension.
+Visual Studio Code's sidebar, type ``texinfo'' and you can find and install this
+extension.
 
 You can also download the @code{.vsix} file, and manually install it to Visual
 Studio Code (via command palette: @code{Extensions: Install from VSIX...}).
@@ -182,13 +182,45 @@ suffix @code{.texi}, @code{.txi} or @code{.texinfo}, this process should be
 automatic. If not, find and click the status bar item with ``Select Language
 Mode'' tooltip, then choose ``Texinfo'' in the menu which just popped up.
 
-If syntax highlighting does not look satisfactory, try another color theme
-where keyword/operator colors are distinct. Some good examples are Solarized
+If syntax highlighting does not look satisfactory, try another color theme where
+keyword/operator colors are distinct. Some good examples are Solarized
 Light/Dark, Monokai, etc.
 
 
 @node Code Completion
 @section Code Completion
+
+When typing a @@-command in a Texinfo document, vscode-texinfo can display a
+completion list so that you don't have to type the entire command.
+
+There are two kinds of completion items: The command itself, and code snippets
+related to that command.
+
+A typical example of code snippet is the completion of a block command, say,
+@code{@@example}. When applying completion, the code looks like:
+
+@example
+@@example
+
+@@end example
+@end example
+
+The cursor falls between @code{@@example} and @code{@@end example}, where you
+can finish the content of the @code{@@example} block. After that, press Tab to
+bail out of the block.
+
+Code snippet completion can be disabled by switching off the configuration item
+@code{texinfo.completion.enableSnippets}.
+
+When code snippet completion is enabled, completion of commands which relate to
+code snippets is disabled by default. You can re-enable it on by switching off
+@code{texinfo.completion.hideSnippetCommands}.
+
+@quotation Note
+Code completion provided by vscode-texinfo does not recognize much of Texinfo's
+semantics, and completion may appear in contexts where it should not exist. This
+is a known bug (which cannot be fixed in near future).
+@end quotation
 
 
 @node Block Folding
