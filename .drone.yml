@@ -13,6 +13,5 @@ steps:
   - name: build
     image: node:14.16
     commands:
-      - npm -g install vsce
       - npm --unsafe-perm ci
       - npm run package

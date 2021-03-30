@@ -144,16 +144,10 @@ git clone https://git.sv.gnu.org/git/vscode-texinfo.git
 cd vscode-texinfo
 @end example
 
-Then, install dependencies via Node Package Manager:
+Then, install dependencies via Node Package Manager, and build the project:
 
 @example
-npm -g install vsce
 npm ci
-@end example
-
-Finally, build the project:
-
-@example
 npm run package
 @end example
 
