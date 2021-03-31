@@ -226,6 +226,28 @@ is a known bug (which cannot be fixed in near future).
 @node Block Folding
 @section Block Folding
 
+Block folding allows you to collapse a block of code in a Texinfo document, so
+that you can navigate through the remaining part of the document more easily.
+
+Three types of code blocks can be recognized by vscode-texinfo:
+
+@itemize @bullet
+@item Block commands
+@item Chapters, sections and subsections
+@item Consecutive lines of comments
+@end itemize
+
+While editing a Texinfo document, you can collape or expand a code block either
+by clicking the folding icon to the left of the first line of the block, or by
+invoking a corresponding command. See the
+@url{https://code.visualstudio.com/docs/editor/codebasics#_folding, Visual
+Studio Code User Guide} for details.
+
+@quotation Note
+Due to performance issues, the block hierarchy of a Texinfo document is
+re-calculated only when total line count changes, or when the document is saved.
+@end quotation
+
 
 @node Breadcrumb Navigation
 @section Breadcrumb Navigation
