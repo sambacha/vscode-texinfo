@@ -51,6 +51,8 @@ export default class FoldingRangeContext {
 
     private closingSubsection?: number;
 
+    private contentMayChange = true;
+
     /**
      * Get VSCode folding ranges from the context.
      */
@@ -72,6 +74,7 @@ export default class FoldingRangeContext {
      * @param events Events describing the changes in the document.
      */
     update(events: readonly vscode.TextDocumentContentChangeEvent[]) {
+        this.contentMayChange = true;
         if (this.foldingRanges === undefined) return false;
         for (const event of events) {
             const updatedLines = event.text.split(this.document.eol === vscode.EndOfLine.LF ? '\n' : '\r\n').length;
@@ -85,6 +88,11 @@ export default class FoldingRangeContext {
         return false;
     }
 
+    clear() {
+        if (!this.contentMayChange) return;
+        this.foldingRanges = undefined;
+    }
+
     constructor(private readonly document: vscode.TextDocument) {}
 
     /**
@@ -94,6 +102,7 @@ export default class FoldingRangeContext {
      * @param end Ending line number.
      */
     private calculateFoldingRanges() {
+        this.contentMayChange = false;
         this.foldingRanges = [];
         this.clearTemporaries();
         let closingBlocks = <NamedLine[]>[];

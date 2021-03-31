@@ -50,7 +50,10 @@ export default class ContextMapping implements vscode.Disposable {
 
     static onDocumentSave(document: vscode.TextDocument) {
         const documentContext = ContextMapping.getDocumentContextIfExist(document);
-        documentContext?.getPreview()?.updateWebview();
+        if (documentContext !== undefined) {
+            documentContext.foldingRange.clear();
+            documentContext.getPreview()?.updateWebview();
+        }
     }
 
     static onDocumentClose(document: vscode.TextDocument) {
