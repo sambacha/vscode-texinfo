@@ -6,6 +6,8 @@
 @settitle vscode-texinfo v@value{VERSION} User Manual
 @c %**end of header
 
+@set vscode-docs-url https://code.visualstudio.com/docs
+
 @copying
 This manual is for vscode-texinfo, an extension of Visual Studio Code.
 
@@ -186,6 +188,12 @@ If syntax highlighting does not look satisfactory, try another color theme where
 keyword/operator colors are distinct. Some good examples are Solarized
 Light/Dark, Monokai, etc.
 
+For details about how to @url{@value{vscode-docs-url}
+/languages/overview#_changing-the-language-for-the-selected-file,
+change language mode} or @url{@value{vscode-docs-url}/getstarted/themes
+#_selecting-the-color-theme, select color theme}, see the Visual Studio Code
+User Guide.
+
 
 @node Code Completion
 @section Code Completion
@@ -239,9 +247,8 @@ Three types of code blocks can be recognized by vscode-texinfo:
 
 While editing a Texinfo document, you can collape or expand a code block either
 by clicking the folding icon to the left of the first line of the block, or by
-invoking a corresponding command. See the
-@url{https://code.visualstudio.com/docs/editor/codebasics#_folding, Visual
-Studio Code User Guide} for details.
+invoking a corresponding command. See the Visual Studio Code User Guide for
+@url{@value{vscode-docs-url}/editor/codebasics#_folding, details}.
 
 @quotation Note
 Due to performance issues, the block hierarchy of a Texinfo document is
@@ -255,6 +262,56 @@ re-calculated only when total line count changes, or when the document is saved.
 
 @node Advanced Usage
 @chapter Advanced Usage
+
+Some more advanced features of vscode-texinfo is available if GNU Texinfo is
+correctly installed and configured on your device.
+
+@url{https://www.gnu.org/software/texinfo, GNU Texinfo} is the official (and the
+only known) full implementation of Texinfo. On most platforms, it can be easily
+installed using a package manager.
+
+For example, if you're using a Debian-based GNU/Linux distribution, you can
+install GNU Texinfo with:
+
+@example
+sudo apt install texinfo
+@end example
+
+GNU Texinfo provides a CLI program @code{makeinfo}, a.k.a. @code{texi2any},
+which converts a Texinfo document to some other format, like HTML, PDF,
+plain text, etc.
+
+To specify the location of @code{makeinfo}, edit the configuration item
+@code{texinfo.makeinfo}. If the executable is not located in @code{$PATH}, an
+absolute path should be specified. Also note that the path should not contain
+any command line arguments.
+
+To check whether GNU Texinfo is correctly installed and configured, open a
+Texinfo document, and look for a ``GNU Texinfo'' status bar item on the right
+side of the status bar.
+
+@itemize @bullet
+@item If you see a check icon and the version of GNU Texinfo, then
+congratulations, you're all set.
+@item If a warning icon is displayed, it means that the currently installed GNU
+Texinfo is outdated, or has an unrecognizable version number. In that case, some
+features may not work as expected.
+@item If a cross icon is displayed, it means that GNU Texinfo is @i{not}
+correctly installed and configured.
+@end itemize
+
+@menu
+* HTML Preview::  Display document preview in HTML format.
+* Diagnosis::     Show diagnostic information.
+@end menu
+
+
+@node HTML Preview
+@section HTML Preview
+
+
+@node Diagnosis
+@section Diagnosis
 
 
 @bye
