@@ -109,6 +109,12 @@ It is recommended to use a free distribution of Visual Studio Code,
 binary release, which is proprietary. You can also build it from
 @url{https://github.com/microsoft/vscode, source} yourself.
 
+@quotation Note
+Theoretically vscode-texinfo can be installed on any version of Visual Studio
+Code since 1.40, but not all versions are tested. It's recommended to install a
+latest release.
+@end quotation
+
 The easiest way to install vscode-texinfo is from the extension marketplace,
 either @url{https://open-vsx.org/extension/CismonX/texinfo, Open VSX Registry},
 or the proprietary Visual Studio Marketplace. Click the ``Extensions'' tab on
@@ -205,7 +211,7 @@ There are two kinds of completion items: The command itself, and code snippets
 related to that command.
 
 A typical example of code snippet is the completion of a block command, say,
-@code{@@example}. When applying completion, the code looks like:
+@code{@@example}. When applying completion, the generated code looks like:
 
 @example
 @@example
@@ -268,10 +274,8 @@ correctly installed and configured on your device.
 
 @url{https://www.gnu.org/software/texinfo, GNU Texinfo} is the official (and the
 only known) full implementation of Texinfo. On most platforms, it can be easily
-installed using a package manager.
-
-For example, if you're using a Debian-based GNU/Linux distribution, you can
-install GNU Texinfo with:
+installed using a package manager. For example, if you're using a Debian-based
+GNU/Linux distribution, you can install GNU Texinfo with:
 
 @example
 sudo apt install texinfo
@@ -290,15 +294,13 @@ To check whether GNU Texinfo is correctly installed and configured, open a
 Texinfo document, and look for a ``GNU Texinfo'' status bar item on the right
 side of the status bar.
 
-@itemize @bullet
-@item If you see a check icon and the version of GNU Texinfo, then
-congratulations, you're all set.
-@item If a warning icon is displayed, it means that the currently installed GNU
+If you see a @b{check icon} and the version of GNU Texinfo, then
+congratulations, you're all set. If a @b{cross icon} is displayed, it means
+that GNU Texinfo is @emph{not} correctly installed and configured.
+
+If a @b{warning icon} is displayed, it means that the currently installed GNU
 Texinfo is outdated, or has an unrecognizable version number. In that case, some
 features may not work as expected.
-@item If a cross icon is displayed, it means that GNU Texinfo is @i{not}
-correctly installed and configured.
-@end itemize
 
 @menu
 * HTML Preview::  Display document preview in HTML format.
