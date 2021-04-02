@@ -8,7 +8,10 @@
 
 import * as path from 'path';
 import * as webpack from 'webpack';
+import { argv } from 'process';
 import TerserPlugin from 'terser-webpack-plugin';
+
+const isProduction = 'production' === argv[argv.indexOf('--mode') + 1];
 
 const config: webpack.Configuration = {
     target: 'node',
@@ -19,7 +22,7 @@ const config: webpack.Configuration = {
         libraryTarget: 'commonjs2',
         devtoolModuleFilenameTemplate: '../[resource-path]',
     },
-    devtool: 'source-map',
+    devtool: isProduction ? false : 'source-map',
     optimization: {
         concatenateModules: true,
         minimize: true,
