@@ -143,65 +143,65 @@
                 "texinfo.makeinfo": {
                     "type": "string",
                     "default": "makeinfo",
-                    "markdownDescription": "Path to the `makeinfo` (or `texi2any`) command. If not located in `$PATH`, an absolute path should be specified.\n\nThe value should not contain any command-line arguments, just the filename."
+                    "description": "Path to the `makeinfo` (or `texi2any`) command."
                 },
                 "texinfo.enableCodeLens": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Enable code lens on node identifiers which jumps to the corresponding nodes in preview."
+                    "description": "Enable code lens on node identifiers which jumps to the corresponding nodes in preview."
                 },
                 "texinfo.completion.enableSnippets": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show snippets in code completion items.\n\nIf disabled, only commands are shown."
+                    "description": "Show snippets in code completion items."
                 },
                 "texinfo.completion.hideSnippetCommands": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "When snippet is enabled, hide the snippets' corresponding commands from completion items."
+                    "description": "When snippet is enabled, hide the snippets' corresponding commands from completion items."
                 },
                 "texinfo.preview.noHeaders": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Suppress node separators in preview.\n\nThis corresponds to the `--no-headers` option of `makeinfo`."
+                    "description": "Suppress node separators in preview."
                 },
                 "texinfo.preview.maxSize": {
                     "type": "integer",
-                    "default": "2",
+                    "default": 2,
                     "minimum": 1,
                     "maximum": 16,
-                    "markdownDescription": "Max allowed size (in MiB) for the preview document."
+                    "description": "Max allowed size (in MiB) for the preview document."
                 },
                 "texinfo.preview.errorLimit": {
                     "type": "integer",
                     "default": 100,
                     "minimum": 0,
-                    "markdownDescription": "Max number of errors before quit when trying to display preview.\n\nThis corresponds to the `--error-limit=NUM` option of `makeinfo`."
+                    "description": "Max number of errors before quit when trying to display preview."
                 },
                 "texinfo.preview.force": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Preserve preview even if errors.\n\nThis corresponds to the `--force` option of `makeinfo`."
+                    "description": "Preserve preview even if errors."
                 },
                 "texinfo.preview.noValidation": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Supress node cross-reference validation.\n\nThis corresponds to the `--no-validate` option of `makeinfo`."
+                    "description": "Supress node cross-reference validation."
                 },
                 "texinfo.preview.noWarnings": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Suppress warnings.\n\nThis corresponds to the `--no-warn` option of `makeinfo`."
+                    "description": "Suppress warnings."
                 },
                 "texinfo.preview.displayImage": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Display images in in preview.\n\nIf image display is not needed, turn off this option to improve preview performance."
+                    "description": "Display images in in preview."
                 },
                 "texinfo.preview.customCSS": {
                     "type": "string",
                     "default": "",
-                    "markdownDescription": "URI of custom CSS for preview.\n\nA good example is https://www.gnu.org/software/gnulib/manual.css"
+                    "description": "URI of custom CSS for preview."
                 }
             }
         },
