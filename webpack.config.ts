@@ -32,9 +32,13 @@ const config: webpack.Configuration = {
                 terserOptions: {
                     compress: {
                         unsafe: true,
+                        unsafe_arrows: true,
                     },
                     format: {
                         comments: false,
+                    },
+                    mangle: {
+                        module: true,
                     },
                 },
             }),

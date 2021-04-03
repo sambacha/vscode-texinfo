@@ -15,3 +15,4 @@ delete this.scripts.build;
 delete this.scripts.prepare;
 delete this.scripts.lint;
 delete this.scripts.watch;
+delete this.scripts.package;
