@@ -3,7 +3,7 @@
 @c %**start of header
 @setfilename vscode-texinfo.info
 @include version.texi
-@settitle vscode-texinfo v@value{VERSION} User Manual
+@settitle User Manual for vscode-texinfo
 @c %**end of header
 
 @set vscode-docs-url https://code.visualstudio.com/docs
@@ -39,7 +39,8 @@ this notice are preserved. This file is offered as-is, without any warranty.
 @node Top
 @top vscode-texinfo
 
-This manual is for vscode-texinfo, an extension of Visual Studio Code.
+This manual is for vscode-texinfo (version @value{VERSION}), an extension of
+Visual Studio Code.
 
 Copyright @copyright{} 2021  CismonX <admin@@cismon.net>
 
@@ -71,10 +72,10 @@ developers.
 
 We believe that Texinfo deserves more users, for it is an excellent format for
 writing software manuals, as well as other technical materials. We chose Visual
-Studio Code, one of the most popular source code editors as of 2020, and
-developed this very extension, vscode-texinfo, which provides some useful
-features for Visual Studio Code in regard to the Texinfo format, in the hope
-that more developers can benefit from it.
+Studio Code, one of the most popular code editors as of 2020, and developed this
+very extension, vscode-texinfo, which provides some useful features for Visual
+Studio Code in regard to the Texinfo format, in the hope that more developers
+can benefit from it.
 
 vscode-texinfo is free software. You can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -125,7 +126,7 @@ You can also download the @code{.vsix} file, and manually install it to Visual
 Studio Code (via command palette: @code{Extensions: Install from VSIX...}).
 
 Before you manually install a @code{.vsix} file downloaded from a third party,
-you should check whether the file matches the signature:
+you should check whether the file matches a trusted signature:
 
 @example
 wget -O cismonx.gpg.asc "https://sv.gnu.org/people/viewgpg.php?user_id=214244"
@@ -265,6 +266,13 @@ re-calculated only when total line count changes, or when the document is saved.
 @node Breadcrumb Navigation
 @section Breadcrumb Navigation
 
+Using the navigation bar, you can navigate through the code blocks defined in
+@ref{Block Folding} (excluding blocks of comment lines). Titles of chapters and
+sections are shown.
+
+See the Visual Studio Code User Guide for more information about
+@url{@value{vscode-docs-url}/editor/editingevolved#_breadcrumbs, Breadcrumbs}.
+
 
 @node Advanced Usage
 @chapter Advanced Usage
@@ -278,7 +286,7 @@ installed using a package manager. For example, if you're using a Debian-based
 GNU/Linux distribution, you can install GNU Texinfo with:
 
 @example
-sudo apt install texinfo
+sudo apt-get install texinfo
 @end example
 
 GNU Texinfo provides a CLI program @code{makeinfo}, a.k.a. @code{texi2any},
