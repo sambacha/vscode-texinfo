@@ -9,14 +9,15 @@
 @set vscode-docs-url https://code.visualstudio.com/docs
 
 @copying
-This manual is for vscode-texinfo, an extension of Visual Studio Code.
+This manual is for vscode-texinfo (version @value{VERSION}), an extension of
+Visual Studio Code.
 
 Copyright @copyright{} 2021  CismonX <admin@@cismon.net>
 
 @quotation
-Copying and distribution of this file, with or without modification, are
-permitted in any medium without royalty, provided the copyright notice and
-this notice are preserved. This file is offered as-is, without any warranty.
+This manual is licensed under a
+@url{https://creativecommons.org/licenses/by-sa/4.0/,
+Creative Commons Attribution-ShareAlike 4.0 International License}.
 @end quotation
 @end copying
 
@@ -44,9 +45,9 @@ Visual Studio Code.
 
 Copyright @copyright{} 2021  CismonX <admin@@cismon.net>
 
-Copying and distribution of this file, with or without modification, are
-permitted in any medium without royalty, provided the copyright notice and
-this notice are preserved. This file is offered as-is, without any warranty.
+This manual is licensed under a
+@url{https://creativecommons.org/licenses/by-sa/4.0/,
+Creative Commons Attribution-ShareAlike 4.0 International License}.
 
 @end ifnottex
 
