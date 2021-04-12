@@ -13,14 +13,16 @@ this notice are preserved. This file is offered as-is, without any warranty.
 
 ## About
 
-This project is an extension of Visual Studio Code which aims at improving user
-experience for editing Texinfo documents.
+vscode-texinfo is an extension of Visual Studio Code which aims at improving user experience for editing Texinfo documents.
 
 Major features include:
 * Syntax Highlighting
 * Code Completion
 * HTML Preview
-* Block Folding & Breadcrumb Navigation
+* Block Folding
+* Breadcrumb Navigation
 * Diagnostics
 
-## Documentation
+## Getting Started
+
+For instructions about how to install, use, and contribute to vscode-texinfo, see the [online user manual](https://nongnu.org/vscode-texinfo/manual).
