@@ -10,9 +10,6 @@
         "module": "CommonJS",
         "target": "ES2019",
         "outDir": "out",
-        "lib": [
-            "ES2019"
-        ],
         "esModuleInterop": true,
         "strictNullChecks": true,
         "sourceMap": true,
