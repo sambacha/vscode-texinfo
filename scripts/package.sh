@@ -25,7 +25,7 @@ for file in ${MD_FILES[@]}; do
     tail -n +9 $file.$BACKUP_SUFFIX > $file
 done
 json -j0 -I -e "$(cat ./scripts/package-json-cleanup.js)" -f package.json
-vsce package --baseContentUrl=$(json -f package.json repository.url)
+vsce package --baseContentUrl=$(json -f package.json repository.url)/tree
 for file in ${JSON_FILES[@]}; do
     mv $file.$BACKUP_SUFFIX $file
 done
