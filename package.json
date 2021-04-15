@@ -178,11 +178,6 @@
                     "minimum": 0,
                     "description": "Max number of errors before quit when trying to display preview."
                 },
-                "texinfo.preview.force": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Preserve preview even if errors."
-                },
                 "texinfo.preview.noValidation": {
                     "type": "boolean",
                     "default": false,

@@ -55,7 +55,6 @@ export default class Converter {
     async convertToHtml(imgTransformer?: Operator<string>, insertScript?: string) {
         const options = ['-o', '-', '--no-split', '--html', `--error-limit=${Options.errorLimit}`];
         Options.noHeaders && options.push('--no-headers');
-        Options.force && options.push('--force');
         Options.noValidation && options.push('--no-validate');
         Options.noWarnings && options.push('--no-warn');
         Options.customCSS && this.includeCustomCSS(Options.customCSS, options);

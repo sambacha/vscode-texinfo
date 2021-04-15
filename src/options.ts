@@ -62,10 +62,6 @@ export default class Options implements vscode.Disposable {
         return Options.instance.getNumber('preview.errorLimit');
     }
 
-    static get force() {
-        return Options.instance.getBoolean('preview.force');
-    }
-
     static get noValidation() {
         return Options.instance.getBoolean('preview.noValidation');
     }
