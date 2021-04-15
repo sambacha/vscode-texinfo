@@ -6,8 +6,9 @@
 @settitle User Manual for vscode-texinfo
 @c %**end of header
 
-@set vscode-docs-url https://code.visualstudio.com/docs
-@set vscode-api-url  https://code.visualstudio.com/api
+@set vscode-docs-url  https://code.visualstudio.com/docs
+@set vscode-api-url   https://code.visualstudio.com/api
+@set gnu-texinfo-docs https://www.gnu.org/software/texinfo/manual/texinfo
 
 @copying
 This manual is for vscode-texinfo (version @value{VERSION}), an extension of
@@ -366,9 +367,10 @@ time to finish. When you see an ``(Updating)'' in the title of a preview, it
 means that the preview is being updated.
 
 @menu
-* Custom CSS::     Use custom stylesheets for HTML preview.
-* Goto Node::      Jump to a node in preview.
-* Misc Settings::  Miscellaneous configuration options regarding preview.
+* Custom CSS::      Use custom stylesheets for HTML preview.
+* Goto Node::       Jump to a node in preview.
+* Display Images::  Display images in preview.
+* Misc Settings::   Miscellaneous configuration options regarding preview.
 @end menu
 
 
@@ -387,9 +389,47 @@ used with darker editor themes)
 @node Goto Node
 @subsection Goto Node
 
+Above each @code{@@node} line in a Texinfo document, a code lens with text
+``Goto node in preview'' is shown. On click, it makes the HTML preview jump to
+the corresponding location.
+
+@quotation Note
+@code{@@node} lines
+@url{@value{gnu-texinfo-docs}/html_node/HTML-Xref-Command-Expansion.html,
+allow @@-commands}, which is not handled in vscode-texinfo due to performance
+considerations. For these nodes, this feature does not work.
+@end quotation
+
+To disable this feature and hide the code lenses, switch off the configuation
+option @code{texinfo.enableCodeLens}.
+
+See the Visual Studio Code User Guide for more information about
+@url{@value{vscode-api-url}/references/vscode-api#CodeLens, CodeLens}.
+
+
+@node Display Images
+@subsection Display Images
+
 
 @node Misc Settings
 @subsection Misc Settings
+
+There are some other settings which can affect the behaviour and appearance of
+HTML previews.
+
+@itemize @bullet
+@item @code{texinfo.preview.noHeaders}: When enabled, headers and menus are no
+longer displayed in preview (by passing @code{--no-headers} to @code{makeinfo}).
+@item @code{texinfo.preview.maxSize}: Max allowed size for the genereated HTML
+file before it's displayed in the preview. Files larger than this limit will
+trigger an error.
+@item @code{texinfo.preview.errorLimit}: Number of errors which @code{makeinfo}
+can produce before quitting. (@code{--error-limit=NUM})
+@item @code{texinfo.preview.noValidation}: When enabled, node cross-references
+are not validated. (@code{--no-validate})
+@item @code{texinfo.preview.noWarnings}: When enabled, @code{makeinfo} does not
+produce any warnings. (@code{--no-warn})
+@end itemize
 
 
 @node Diagnosis
