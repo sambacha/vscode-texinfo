@@ -79,9 +79,11 @@ export default class PreviewContext {
     private pendingUpdate = false;
 
     private get imageTransformer(): Optional<Operator<string>> {
-        if (!Options.displayImage) return undefined;
+        if (!Options.localImage) return undefined;
         const pathName = path.dirname(this.document.fileName);
         return src => {
+            // Do not transform URIs of online images.
+            if (src.startsWith('https://') || src.startsWith('http://')) return src;
             const srcUri = vscode.Uri.file(pathName + '/' + src);
             // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
             return this.panel.webview.asWebviewUri(srcUri).toString();

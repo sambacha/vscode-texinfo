@@ -70,8 +70,8 @@ export default class Options implements vscode.Disposable {
         return Options.instance.getBoolean('preview.noWarnings');
     }
 
-    static get displayImage() {
-        return Options.instance.getBoolean('preview.displayImage');
+    static get localImage() {
+        return Options.instance.getBoolean('preview.localImage');
     }
 
     static get customCSS() {

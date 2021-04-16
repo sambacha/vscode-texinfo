@@ -188,10 +188,10 @@
                     "default": false,
                     "description": "Suppress warnings."
                 },
-                "texinfo.preview.displayImage": {
+                "texinfo.preview.localImage": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Display images in in preview."
+                    "description": "Display local images in in preview."
                 },
                 "texinfo.preview.customCSS": {
                     "type": "string",
