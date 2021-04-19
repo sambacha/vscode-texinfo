@@ -31,6 +31,25 @@ import { Operator } from './types';
  */
 export default class Converter {
 
+    async convertToHtml(imgTransformer?: Operator<string>, insertScript?: string) {
+        const options = ['-o-', '--no-split', '--html', `--error-limit=${this.options.errorLimit}`];
+        this.options.noHeaders && options.push('--no-headers');
+        this.options.noValidation && options.push('--no-validate');
+        this.options.noWarnings && options.push('--no-warn');
+        this.options.customCSS && this.includeCustomCSS(this.options.customCSS, options);
+        const result = await exec(this.options.makeinfo, options.concat(this.path), this.options.maxSize);
+        if (result.data !== undefined) {
+            // No worry about performance here, as the DOM is lazily initialized.
+            const dom = new DOM(result.data);
+            imgTransformer && dom.transformImageUri(imgTransformer);
+            insertScript && dom.insertScript(insertScript);
+            result.data = dom.outerHTML;
+        }
+        return result;
+    }
+
+    constructor(private readonly path: string, private readonly options: Options, private readonly logger: Logger) {}
+
     private includeCustomCSS(cssFileURI: string, options: string[]) {
         try {
             const uri = vscode.Uri.parse(cssFileURI, true);
@@ -46,26 +65,7 @@ export default class Converter {
                     throw URIError;
             }
         } catch (e) {
-            Logger.log(`Cannot load custom CSS. Invalid URI: '${cssFileURI}'`);
+            this.logger.log(`Cannot load custom CSS. Invalid URI: '${cssFileURI}'`);
         }
-    }
-
-    constructor(private readonly path: string) {}
-
-    async convertToHtml(imgTransformer?: Operator<string>, insertScript?: string) {
-        const options = ['-o', '-', '--no-split', '--html', `--error-limit=${Options.errorLimit}`];
-        Options.noHeaders && options.push('--no-headers');
-        Options.noValidation && options.push('--no-validate');
-        Options.noWarnings && options.push('--no-warn');
-        Options.customCSS && this.includeCustomCSS(Options.customCSS, options);
-        const result = await exec(Options.makeinfo, options.concat(this.path), Options.maxSize);
-        if (result.data !== undefined) {
-            // No worry about performance here, as the DOM is lazily initialized.
-            const dom = new DOM(result.data);
-            imgTransformer && dom.transformImageUri(imgTransformer);
-            insertScript && dom.insertScript(insertScript);
-            result.data = dom.outerHTML;
-        }
-        return result;
     }
 }

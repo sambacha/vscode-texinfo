@@ -20,7 +20,7 @@
  */
 
 import * as vscode from 'vscode';
-import Options from './options';
+import GlobalContext from './global_context';
 import { exec } from './utils/misc';
 
 /**
@@ -28,66 +28,61 @@ import { exec } from './utils/misc';
  */
 export default class Indicator implements vscode.Disposable {
 
-    private static singleton?: Indicator;
-
-    static async click() {
-        await Indicator.instance.updateStatus();
-        Indicator.instance.refresh(vscode.window.activeTextEditor);
-    }
-
-    static onTextEditorChange(editor?: vscode.TextEditor) {
-        Indicator.instance.refresh(editor);
-    }
-
-    static get instance() {
-        return this.singleton ??= new Indicator();
-    }
-
-    private statusBarItem: vscode.StatusBarItem;
-
-    private gnuTexinfoAvailable = false;
-
     get canDisplayPreview() {
-        return this.gnuTexinfoAvailable;
+        return this._canDisplayPreview;
+    }
+
+    dispose() {
+        this.statusBarItem.dispose();
+    }
+
+    constructor(private readonly globalContext: GlobalContext) {
+        globalContext.subscribe(
+            vscode.commands.registerCommand('texinfo.indicator.click', this.click.bind(this)),
+            vscode.window.onDidChangeActiveTextEditor(this.refresh.bind(this)),
+        );
+        this.updateStatus().then(() => this.refresh(vscode.window.activeTextEditor));
+    }
+
+    private _canDisplayPreview = false;
+
+    private statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+
+    private async click() {
+        await this.updateStatus();
+        this.refresh(vscode.window.activeTextEditor);
     }
 
     private refresh(editor?: vscode.TextEditor) {
-        if (editor === undefined || editor.document.languageId != 'texinfo') {
-            this.statusBarItem.hide();
-        } else {
+        if (editor?.document.languageId === 'texinfo') {
             this.statusBarItem.show();
+        } else {
+            this.statusBarItem.hide();
         }
     }
 
     private async updateStatus() {
-        const output = await exec(Options.makeinfo, ['--version'], Options.maxSize);
+        const options = this.globalContext.options;
+        const output = await exec(options.makeinfo, ['--version'], options.maxSize);
         const result = output.data?.match(/\(GNU texinfo\) (.*)\n/);
         let tooltip = '', icon: string, version = '';
         if (result && result[1]) {
             version = result[1];
             if (!isNaN(+version) && +version < 6.7) {
                 icon = '$(warning)';
-                tooltip = `GNU Texinfo (${Options.makeinfo}) is outdated (${version} < 6.7).`;
+                tooltip = `GNU Texinfo (${options.makeinfo}) is outdated (${version} < 6.7).`;
             } else {
+                // Unrecognizable version. Assume it is okay.
                 icon = '$(check)';
             }
-            this.gnuTexinfoAvailable = true;
+            this._canDisplayPreview = true;
         } else {
             icon = '$(close)';
-            tooltip = `GNU Texinfo (${Options.makeinfo}) is not correctly installed or configured.`;
-            this.gnuTexinfoAvailable = false;
+            tooltip = `GNU Texinfo (${options.makeinfo}) is not correctly installed or configured.`;
+            this._canDisplayPreview = false;
         }
+        this.statusBarItem.command = 'texinfo.indicator.click';
         this.statusBarItem.text = `${icon} GNU Texinfo ${version}`;
         this.statusBarItem.tooltip = tooltip;
-        this.statusBarItem.command = 'texinfo.indicator.click';
-    }
-
-    private constructor() {
-        this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-        this.updateStatus().then(() => this.refresh(vscode.window.activeTextEditor));
-    }
-
-    dispose() {
-        this.statusBarItem.dispose();
     }
 }

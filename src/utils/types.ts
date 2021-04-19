@@ -21,19 +21,19 @@
 
 import * as vscode from 'vscode';
 
-export type Optional<T> = T | undefined;
-
-export type Operator<T> = (arg: T) => T;
-
-export type Range = { start: number, end: number };
-
-export type NamedLine = { name: string, line: number };
+export type CompletionItem = vscode.CompletionItem & { snippet?: boolean };
 
 export type ExecResult = { data?: string, error: string };
 
 export type FoldingRange = vscode.FoldingRange & { name: string, detail: string };
 
-export type CompletionItem = vscode.CompletionItem & { snippet?: boolean };
+export type NamedLine = { name: string, line: number };
+
+export type Operator<T> = (arg: T) => T;
+
+export type Optional<T> = T | undefined;
+
+export type Range = { start: number, end: number };
 
 export function isDefined<T>(value: Optional<T>): value is T {
     return value !== undefined;

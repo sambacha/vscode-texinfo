@@ -22,10 +22,6 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import DocumentContext from './document';
-import ContextMapping from '../context_mapping';
-import Diagnosis from '../diagnosis';
-import Logger from '../logger';
-import Options from '../options';
 import Converter from '../utils/converter';
 import { getNodeHtmlRef, prompt } from '../utils/misc';
 import { Operator, Optional } from '../utils/types';
@@ -35,81 +31,20 @@ import { Operator, Optional } from '../utils/types';
  */
 export default class PreviewContext {
 
-    /**
-     * Create (if not yet created) and show preview for a Texinfo document.
-     * 
-     * @param editor The editor where the document is being held.
-     */
-    static async showPreview(editor: vscode.TextEditor) {
-        const document = editor.document;
-        // Only show preview for saved files, as we're not gonna send document content to `makeinfo` via STDIN.
-        // Instead, the file will be loaded from disk.
-        if (document.isUntitled) {
-            if (!await prompt('Save this document to display preview.', 'Save')) return;
-            if (!await document.save()) return;
-        }
-        ContextMapping.getDocumentContext(document).initPreview().panel.reveal();
-    }
-
-    /**
-     * Jump to the corresponding section of document preview by node name.
-     * 
-     * @param document 
-     * @param nodeName 
-     */
-    static gotoPreview(document: vscode.TextDocument, nodeName: string) {
-        ContextMapping.getDocumentContext(document).initPreview().panel.webview
-            .postMessage({ command: 'goto', value: getNodeHtmlRef(nodeName) });
-    }
-
-    private readonly document = this.documentContext.document;
-
-    private readonly panel: vscode.WebviewPanel;
-    
-    private readonly disposables = <vscode.Disposable[]>[];
-
-    /**
-     * Whether the preview is updating.
-     */
-    private updating = false;
-
-    /**
-     * Whether a preview update request is pending.
-     */
-    private pendingUpdate = false;
-
-    private get imageTransformer(): Optional<Operator<string>> {
-        if (!Options.localImage) return undefined;
-        const pathName = path.dirname(this.document.fileName);
-        return src => {
-            // Do not transform URIs of online images.
-            if (src.startsWith('https://') || src.startsWith('http://')) return src;
-            const srcUri = vscode.Uri.file(pathName + '/' + src);
-            // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
-            return this.panel.webview.asWebviewUri(srcUri).toString();
-        };
-    }
-
-    private get script() {
-        if (!Options.enableCodeLens) return undefined;
-        return "window.addEventListener('message', event => {" +
-            "const message = event.data;" +
-            "switch (message.command) {" +
-                "case 'goto':" +
-                    "window.location.hash = message.value;" +
-                    // We may want to scroll to the same node again.
-                    "history.pushState('', '', window.location.pathname);" +
-                    "break;" +
-            "}" +
-        "})";
-    }
-
     close() {
         this.disposables.forEach(event => event.dispose());
         this.panel.dispose();
         this.documentContext.closePreview();
         // Only show diagnostic information when the preview is active.
-        Diagnosis.delete(this.document);
+        this.diagnosis.delete(this.document);
+    }
+
+    goto(nodeName: string) {
+        this.panel.webview.postMessage({ command: 'goto', value: getNodeHtmlRef(nodeName) });
+    }
+
+    show() {
+        this.panel.reveal();
     }
 
     async updateWebview() {
@@ -121,17 +56,17 @@ export default class PreviewContext {
         this.pendingUpdate = false;
         // Inform the user that the preview is updating if `makeinfo` takes too long.
         setTimeout(() => this.updating && this.updateTitle(), 500);
-        const { data, error } = await new Converter(this.document.fileName)
+        const { data, error } = await new Converter(this.document.fileName, this.globalContext.options, this.logger)
             .convertToHtml(this.imageTransformer, this.script);
         if (error) {
-            Logger.log(error);
-            Diagnosis.update(this.document, error);
+            this.logger.log(error);
+            this.diagnosis.update(this.document, error);
         } else {
-            Diagnosis.delete(this.document);
+            this.diagnosis.delete(this.document);
         }
         if (data === undefined) {
             prompt(`Failed to show preview for ${this.document.fileName}.`, 'Show log', true)
-                .then(result => result && Logger.show());
+                .then(result => result && this.logger.show());
         } else {
             this.panel.webview.html = data;
         }
@@ -146,6 +81,51 @@ export default class PreviewContext {
         this.disposables.push(this.panel.onDidDispose(() => this.close()));
         this.updateTitle();
         this.updateWebview();
+    }
+
+    private readonly document = this.documentContext.document;
+    private readonly globalContext = this.documentContext.globalContext;
+    private readonly diagnosis = this.globalContext.diagnosis;
+    private readonly logger = this.globalContext.logger;
+
+    private readonly disposables = <vscode.Disposable[]>[];
+
+    private readonly panel: vscode.WebviewPanel;
+
+    /**
+     * Whether a preview update request is pending.
+     */
+    private pendingUpdate = false;
+
+    /**
+     * Whether the preview is updating.
+     */
+    private updating = false;
+
+    private get imageTransformer(): Optional<Operator<string>> {
+        if (!this.globalContext.options.localImage) return undefined;
+        const pathName = path.dirname(this.document.fileName);
+        return src => {
+            // Do not transform URIs of online images.
+            if (src.startsWith('https://') || src.startsWith('http://')) return src;
+            const srcUri = vscode.Uri.file(pathName + '/' + src);
+            // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
+            return this.panel.webview.asWebviewUri(srcUri).toString();
+        };
+    }
+
+    private get script() {
+        if (!this.globalContext.options.enableCodeLens) return undefined;
+        return "window.addEventListener('message', event => {" +
+            "const message = event.data;" +
+            "switch (message.command) {" +
+                "case 'goto':" +
+                    "window.location.hash = message.value;" +
+                    // We may want to scroll to the same node again.
+                    "history.pushState('', '', window.location.pathname);" +
+                    "break;" +
+            "}" +
+        "})";
     }
 
     private updateTitle() {

@@ -21,54 +21,85 @@
 
 import * as vscode from 'vscode';
 import DocumentContext from './contexts/document';
+import GlobalContext from './global_context';
+import { prompt } from './utils/misc';
 
 /**
- * Manage mappings between Texinfo documents and corresponding contexts.
+ * Manage mappings between Texinfo documents and corresponding document-specific contexts.
  */
 export default class ContextMapping implements vscode.Disposable {
 
-    private static singleton?: ContextMapping;
-
-    static get instance() {
-        return ContextMapping.singleton ??= new ContextMapping();
-    }
-
-    static getDocumentContext(document: vscode.TextDocument) {
-        let documentContext = ContextMapping.instance.value.get(document);
+    getDocumentContext(document: vscode.TextDocument) {
+        let documentContext = this.map.get(document);
         if (documentContext === undefined) {
-            ContextMapping.instance.value.set(document, documentContext = new DocumentContext(document));
+            documentContext = new DocumentContext(this.globalContext, document);
+            this.map.set(document, documentContext);
         }
         return documentContext;
     }
 
-    static onDocumentUpdate(event: vscode.TextDocumentChangeEvent) {
-        const documentContext = ContextMapping.getDocumentContextIfExist(event.document);
+    dispose() {
+        this.map.forEach(documentContext => documentContext.getPreview()?.close());
+    }
+
+    constructor(private readonly globalContext: GlobalContext) {
+        globalContext.subscribe(
+            vscode.commands.registerTextEditorCommand('texinfo.preview.show', this.showPreview.bind(this)),
+            vscode.commands.registerCommand('texinfo.preview.goto', this.gotoPreview.bind(this)),
+            vscode.workspace.onDidChangeTextDocument(this.onDocumentUpdate.bind(this)),
+            vscode.workspace.onDidCloseTextDocument(this.onDocumentClose.bind(this)),
+            vscode.workspace.onDidSaveTextDocument(this.onDocumentSave.bind(this)),
+        );
+    }
+
+    private readonly map = new Map<vscode.TextDocument, DocumentContext>();
+
+    private getDocumentContextIfExist(document: vscode.TextDocument) {
+        return document.languageId === 'texinfo' ? this.getDocumentContext(document) : undefined;
+    }
+
+    /**
+     * Jump to the corresponding section of document preview by node name.
+     * 
+     * @param document 
+     * @param nodeName 
+     */
+    private gotoPreview(document: vscode.TextDocument, nodeName: string) {
+        this.getDocumentContext(document).initPreview().goto(nodeName);
+    }
+
+    private onDocumentClose(document: vscode.TextDocument) {
+        this.map.get(document)?.getPreview()?.close();
+        this.map.delete(document);
+    }
+
+    private onDocumentSave(document: vscode.TextDocument) {
+        const documentContext = this.getDocumentContextIfExist(document);
+        if (documentContext === undefined) return;
+        documentContext.foldingRange.clear();
+        documentContext.getPreview()?.updateWebview();
+    }
+
+    private onDocumentUpdate(event: vscode.TextDocumentChangeEvent) {
+        const documentContext = this.getDocumentContextIfExist(event.document);
         if (documentContext?.foldingRange.update(event.contentChanges)) {
             documentContext.documentSymbol.clear();
         }
     }
 
-    static onDocumentSave(document: vscode.TextDocument) {
-        const documentContext = ContextMapping.getDocumentContextIfExist(document);
-        if (documentContext !== undefined) {
-            documentContext.foldingRange.clear();
-            documentContext.getPreview()?.updateWebview();
+    /**
+     * Create (if not yet created) and show preview for a Texinfo document.
+     * 
+     * @param editor The editor where the document is being held.
+     */
+    private async showPreview(editor: vscode.TextEditor) {
+        const document = editor.document;
+        // Only show preview for saved files, as we're not gonna send document content to `makeinfo` via STDIN.
+        // Instead, the file will be loaded from disk.
+        if (document.isUntitled) {
+            if (!await prompt('Save this document to display preview.', 'Save')) return;
+            if (!await document.save()) return;
         }
-    }
-
-    static onDocumentClose(document: vscode.TextDocument) {
-        ContextMapping.instance.value.get(document)?.getPreview()?.close();
-        ContextMapping.instance.value.delete(document);
-    }
-
-    private static getDocumentContextIfExist(document: vscode.TextDocument) {
-        return document.languageId === 'texinfo' ? ContextMapping.getDocumentContext(document) : undefined;
-    }
-
-    private readonly value = new Map<vscode.TextDocument, DocumentContext>();
-
-    dispose() {
-        this.value.forEach(documentContext => documentContext.getPreview()?.close());
-        ContextMapping.singleton = undefined;
+        this.getDocumentContext(document).initPreview().show();
     }
 }

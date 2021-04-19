@@ -20,6 +20,7 @@
  */
 
 import * as vscode from 'vscode';
+import GlobalContext from '../global_context';
 import DocumentSymbolContext from './document_symbol';
 import FoldingRangeContext from './folding_range';
 import PreviewContext from './preview';
@@ -29,11 +30,9 @@ import PreviewContext from './preview';
  */
 export default class DocumentContext {
 
-    readonly foldingRange = new FoldingRangeContext(this.document);
+    readonly foldingRange = new FoldingRangeContext(this);
 
     readonly documentSymbol = new DocumentSymbolContext(this);
-
-    private preview?: PreviewContext;
 
     initPreview() {
         return this.preview ??= new PreviewContext(this);
@@ -47,5 +46,7 @@ export default class DocumentContext {
         this.preview = undefined;
     }
 
-    constructor(readonly document: vscode.TextDocument) {}
+    constructor(readonly globalContext: GlobalContext, readonly document: vscode.TextDocument) {}
+
+    private preview?: PreviewContext;
 }

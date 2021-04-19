@@ -24,69 +24,55 @@ import * as vscode from 'vscode';
 /**
  * Fetch extension option values.
  * 
- * See `contributes.configuration` of package.json for details.
+ * See the `contributes.configuration` entry in package.json for details.
  */
-export default class Options implements vscode.Disposable {
+export default class Options {
 
-    private static singleton?: Options;
-
-    static get instance() {
-        return Options.singleton ??= new Options('texinfo');
+    get enableSnippets() {
+        return this.getBoolean('completion.enableSnippets');
     }
 
-    static get makeinfo() {
-        return Options.instance.getString('makeinfo');
+    get hideSnippetCommands() {
+        return this.getBoolean('completion.hideSnippetCommands');
     }
 
-    static get enableCodeLens() {
-        return Options.instance.getBoolean('enableCodeLens');
+    get enableCodeLens() {
+        return this.getBoolean('enableCodeLens');
     }
 
-    static get enableSnippets() {
-        return Options.instance.getBoolean('completion.enableSnippets');
+    get makeinfo() {
+        return this.getString('makeinfo');
     }
 
-    static get hideSnippetCommands() {
-        return Options.instance.getBoolean('completion.hideSnippetCommands');
+    get customCSS() {
+        return this.getString('preview.customCSS');
     }
 
-    static get noHeaders() {
-        return Options.instance.getBoolean('preview.noHeaders');
+    get errorLimit() {
+        return this.getNumber('preview.errorLimit');
     }
 
-    static get maxSize() {
-        return Options.instance.getNumber('preview.maxSize') * 1024 * 1024;
+    get localImage() {
+        return this.getBoolean('preview.localImage');
     }
 
-    static get errorLimit() {
-        return Options.instance.getNumber('preview.errorLimit');
+    get maxSize() {
+        return this.getNumber('preview.maxSize') * 1024 * 1024;
     }
 
-    static get noValidation() {
-        return Options.instance.getBoolean('preview.noValidation');
+    get noHeaders() {
+        return this.getBoolean('preview.noHeaders');
     }
 
-    static get noWarnings() {
-        return Options.instance.getBoolean('preview.noWarnings');
+    get noValidation() {
+        return this.getBoolean('preview.noValidation');
     }
 
-    static get localImage() {
-        return Options.instance.getBoolean('preview.localImage');
+    get noWarnings() {
+        return this.getBoolean('preview.noWarnings');
     }
 
-    static get customCSS() {
-        return Options.instance.getString('preview.customCSS');
-    }
-
-    static clear() {
-        Options.singleton = undefined;
-    }
-
-    private readonly configuration: vscode.WorkspaceConfiguration;
-
-    private getString(section: string) {
-        return this.configuration.get(section, '');
-    }
+    private readonly configuration = vscode.workspace.getConfiguration('texinfo');
 
     private getBoolean(section: string) {
         return this.configuration.get(section, false);
@@ -96,11 +82,7 @@ export default class Options implements vscode.Disposable {
         return this.configuration.get(section, 0);
     }
 
-    private constructor(section: string) {
-        this.configuration = vscode.workspace.getConfiguration(section);
-    }
-
-    dispose() {
-        Options.singleton = undefined;
+    private getString(section: string) {
+        return this.configuration.get(section, '');
     }
 }

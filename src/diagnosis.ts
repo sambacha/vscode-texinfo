@@ -28,10 +28,8 @@ import { isDefined } from './utils/types';
  */
 export default class Diagnosis implements vscode.Disposable {
 
-    private static singleton?: Diagnosis;
-
-    static get instance() {
-        return Diagnosis.singleton ??= new Diagnosis();
+    delete(document: vscode.TextDocument) {
+        this.diagnostics.delete(document.uri);
     }
 
     /**
@@ -40,29 +38,26 @@ export default class Diagnosis implements vscode.Disposable {
      * @param document 
      * @param logText 
      */
-    static update(document: vscode.TextDocument, logText: string) {
+    update(document: vscode.TextDocument, logText: string) {
         const fileName = document.uri.path;
-        const diagnostics = logText.split('\n').filter(line => line.startsWith(fileName))
-            .map(line => logLineToDiagnostic(line.substring(fileName.length + 1))).filter(isDefined);
-        Diagnosis.instance.diagnostics.set(document.uri, diagnostics);
+        const diagnostics = logText.split('\n')
+            .filter(line => line.startsWith(fileName))  
+            .map(line => logLineToDiagnostic(line.substring(fileName.length + 1)))
+            .filter(isDefined);
+        this.diagnostics.set(document.uri, diagnostics);
     }
-
-    static delete(document: vscode.TextDocument) {
-        Diagnosis.instance.diagnostics.delete(document.uri);
-    }
-
-    private readonly diagnostics = vscode.languages.createDiagnosticCollection('texinfo');
 
     dispose() {
         this.diagnostics.dispose();
-        Diagnosis.singleton = undefined;
     }
+
+    private readonly diagnostics = vscode.languages.createDiagnosticCollection('texinfo');
 }
 
 function logLineToDiagnostic(lineText: string) {
-    const lineNum = Number.parseInt(lineText) - 1;
+    const lineNum = parseInt(lineText) - 1;
     // Ignore error that does not correspond a line.
-    if (Number.isNaN(lineNum)) return undefined;
+    if (isNaN(lineNum)) return undefined;
     const message = lineText.substring(lineNum.toString().length + 2);
     const severity = message.startsWith('warning:') ? vscode.DiagnosticSeverity.Warning : undefined;
     return new vscode.Diagnostic(lineNumToRange(lineNum), message, severity);

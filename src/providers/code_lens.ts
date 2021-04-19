@@ -20,9 +20,7 @@
  */
 
 import * as vscode from 'vscode';
-import ContextMapping from '../context_mapping';
-import Indicator from '../indicator';
-import Options from '../options';
+import GlobalContext from '../global_context';
 
 /**
  * Provide code lenses for Texinfo document.
@@ -30,8 +28,10 @@ import Options from '../options';
 export default class CodeLensProvider implements vscode.CodeLensProvider {
     
     provideCodeLenses(document: vscode.TextDocument) {
-        if (!Options.enableCodeLens) return undefined;
-        if (!Indicator.instance.canDisplayPreview) return undefined;
-        return ContextMapping.getDocumentContext(document).foldingRange.nodeValues;
+        if (!this.globalContext.options.enableCodeLens) return undefined;
+        if (!this.globalContext.indicator.canDisplayPreview) return undefined;
+        return this.globalContext.contextMapping.getDocumentContext(document).foldingRange.nodeValues;
     }
+
+    constructor(private readonly globalContext: GlobalContext) {}
 }

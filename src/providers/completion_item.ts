@@ -20,15 +20,13 @@
  */
 
 import * as vscode from 'vscode';
-import Options from '../options';
+import GlobalContext from '../global_context';
 import { CompletionItem } from '../utils/types';
 
 /**
  * Provide code completion info for Texinfo documents.
  */
 export default class CompletionItemProvider implements vscode.CompletionItemProvider {
-
-    private completionItems?: CompletionItem[];
 
     /**
      * Full list of completion items.
@@ -41,10 +39,10 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
      * which means that GFDL applies to lines 48-398 of this file, while the remainder
      * is under GPL like other source code files of the project.
      */
-    private get values() {
-        const enableSnippets = Options.enableSnippets;
-        const hideSnippetCommands = Options.hideSnippetCommands;
-        return this.completionItems ??= [
+    private get completionItems() {
+        const enableSnippets = this.oldOptions.enableSnippets;
+        const hideSnippetCommands = this.oldOptions.hideSnippetCommands;
+        return this._completionItems ??= [
             command('ampchar', 'Insert an ampersand, "&"', { hasEmptyBrace: true }),
             command('atchar', 'Insert an at sign, "@"', { hasEmptyBrace: true }),
             command('backslashchar', 'Insert a blackslash, "\\"', { hasEmptyBrace: true }),
@@ -402,8 +400,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
         });
     }
 
-    private oldOptions?: Options;
-
     provideCompletionItems(
         document: vscode.TextDocument,
         position: vscode.Position,
@@ -422,18 +418,25 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             if (document.getText(new vscode.Range(position.translate(0, -1), position)) !== '@') return undefined;
         }
         // Check whether options has changed.
-        if (this.oldOptions !== Options.instance) {
-            this.oldOptions = Options.instance;
-            this.completionItems = undefined;
+        const newOptions = this.globalContext.options;
+        if (this.oldOptions !== newOptions) {
+            this.oldOptions = newOptions;
+            this._completionItems = undefined;
         }
-        if (position.character === 1) return this.values;
+        if (position.character === 1) return this.completionItems;
         // Check whether the '@' character is escaped.
         if (document.getText(new vscode.Range(position.translate(0, -2), position.translate(0, -1))) === '@') {
             return undefined;
         } else {
-            return this.values;
+            return this.completionItems;
         }
     }
+
+    constructor(private readonly globalContext: GlobalContext) {}
+
+    private _completionItems?: CompletionItem[];
+
+    private oldOptions = this.globalContext.options;
 }
 
 /**

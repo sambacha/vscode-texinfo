@@ -20,7 +20,7 @@
  */
 
 import * as vscode from 'vscode';
-import ContextMapping from '../context_mapping';
+import GlobalContext from '../global_context';
 
 /**
  * Provide document symbol information for Texinfo documents.
@@ -28,6 +28,8 @@ import ContextMapping from '../context_mapping';
 export default class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     provideDocumentSymbols(document: vscode.TextDocument) {
-        return ContextMapping.getDocumentContext(document).documentSymbol.values;
+        return this.globalContext.contextMapping.getDocumentContext(document).documentSymbol.documentSymbols;
     }
+
+    constructor(private readonly globalContext: GlobalContext) {}
 }

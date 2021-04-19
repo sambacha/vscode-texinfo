@@ -23,17 +23,9 @@ import * as htmlparser from 'node-html-parser';
 import { Operator } from './types';
 
 /**
- * DOM manipulation utilities.
+ * Parse HTML into DOM and transform elements.
  */
 export default class DOM {
-
-    private dom?: htmlparser.HTMLElement;
-
-    private changed = false;
-
-    private get value() {
-        return this.dom ??= htmlparser.parse(this.html);
-    }
 
     get outerHTML() {
         if (this.changed) {
@@ -41,6 +33,11 @@ export default class DOM {
             this.changed = false;
         }
         return this.html;
+    }
+
+    insertScript(script: string) {
+        this.value.querySelector('head').insertAdjacentHTML('beforeend', `<script>${script}</script>`);
+        this.changed = true;
     }
 
     /**
@@ -58,10 +55,13 @@ export default class DOM {
         this.changed = true;
     }
 
-    insertScript(script: string) {
-        this.value.querySelector('head').insertAdjacentHTML('beforeend', `<script>${script}</script>`);
-        this.changed = true;
-    }
-
     constructor(private html: string) {}
+
+    private _value?: htmlparser.HTMLElement;
+
+    private changed = false;
+
+    private get value() {
+        return this._value ??= htmlparser.parse(this.html);
+    }
 }
