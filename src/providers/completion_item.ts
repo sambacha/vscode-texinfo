@@ -47,17 +47,9 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             command('atchar', 'Insert an at sign, "@"', { hasEmptyBrace: true }),
             command('backslashchar', 'Insert a blackslash, "\\"', { hasEmptyBrace: true }),
             command('lbracechar', 'Insert a left brace, "{"', { hasEmptyBrace: true }),
-            command('rbracechar', 'Insert a right brace, "{"', { hasEmptyBrace: true }),
-            command('AA', 'Generate the uppercase Scandinavian A-ring letter, "Å"', { hasEmptyBrace: true }),
-            command('aa', 'Generate the lowercase Scandinavian A-ring letter, "å"', { hasEmptyBrace: true }),
+            command('rbracechar', 'Insert a right brace, "}"', { hasEmptyBrace: true }),
             ...braceCommand('abbr', 'Indicate a general abbreviation', 1, 'abbreviation', 'meaning'),
             ...braceCommand('acronym', 'Indicate an acronym in all capital letters', 1, 'acronym', 'meaning'),
-            command('AE', 'Generate the uppercase AE ligatures, "Æ"', { hasEmptyBrace: true }),
-            command('ae', 'Generate the lowercase AE ligatures, "æ"', { hasEmptyBrace: true }),
-            command('afivepaper', 'Change page dimensions for the A5 paper size'),
-            command('afourlatex', 'Change page dimensions for the A4 paper size'),
-            command('afourpaper', 'Change page dimensions for the A4 paper size'),
-            command('afourwide', 'Change page dimensions for the A4 paper size'),
             snippet('alias', 'alias', 'Defines a new command to be just like an existing one', 0,
                 '@alias new=existing', 'alias ${1:new}=${2:existing}'),
             command('alias', 'Defines a new command to be just like an existing one', { snippet: true }),
@@ -139,8 +131,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...lineCommandX('defvr', 'Format a description for any kind of variable', 'category', 'name'),
             ...blockCommand('detailmenu', 'Mark the (optional) detailed node listing in a master menu'),
             ...braceCommand('dfn', 'Indicate the introductory or defining use of a term', 1, 'term'),
-            command('DH', 'Generate the uppercase Icelandic letter eth, "Ð", ð', { hasEmptyBrace: true }),
-            command('dh', 'Generate the lower Icelandic letter eth, "ð"', { hasEmptyBrace: true }),
             ...lineCommand('dircategory', "Specify a part of the Info directory menu where this file's entry should go",
                 'dirpart'),
             ...blockCommand('direntry', 'Begin the Info directory menu entry for this file'),
@@ -151,7 +141,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...lineCommand('documentencoding', 'Declare the input encoding', 'enc'),
             ...lineCommand('documentlanguage', 'Declares the current document locale', 'll_CC'),
             ...braceCommand('dotaccent', 'Generate a dot accent over the character', 1, 'c'),
-            ...braceCommandEnum('dotless', 'Generate dotless i, "ı", or dotless j, "ȷ"', 'i', 'j'),
             command('dots', 'Generate an ellipsis, "…"', { hasEmptyBrace: true }),
             ...braceCommand('email', 'Indicate an electronic mail address', 1, 'address', 'displayed-text'),
             ...braceCommand('emph', 'Emphasize text', 1, 'text'),
@@ -171,7 +160,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...headingFootingCommand('everyheading', 'Generate page headers that are the same for every pages'),
             ...blockCommand('example', 'Indicate an example'),
             ...lineCommand('exampleindent', 'Indent example-like environments by number of spaces', 'indent'),
-            command('exclamdown', 'Generate an upside-down exclamation mark, "¡"', { hasEmptyBrace: true }),
             ...lineCommand('exdent', 'Remove any indentation a line might have', 'line-of-text'),
             command('expansion', 'Indicate the result of a macro expansion with a glyph, "→"',
                 { hasEmptyBrace: true }),
@@ -191,12 +179,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...blockCommand('ftable', 'Begin a two-column table, using @item for each entry', 'formatting-command'),
             command('geq', 'Generate a greater-than-or-equal sign, "≥"', { hasEmptyBrace: true }),
             ...blockCommand('group', 'Disallow page breaks within following text'),
-            command('guillemetleft', 'Double angle quotation mark, "«"', { hasEmptyBrace: true }),
-            command('guillemetright', 'Double angle quotation mark, "»"', { hasEmptyBrace: true }),
-            command('guillemotleft', 'Double angle quotation mark, "«"', { hasEmptyBrace: true }),
-            command('guillemotright', 'Double angle quotation mark, "»"', { hasEmptyBrace: true }),
-            command('guillemotleft', 'Single angle quotation mark, "‹"', { hasEmptyBrace: true }),
-            command('guillemotright', 'Single angle quotation mark, "›"', { hasEmptyBrace: true }),
             command('hashchar', 'Insert a hash character, "#"', { hasEmptyBrace: true }),
             ...lineCommand('heading', 'Print an unnumbered section-like heading', 'title'),
             ...lineCommandEnum('headings', 'Turn page headings on or off, and/or specify single or double-sided ' + 
@@ -247,8 +229,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
                 'code', 'distinct', 'example'),
             ...braceCommand('key', 'Indicate the name of a key on a keyboard', 1, 'key-name'),
             ...lineCommand('kindex', 'Add entry to the index of keys', 'entry'),
-            command('L', 'Generate the uppercase Polish suppressed-L letter, "Ł"', { hasEmptyBrace: true }),
-            command('l', 'Generate the lowercase Polish suppressed-L letter, "ł"', { hasEmptyBrace: true }),
             command('LaTeX', 'Generate the LaTeX logo', { hasEmptyBrace: true }),
             command('leq', 'Generate a less-than-or-equal sign, "≤"', { hasEmptyBrace: true }),
             ...blockCommand('lisp', 'Begin an example of Lisp code'),
@@ -264,16 +244,10 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...lineCommand('node', 'Begin a new node', 'name'),
             command('noindent', 'Prevent text from being indented as if it were a new paragraph'),
             command('novalidate', 'Suppress validation of node references'),
-            command('O', 'Generate the uppercase O-with-slash letter, "Ø"', { hasEmptyBrace: true }),
-            command('o', 'Generate the lowercase O-with-slash letter, "ø"', { hasEmptyBrace: true }),
             ...headingFootingCommand('oddfooting', 'Generate page footers that are the same for odd-numbered pages'),
             ...headingFootingCommand('oddheading', 'Generate page headers that are the same for odd-numbered pages'),
-            command('OE', 'Generate the uppercase OE ligature, "Œ"', { hasEmptyBrace: true }),
-            command('oe', 'Generate the lowercase OE ligature, "œ"', { hasEmptyBrace: true }),
             ...braceCommand('ogonek', 'Generate an ogonek diacritic under the character', 1, 'c'),
             ...braceCommand('option', 'Indicate a command-line option', 1, 'option-name'),
-            command('ordf', 'Generate the feminine Spanish ordinal, "ª"', { hasEmptyBrace: true }),
-            command('ordm', 'Generate the masculine Spanish ordinal, "º"', { hasEmptyBrace: true }),
             command('page', 'Start a new page in a printed manual'),
             snippet('pagesizes', 'pagesizes', 'Change page dimensions', 0, '@pagesizes width, height',
                 'pagesizes ${1:height}${2:, ${3:height}}'),
@@ -287,14 +261,11 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...lineCommand('printindex', 'Generate the alphabetized index for index name', 'index-name'),
             ...braceCommand('pxref', 'Make a reference that starts with a lowercase "see" in a printed manual', 1,
                 'node', 'entry', 'node-title', 'info-file', 'manual'),
-            command('questiondown', 'Generate an upside-down question mark, "¿"', { hasEmptyBrace: true }),
             ...blockCommand('quotation', 'Narrow the margins to indicate text that is quoted from another work'),
             command('quotedblleft', 'Produce quotation mark "“"', { hasEmptyBrace: true }),
             command('quotedblright', 'Produce quotation mark "”"', { hasEmptyBrace: true }),
             command('quoteleft', 'Produce quotation mark "‘"', { hasEmptyBrace: true }),
             command('quoteright', 'Produce quotation mark "’"', { hasEmptyBrace: true }),
-            command('quotedblbase', 'Produce quotation mark "„"', { hasEmptyBrace: true }),
-            command('quotesinglebase', 'Produce quotation mark "‚"', { hasEmptyBrace: true }),
             ...braceCommand('r', 'Set text in the regular roman font', 1, 'text'),
             command('raggedright', 'Fill text; left justify every line while leaving the right end ragged'),
             command('raisesections', 'Change subsequent sections to chapters, subsections to sections'),
@@ -325,7 +296,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             command('smallquotation', 'Like @quotation, but use a smaller font size'),
             ...braceCommand('sortas', 'Give a string by which the index entry should be sorted', 1, 'key'),
             ...lineCommand('sp', 'Skip n lines', 'n'),
-            command('ss', 'Generate the German sharp-S es-zet letter, "ß"', { hasEmptyBrace: true }),
             ...braceCommand('strong', 'Emphasize text by using boldface where possible', 1, 'text'),
             ...braceCommand('sub', 'Set text as a subscript', 1, 'text'),
             ...lineCommand('subheading', 'Print an unnumbered subsection-like heading', 'title'),
@@ -351,8 +321,6 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             command('thisfile', 'Insert the current file name'),
             command('thispage', 'Insert the current page number'),
             command('thistitle', 'Insert the title of the current document'),
-            command('TH', 'Generate the uppercase Icelandic letter thorn, "Þ"', { hasEmptyBrace: true }),
-            command('th', 'Generate the lowercase Icelandic letter thorn, "þ"', { hasEmptyBrace: true }),
             command('tie', 'Generate a normal interword space at which a line break is not allowed',
                 { hasEmptyBrace: true }),
             ...braceCommand('tieaccent', 'Generate a tie-after accent over the two characters', 1, 'cc'),
@@ -487,20 +455,6 @@ function blockCommand(name: string, detail: string, ...args: string[]) {
  */
 function braceCommand(name: string, detail: string, numArgsRequired: number, ...args: string[]) {
     return [braceCommandSnippet(name, detail, numArgsRequired, ...args), command(name, detail, { snippet: true })];
-}
-
-/**
- * Build the completion items for a brace command where the argument is an enum.
- * 
- * @param name 
- * @param detail 
- * @param items 
- */
-function braceCommandEnum(name: string, detail: string, ...items: string[]) {
-    return [
-        snippet(name, name, detail, 0, `@${name}{${items.join('/')}}`, `${name}{\${1|${items.join(',')}|}}`),
-        command(name, detail, { snippet: true }),
-    ];
 }
 
 /**
