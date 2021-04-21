@@ -7,31 +7,24 @@
 # this notice are preserved. This file is offered as-is, without any warranty.
 #
 
-BACKUP_SUFFIX=vsce-pre-package-backup
-JSON_FILES=(package.json language-configuration.json)
-for file in ${JSON_FILES[@]}; do
-    mv $file $file.$BACKUP_SUFFIX
-    json5 -o $file $file.$BACKUP_SUFFIX
-done
-XML_PATH=./node_modules/vsce/resources
-XML_FILES=($XML_PATH/\[Content_Types\].xml $XML_PATH/extension.vsixmanifest)
-for file in ${XML_FILES[@]}; do
-    mv $file $file.$BACKUP_SUFFIX
-    minify-xml --output $file $file.$BACKUP_SUFFIX
-done
-MD_FILES=(README.md CHANGELOG.md)
-for file in ${MD_FILES[@]}; do
-    mv $file $file.$BACKUP_SUFFIX
-    tail -n +9 $file.$BACKUP_SUFFIX > $file
-done
-json -j0 -I -e "$(cat ./scripts/package-json-cleanup.js)" -f package.json
+VSIX_FILE_NAME=texinfo-$(json -f package.json version).vsix
+PACKAGE_JSON_CLEANUP_JS=$(cat ./scripts/package-json-cleanup.js)
+
 vsce package --baseContentUrl=$(json -f package.json repository.url)/tree
-for file in ${JSON_FILES[@]}; do
-    mv $file.$BACKUP_SUFFIX $file
-done
-for file in ${MD_FILES[@]}; do
-    mv $file.$BACKUP_SUFFIX $file
-done
-for file in ${XML_FILES[@]}; do
-    mv $file.$BACKUP_SUFFIX $file
-done
+
+unzip -d $VSIX_FILE_NAME{.d,}
+cd $VSIX_FILE_NAME.d
+minify-xml --output \[Content_Types\].xml{,}
+minify-xml --output extension.vsixmanifest{,}
+cd extension
+# Minify JSON files.
+json -j0 -I -e "$PACKAGE_JSON_CLEANUP_JS" -f package.json
+json5 -o package.json{,}
+json5 -o language-configuration.json{,}
+# Remove comments from Markdown files.
+sed -i '' -e '1,8d' README.md CHANGELOG.md
+cd ../..
+
+# Re-package .vsix file.
+node ./scripts/make-vsix.js $VSIX_FILE_NAME
+rm -r $VSIX_FILE_NAME.d

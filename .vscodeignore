@@ -8,7 +8,6 @@
 
 **/*.map
 **/*.ts
-**/*.vsce-pre-package-backup
 .drone.yml
 .gitignore
 .gitattributes
@@ -19,4 +18,5 @@ LICENSE_NOTICE.md
 node_modules/
 src/
 scripts/
+texinfo-*.d/
 tsconfig.json

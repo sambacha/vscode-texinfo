@@ -15,10 +15,11 @@
         "sourceMap": true,
         "rootDir": "src",
         "strict": true,
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
     },
     "exclude": [
+        "*.config.ts",
         "node_modules",
-        "*.config.ts"
-    ]
+        "scripts",
+    ],
 }

@@ -53,7 +53,10 @@
     },
     "eslintConfig": {
         "root": true,
-        "ignorePatterns": "out/**",
+        "ignorePatterns": [
+            "out/**",
+            "scripts/**"
+        ],
         "parser": "@typescript-eslint/parser",
         "plugins": [
             "@typescript-eslint"
