@@ -8,11 +8,13 @@ this notice are preserved. This file is offered as-is, without any warranty.
 
 # Changelog
 
-## v0.2.0 - 03/31/2021
+## v0.2.0
 
-* Add a status bar item showing the current installation status of GNU Texinfo.
+* Add version indicator (as status bar item).
 * Add user manual.
-* Minor refactor of source code.
+* Optimize code completion.
+* Optimize configuration items.
+* Optimize HTML preview.
 * Change license from MIT to GPL-3.0-or-later.
 
 ## v0.1.4 - 02/23/2021
