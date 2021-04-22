@@ -369,7 +369,6 @@ means that the preview is being updated.
 @menu
 * Custom CSS::      Use custom stylesheets for HTML preview.
 * Goto Node::       Jump to a node in preview.
-* Display Images::  Display images in preview.
 * Misc Settings::   Miscellaneous configuration options regarding preview.
 @end menu
 
@@ -401,14 +400,10 @@ considerations. For these nodes, this feature does not work.
 @end quotation
 
 To disable this feature and hide the code lenses, switch off the configuation
-option @code{texinfo.enableCodeLens}.
+item @code{texinfo.enableCodeLens}.
 
 See the Visual Studio Code User Guide for more information about
 @url{@value{vscode-api-url}/references/vscode-api#CodeLens, CodeLens}.
-
-
-@node Display Images
-@subsection Display Images
 
 
 @node Misc Settings
