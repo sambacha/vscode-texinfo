@@ -36,7 +36,7 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
      * which is licensed under the GNU Free Documentation License, version 1.3.
      * 
      * According to GFDL, this usage is considered "aggregation with independent work",
-     * which means that GFDL applies to lines 48-398 of this file, while the remainder
+     * which means that GFDL applies to lines 46-365 of this file, while the remainder
      * is under GPL like other source code files of the project.
      */
     private get completionItems() {

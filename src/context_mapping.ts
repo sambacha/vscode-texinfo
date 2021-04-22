@@ -29,6 +29,12 @@ import { prompt } from './utils/misc';
  */
 export default class ContextMapping implements vscode.Disposable {
 
+    /**
+     * Get context of a Texinfo document. Create one if not exists.
+     * 
+     * @param document 
+     * @returns 
+     */
     getDocumentContext(document: vscode.TextDocument) {
         let documentContext = this.map.get(document);
         if (documentContext === undefined) {
@@ -54,7 +60,7 @@ export default class ContextMapping implements vscode.Disposable {
 
     private readonly map = new Map<vscode.TextDocument, DocumentContext>();
 
-    private getDocumentContextIfExist(document: vscode.TextDocument) {
+    private tryGetDocumentContext(document: vscode.TextDocument) {
         return document.languageId === 'texinfo' ? this.getDocumentContext(document) : undefined;
     }
 
@@ -74,14 +80,14 @@ export default class ContextMapping implements vscode.Disposable {
     }
 
     private onDocumentSave(document: vscode.TextDocument) {
-        const documentContext = this.getDocumentContextIfExist(document);
+        const documentContext = this.tryGetDocumentContext(document);
         if (documentContext === undefined) return;
         documentContext.foldingRange.clear();
         documentContext.getPreview()?.updateWebview();
     }
 
     private onDocumentUpdate(event: vscode.TextDocumentChangeEvent) {
-        const documentContext = this.getDocumentContextIfExist(event.document);
+        const documentContext = this.tryGetDocumentContext(event.document);
         if (documentContext?.foldingRange.update(event.contentChanges)) {
             documentContext.documentSymbol.clear();
         }

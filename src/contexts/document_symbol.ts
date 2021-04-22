@@ -48,7 +48,9 @@ export default class DocumentSymbolContext {
      */
     private calculcateDocumentSymbols() {
         const ranges = Array<Optional<FoldingRange>>(this.document.lineCount);
-        this.documentContext.foldingRange.foldingRanges.forEach(range => range.kind ?? (ranges[range.start] = range));
+        this.documentContext.foldingRange.foldingRanges
+            .filter(range => range.kind === undefined)
+            .forEach(range => ranges[range.start] = range);
         return foldingRangeToSymbols(ranges, 0, ranges.length);
     }
 }

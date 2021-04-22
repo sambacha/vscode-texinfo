@@ -55,10 +55,10 @@ export default class FoldingRangeContext {
     update(events: readonly vscode.TextDocumentContentChangeEvent[]) {
         this.contentMayChange = true;
         if (this._foldingRanges === undefined) return false;
+        const eol = this.document.eol === vscode.EndOfLine.LF ? '\n' : '\r\n';
         for (const event of events) {
-            const updatedLines = event.text.split(this.document.eol === vscode.EndOfLine.LF ? '\n' : '\r\n').length;
             // Clear cached folding range when line count changes.
-            if (updatedLines !== 1 || event.range.start.line !== event.range.end.line) {
+            if (event.text.split(eol).length !== 1 || event.range.start.line !== event.range.end.line) {
                 this._foldingRanges = undefined;
                 this.nodes = [];
                 return true;
@@ -68,8 +68,9 @@ export default class FoldingRangeContext {
     }
 
     clear() {
-        if (!this.contentMayChange) return;
-        this._foldingRanges = undefined;
+        if (this.contentMayChange) {
+            this._foldingRanges = undefined;
+        }
     }
 
     constructor(private readonly documentContext: DocumentContext) {}
@@ -117,7 +118,7 @@ export default class FoldingRangeContext {
         let lastLine = this.document.lineCount - 1;
         let verbatim = false;
         for (let idx = lastLine; idx >= 0; --idx) {
-            const line = this.document.lineAt(idx).text;
+            const line = this.document.lineAt(idx).text.trimLeft();
             if (!line.startsWith('@')) continue;
             if (!verbatim) {
                 if (line === '@bye') {

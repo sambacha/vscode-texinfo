@@ -39,5 +39,5 @@ export default class Logger implements vscode.Disposable {
         this.outputChannel.dispose();
     }
 
-    private outputChannel = vscode.window.createOutputChannel('Texinfo');
+    private readonly outputChannel = vscode.window.createOutputChannel('Texinfo');
 }

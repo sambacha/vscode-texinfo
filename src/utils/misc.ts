@@ -32,9 +32,9 @@ import { ExecResult } from './types';
  * @returns The output data, or `undefined` if execution fails.
  */
 export function exec(path: string, args: string[], maxBuffer: number) {
-    return new Promise<ExecResult>(resolve => child_process.execFile(path, args, { maxBuffer: maxBuffer },
-        (error, stdout, stderr) => resolve(
-            error ? { error: stderr ? stderr : error.message } : { data: stdout, error: stderr })));
+    return new Promise<ExecResult>(resolve => child_process.execFile(path, args,
+        { env: { LC_MESSAGES: 'en_US' }, maxBuffer: maxBuffer }, (error, stdout, stderr) =>
+            resolve(error ? { error: stderr ? stderr : error.message } : { data: stdout, error: stderr })));
 }
 
 /**

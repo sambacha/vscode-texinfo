@@ -19,7 +19,7 @@ minify-xml --output extension.vsixmanifest{,}
 cd extension
 # Minify JSON files.
 json -j0 -I -e "$PACKAGE_JSON_CLEANUP_JS" -f package.json
-json5 -o package.json{,}
+sed -i '' -e '2d' package.json
 json5 -o language-configuration.json{,}
 # Remove comments from Markdown files.
 sed -i '' -e '1,8d' README.md CHANGELOG.md

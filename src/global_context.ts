@@ -60,13 +60,9 @@ export default class GlobalContext {
             vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(this), '@'),
             vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider(this)),
             vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider(this)),
-            vscode.workspace.onDidChangeConfiguration(this.refreshOptions),
+            vscode.workspace.onDidChangeConfiguration(() => this._options = undefined),
         );
     }
 
     private _options?: Options;
-
-    private refreshOptions() {
-        this._options = undefined;
-    }
 }

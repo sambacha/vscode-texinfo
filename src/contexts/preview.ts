@@ -114,6 +114,9 @@ export default class PreviewContext {
         };
     }
 
+    /**
+     * Generate script used for jumping to the corresponding location of preview with code lens.
+     */
     private get script() {
         if (!this.globalContext.options.enableCodeLens) return undefined;
         return "window.addEventListener('message', event => {" +

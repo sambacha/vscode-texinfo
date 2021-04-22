@@ -28,6 +28,11 @@ import { isDefined } from './utils/types';
  */
 export default class Diagnosis implements vscode.Disposable {
 
+    /**
+     * Remove a document's diagnostic entry from the collection.
+     * 
+     * @param document 
+     */
     delete(document: vscode.TextDocument) {
         this.diagnostics.delete(document.uri);
     }
@@ -54,9 +59,15 @@ export default class Diagnosis implements vscode.Disposable {
     private readonly diagnostics = vscode.languages.createDiagnosticCollection('texinfo');
 }
 
+/**
+ * Convert a `makeinfo` error log line to a VSCode `Diagnostic` object.
+ * 
+ * @param lineText 
+ * @returns 
+ */
 function logLineToDiagnostic(lineText: string) {
     const lineNum = parseInt(lineText) - 1;
-    // Ignore error that does not correspond a line.
+    // Ignore error that does not correspond a line in document.
     if (isNaN(lineNum)) return undefined;
     const message = lineText.substring(lineNum.toString().length + 2);
     const severity = message.startsWith('warning:') ? vscode.DiagnosticSeverity.Warning : undefined;

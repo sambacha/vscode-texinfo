@@ -46,13 +46,21 @@ export default class Indicator implements vscode.Disposable {
 
     private _canDisplayPreview = false;
 
-    private statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    private readonly statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
+    /**
+     * Calls when the status bar item is clicked.
+     */
     private async click() {
         await this.updateStatus();
         this.refresh(vscode.window.activeTextEditor);
     }
 
+    /**
+     * Refresh the show/hide status of the indicator based on given editor.
+     * 
+     * @param editor 
+     */
     private refresh(editor?: vscode.TextEditor) {
         if (editor?.document.languageId === 'texinfo') {
             this.statusBarItem.show();
@@ -61,6 +69,9 @@ export default class Indicator implements vscode.Disposable {
         }
     }
 
+    /**
+     * Update the installation status of GNU Texinfo, by checking `makeinfo --version`.
+     */
     private async updateStatus() {
         const options = this.globalContext.options;
         const output = await exec(options.makeinfo, ['--version'], options.maxSize);
