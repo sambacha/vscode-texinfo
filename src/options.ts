@@ -72,7 +72,15 @@ export default class Options {
         return this.getBoolean('preview.noWarnings');
     }
 
+    get vars() {
+        return this.getArray('vars');
+    }
+
     private readonly configuration = vscode.workspace.getConfiguration('texinfo');
+
+    private getArray(section: string) {
+        return this.configuration.get(section, <readonly string[]>[]);
+    }
 
     private getBoolean(section: string) {
         return this.configuration.get(section, false);

@@ -36,7 +36,8 @@ export default class Converter {
         this.options.noHeaders && options.push('--no-headers');
         this.options.noValidation && options.push('--no-validate');
         this.options.noWarnings && options.push('--no-warn');
-        this.options.customCSS && this.includeCustomCSS(this.options.customCSS, options);
+        this.includeCustomCSS(this.options.customCSS, options);
+        this.addVars(this.options.vars, options);
         const result = await exec(this.options.makeinfo, options.concat(this.path), this.options.maxSize);
         if (result.data !== undefined) {
             // No worry about performance here, as the DOM is lazily initialized.
@@ -50,7 +51,12 @@ export default class Converter {
 
     constructor(private readonly path: string, private readonly options: Options, private readonly logger: Logger) {}
 
+    private addVars(vars: readonly string[], options: string[]) {
+        vars.forEach(varName => options.push('-D', varName));
+    }
+
     private includeCustomCSS(cssFileURI: string, options: string[]) {
+        if (!cssFileURI) return;
         try {
             const uri = vscode.Uri.parse(cssFileURI, true);
             switch (uri.scheme) {

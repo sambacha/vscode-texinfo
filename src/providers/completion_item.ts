@@ -196,6 +196,7 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             ...blockCommand('ifhtml', 'Begin text that will appear only in HTML format'),
             ...blockCommand('ifinfo', 'Begin text that will appear only in Info format'),
             ...blockCommand('ifplaintext', 'Begin text that will appear only in plain text format'),
+            ...blockCommand('ifset', 'If the Texinfo variable is set, format the following text', 'txivar'),
             ...blockCommand('iftex', 'Begin text that will appear only in TeX format'),
             ...blockCommand('ifxml', 'Begin text that will appear only in XML format'),
             ...blockCommand('ifnotdocbook', 'Begin text to be ignored in DocBook format'),

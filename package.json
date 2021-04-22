@@ -145,16 +145,6 @@
         "configuration": {
             "title": "Texinfo",
             "properties": {
-                "texinfo.makeinfo": {
-                    "type": "string",
-                    "default": "makeinfo",
-                    "description": "Path to the `makeinfo` (or `texi2any`) command."
-                },
-                "texinfo.enableCodeLens": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Enable code lens on node identifiers which jumps to the corresponding nodes in preview."
-                },
                 "texinfo.completion.enableSnippets": {
                     "type": "boolean",
                     "default": true,
@@ -165,10 +155,26 @@
                     "default": true,
                     "description": "When snippet is enabled, hide the snippets' corresponding commands from completion items."
                 },
-                "texinfo.preview.noHeaders": {
+                "texinfo.preview.customCSS": {
+                    "type": "string",
+                    "default": "",
+                    "description": "URI of custom CSS for preview."
+                },
+                "texinfo.enableCodeLens": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable code lens on node identifiers which jumps to the corresponding nodes in preview."
+                },
+                "texinfo.preview.errorLimit": {
+                    "type": "integer",
+                    "default": 100,
+                    "minimum": 0,
+                    "description": "Max number of errors before quit when trying to display preview."
+                },
+                "texinfo.preview.localImage": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Suppress node separators in preview."
+                    "description": "Display local images in in preview."
                 },
                 "texinfo.preview.maxSize": {
                     "type": "integer",
@@ -177,11 +183,15 @@
                     "maximum": 16,
                     "description": "Max allowed size (in MiB) for the preview document."
                 },
-                "texinfo.preview.errorLimit": {
-                    "type": "integer",
-                    "default": 100,
-                    "minimum": 0,
-                    "description": "Max number of errors before quit when trying to display preview."
+                "texinfo.makeinfo": {
+                    "type": "string",
+                    "default": "makeinfo",
+                    "description": "Path to the `makeinfo` (or `texi2any`) command."
+                },
+                "texinfo.preview.noHeaders": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Suppress node separators in preview."
                 },
                 "texinfo.preview.noValidation": {
                     "type": "boolean",
@@ -193,15 +203,10 @@
                     "default": false,
                     "description": "Suppress warnings."
                 },
-                "texinfo.preview.localImage": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Display local images in in preview."
-                },
-                "texinfo.preview.customCSS": {
-                    "type": "string",
-                    "default": "",
-                    "description": "URI of custom CSS for preview."
+                "texinfo.vars": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Define variables."
                 }
             }
         },
