@@ -33,7 +33,7 @@ import { ExecResult } from './types';
  */
 export function exec(path: string, args: string[], maxBuffer: number) {
     return new Promise<ExecResult>(resolve => child_process.execFile(path, args,
-        { env: { LC_MESSAGES: 'en_US' }, maxBuffer: maxBuffer }, (error, stdout, stderr) =>
+        { env: { ...process.env, LC_MESSAGES: 'en_US' }, maxBuffer: maxBuffer }, (error, stdout, stderr) =>
             resolve(error ? { error: stderr ? stderr : error.message } : { data: stdout, error: stderr })));
 }
 
