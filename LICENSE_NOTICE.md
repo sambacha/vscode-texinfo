@@ -34,8 +34,7 @@ However, when building the project, they are downloaded, compiled, and packaged
 into a single binary file alongside with vscode-texinfo.
 
 | Project | Copyright Holder | License |
-| -       | -      | -       |
-| [Fast HTML Parser](https://github.com/taoqf/node-html-parser) | Tao Qiufeng | [MIT](https://github.com/taoqf/node-html-parser/blob/main/LICENSE) |
+| -       | -                | -       |
 | [Texinfo syntax highlighting](https://github.com/Alhadis/language-texinfo) | John Gardner | [ISC](https://github.com/Alhadis/language-texinfo/blob/master/LICENSE.md) |
 
 The following projects are required during runtime of vscode-texinfo, but as
@@ -43,5 +42,5 @@ separate programs.
 
 | Project | Copyright Holder | License |
 | -       | -                | -       |
-| [Visual Studio Code](https://github.com/microsoft/vscode) | Microsoft Corporation | [MIT](https://github.com/microsoft/vscode/blob/main/LICENSE.txt) |
-| [GNU Texinfo](https://www.gnu.org/software/texinfo) | Free Software Foundation | [GPL-3.0](https://git.savannah.gnu.org/cgit/texinfo.git/tree/COPYING)-or-later |
+| [Visual Studio Code](https://github.com/microsoft/vscode) | Microsoft Corporation    | [MIT](https://github.com/microsoft/vscode/blob/main/LICENSE.txt)               |
+| [GNU Texinfo](https://www.gnu.org/software/texinfo)       | Free Software Foundation | [GPL-3.0](https://git.savannah.gnu.org/cgit/texinfo.git/tree/COPYING)-or-later |
