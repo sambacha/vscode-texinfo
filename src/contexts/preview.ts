@@ -24,7 +24,6 @@ import * as vscode from 'vscode';
 import DocumentContext from './document';
 import Converter from '../utils/converter';
 import { getNodeHtmlRef, prompt } from '../utils/misc';
-import { Operator, Optional } from '../utils/types';
 
 /**
  * Stores information of a Texinfo document preview.
@@ -56,8 +55,9 @@ export default class PreviewContext {
         this.pendingUpdate = false;
         // Inform the user that the preview is updating if `makeinfo` takes too long.
         setTimeout(() => this.updating && this.updateTitle(), 500);
-        const { data, error } = await new Converter(this.document.fileName, this.globalContext.options, this.logger)
-            .convertToHtml(this.imageTransformer, this.script);
+        const initFile = this.globalContext.extensionPath + '/ext/html-preview.pm';
+        const converter = new Converter(this.document.fileName, initFile, this.globalContext.options, this.logger);
+        const { data, error } = await converter.toHTML(path => this.panel.webview.asWebviewUri(path), this.script);
         if (error) {
             this.logger.log(error);
             this.diagnosis.update(this.document, error);
@@ -101,18 +101,6 @@ export default class PreviewContext {
      * Whether the preview is updating.
      */
     private updating = false;
-
-    private get imageTransformer(): Optional<Operator<string>> {
-        if (!this.globalContext.options.localImage) return undefined;
-        const pathName = path.dirname(this.document.fileName);
-        return src => {
-            // Do not transform URIs of online images.
-            if (src.startsWith('https://') || src.startsWith('http://')) return src;
-            const srcUri = vscode.Uri.file(pathName + '/' + src);
-            // To display images in webviews, image URIs in HTML should be converted to VSCode-recognizable ones.
-            return this.panel.webview.asWebviewUri(srcUri).toString();
-        };
-    }
 
     /**
      * Generate script used for jumping to the corresponding location of preview with code lens.

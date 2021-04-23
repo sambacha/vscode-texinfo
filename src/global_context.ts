@@ -36,12 +36,11 @@ import FoldingRangeProvider from './providers/folding_range';
 export default class GlobalContext {
 
     readonly contextMapping = new ContextMapping(this);
-
     readonly diagnosis = new Diagnosis;
-
     readonly indicator = new Indicator(this);
-
     readonly logger = new Logger;
+
+    readonly extensionPath = this.context.extensionPath;
 
     /**
      * Note: `Options`' no singleton. Do not wire directly, always use `globalContext.options` instead.

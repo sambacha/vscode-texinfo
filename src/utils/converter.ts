@@ -19,10 +19,10 @@
  * vscode-texinfo.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ import * as path from 'path';
 import * as vscode from 'vscode';
 import Logger from '../logger';
 import Options from '../options';
-import DOM from './dom';
 import { exec } from './misc';
 import { Operator } from './types';
 
@@ -31,25 +31,27 @@ import { Operator } from './types';
  */
 export default class Converter {
 
-    async convertToHtml(imgTransformer?: Operator<string>, insertScript?: string) {
-        const options = ['-o-', '--no-split', '--html', `--error-limit=${this.options.errorLimit}`];
+    async toHTML(imgTransformer: Operator<vscode.Uri>, insertScript?: string) {
+        const newPath = imgTransformer(vscode.Uri.file(path.dirname(this.path))).toString() + '/';
+        const options = ['-o-', '--no-split', '--html', `--error-limit=${this.options.errorLimit}`,
+            `--init-file=${this.initFile}`, '-D', `__vscode_texinfo_image_uri_base ${newPath}`];
         this.options.noHeaders && options.push('--no-headers');
         this.options.noValidation && options.push('--no-validate');
         this.options.noWarnings && options.push('--no-warn');
+        if (insertScript !== undefined) {
+            options.push('--set-customization-variable', `EXTRA_HEAD <script>${insertScript}</script>`);
+        }
         this.includeCustomCSS(this.options.customCSS, options);
         this.addVars(this.options.vars, options);
-        const result = await exec(this.options.makeinfo, options.concat(this.path), this.options.maxSize);
-        if (result.data !== undefined) {
-            // No worry about performance here, as the DOM is lazily initialized.
-            const dom = new DOM(result.data);
-            imgTransformer && dom.transformImageUri(imgTransformer);
-            insertScript && dom.insertScript(insertScript);
-            result.data = dom.outerHTML;
-        }
-        return result;
+        return await exec(this.options.makeinfo, options.concat(this.path), this.options.maxSize);
     }
 
-    constructor(private readonly path: string, private readonly options: Options, private readonly logger: Logger) {}
+    constructor(
+        private readonly path: string,
+        private readonly initFile: string,
+        private readonly options: Options,
+        private readonly logger: Logger,
+    ) {}
 
     private addVars(vars: readonly string[], options: string[]) {
         vars.forEach(varName => options.push('-D', varName));

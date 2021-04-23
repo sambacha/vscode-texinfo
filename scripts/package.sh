@@ -23,7 +23,13 @@ sed -i '' -e '2d' package.json
 json5 -o language-configuration.json{,}
 # Remove comments from Markdown files.
 sed -i '' -e '1,8d' README.md CHANGELOG.md
-cd ../..
+cd ext
+# Minify Perl scripts.
+if [ -x "$(command -v perltidy)" ]; then
+    perltidy --mangle -dac -b html-preview.pm
+    rm html-preview.pm.bak
+fi
+cd ../../..
 
 # Re-package .vsix file.
 node ./scripts/make-vsix.js $VSIX_FILE_NAME

@@ -35,8 +35,7 @@
         "json5": "^2.2.0",
         "language-texinfo": "^1.0.0",
         "minify-xml": "^2.5.0",
-        "node-html-parser": "^2.2.1",
-        "ts-loader": "^9.0.2",
+        "ts-loader": "^9.1.0",
         "ts-node": "^9.1.1",
         "typescript": "^4.2.4",
         "vsce": "^1.87.0",
@@ -170,11 +169,6 @@
                     "default": 100,
                     "minimum": 0,
                     "description": "Max number of errors before quit when trying to display preview."
-                },
-                "texinfo.preview.localImage": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Display local images in in preview."
                 },
                 "texinfo.preview.maxSize": {
                     "type": "integer",

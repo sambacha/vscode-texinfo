@@ -52,10 +52,6 @@ export default class Options {
         return this.getNumber('preview.errorLimit');
     }
 
-    get localImage() {
-        return this.getBoolean('preview.localImage');
-    }
-
     get maxSize() {
         return this.getNumber('preview.maxSize') * 1024 * 1024;
     }
