@@ -19,10 +19,11 @@ minify-xml --output extension.vsixmanifest{,}
 cd extension
 # Minify JSON files.
 json -j0 -I -e "$PACKAGE_JSON_CLEANUP_JS" -f package.json
-sed -i '' -e '2d' package.json
+perl -pi -e 'chomp if eof' package.json
 json5 -o language-configuration.json{,}
 # Remove comments from Markdown files.
-sed -i '' -e '1,8d' README.md CHANGELOG.md
+tail -n +9 README.md > _ && mv _ README.md
+tail -n +9 CHANGELOG.md > _ && mv _ CHANGELOG.md
 cd ext
 # Minify Perl scripts.
 if [ -x "$(command -v perltidy)" ]; then

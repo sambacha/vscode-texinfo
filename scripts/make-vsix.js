@@ -6,7 +6,7 @@
  * this notice are preserved. This file is offered as-is, without any warranty.
  */
 
-const fs = require('fs')
+const fs = require('fs');
 const yazl = require('yazl');
 
 async function addPathToZipFile(zipFile, path) {

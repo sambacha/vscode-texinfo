@@ -21,23 +21,20 @@
 
 use strict;
 
-sub vscode_convert_texinfo_image_uri {
+sub vscode_convert_image_uri {
     my ( $self, $cmdname, $command, $args ) = @_;
 
     my $filename = $args->[0]->{'monospacetext'};
-    if (   defined($filename)
-        && rindex( $filename, 'http://',  0 ) == -1
-        && rindex( $filename, 'https://', 0 ) == -1 )
-    {
-        $self->set_conf( 'IMAGE_LINK_PREFIX',
-            $self->{'parser'}->{'values'}->{'__vscode_texinfo_image_uri_base'}
-        );
-    }
-    return &{ $self->default_commands_conversion($cmdname) }
-        ( $self, $cmdname, $command, $args );
+    my $prefix
+        = (    defined($filename)
+            && rindex( $filename, 'http://',  0 ) == -1
+            && rindex( $filename, 'https://', 0 ) == -1 )
+        ? $self->{'parser'}->{'values'}->{'__vscode_texinfo_image_uri_base'}
+        : undef;
+    $self->set_conf( 'IMAGE_LINK_PREFIX', $prefix );
+    return &{ $self->default_commands_conversion($cmdname) }(@_);
 }
 
-texinfo_register_command_formatting( 'image',
-    \&vscode_convert_texinfo_image_uri );
+texinfo_register_command_formatting( 'image', \&vscode_convert_image_uri );
 
 1;
