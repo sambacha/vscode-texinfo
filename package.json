@@ -154,15 +154,20 @@
                     "default": true,
                     "description": "When snippet is enabled, hide the snippets' corresponding commands from completion items."
                 },
-                "texinfo.preview.customCSS": {
-                    "type": "string",
-                    "default": "",
-                    "description": "URI of custom CSS for preview."
-                },
                 "texinfo.enableCodeLens": {
                     "type": "boolean",
                     "default": true,
                     "description": "Enable code lens on node identifiers which jumps to the corresponding nodes in preview."
+                },
+                "texinfo.makeinfo": {
+                    "type": "string",
+                    "default": "makeinfo",
+                    "description": "Path to the makeinfo (or texi2any) command."
+                },
+                "texinfo.preview.customCSS": {
+                    "type": "string",
+                    "default": "",
+                    "description": "URI of custom CSS for preview."
                 },
                 "texinfo.preview.errorLimit": {
                     "type": "integer",
@@ -170,17 +175,17 @@
                     "minimum": 0,
                     "description": "Max number of errors before quit when trying to display preview."
                 },
+                "texinfo.preview.includePaths": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Extra paths to search for @include files."
+                },
                 "texinfo.preview.maxSize": {
                     "type": "integer",
                     "default": 2,
                     "minimum": 1,
                     "maximum": 16,
                     "description": "Max allowed size (in MiB) for the preview document."
-                },
-                "texinfo.makeinfo": {
-                    "type": "string",
-                    "default": "makeinfo",
-                    "description": "Path to the `makeinfo` (or `texi2any`) command."
                 },
                 "texinfo.preview.noHeaders": {
                     "type": "boolean",
@@ -197,10 +202,10 @@
                     "default": false,
                     "description": "Suppress warnings."
                 },
-                "texinfo.vars": {
+                "texinfo.preview.variables": {
                     "type": "array",
                     "default": [],
-                    "description": "Define variables."
+                    "description": "Define variables (as with @set)."
                 }
             }
         },

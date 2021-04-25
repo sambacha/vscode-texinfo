@@ -19,7 +19,7 @@
  * vscode-texinfo.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- import * as path from 'path';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import Logger from '../logger';
 import Options from '../options';
@@ -41,8 +41,9 @@ export default class Converter {
         if (insertScript !== undefined) {
             options.push('--set-customization-variable', `EXTRA_HEAD <script>${insertScript}</script>`);
         }
+        this.addIncludePaths(this.options.includePaths, options);
+        this.defineVariables(this.options.variables, options);
         this.includeCustomCSS(this.options.customCSS, options);
-        this.addVars(this.options.vars, options);
         return await exec(this.options.makeinfo, options.concat(this.path), this.options.maxSize);
     }
 
@@ -53,8 +54,13 @@ export default class Converter {
         private readonly logger: Logger,
     ) {}
 
-    private addVars(vars: readonly string[], options: string[]) {
-        vars.forEach(varName => options.push('-D', varName));
+    private addIncludePaths(paths: readonly string[], options: string[]) {
+        const separator = process.platform === 'win32' ? ';' : ':';
+        options.push('-I', paths.join(separator));
+    }
+
+    private defineVariables(variables: readonly string[], options: string[]) {
+        variables.forEach(varName => options.push('-D', varName));
     }
 
     private includeCustomCSS(cssFileURI: string, options: string[]) {

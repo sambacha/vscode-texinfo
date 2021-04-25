@@ -52,6 +52,10 @@ export default class Options {
         return this.getNumber('preview.errorLimit');
     }
 
+    get includePaths() {
+        return this.getArray('preview.includePaths');
+    }
+
     get maxSize() {
         return this.getNumber('preview.maxSize') * 1024 * 1024;
     }
@@ -68,14 +72,14 @@ export default class Options {
         return this.getBoolean('preview.noWarnings');
     }
 
-    get vars() {
-        return this.getArray('vars');
+    get variables() {
+        return this.getArray('preview.variables');
     }
 
     private readonly configuration = vscode.workspace.getConfiguration('texinfo');
 
-    private getArray(section: string) {
-        return this.configuration.get(section, <readonly string[]>[]);
+    private getArray(section: string): readonly string[] {
+        return this.configuration.get(section, []);
     }
 
     private getBoolean(section: string) {
