@@ -36,6 +36,7 @@ export default class Converter {
         const options = ['-o-', '--no-split', '--html', `--error-limit=${this.options.errorLimit}`,
             `--init-file=${this.initFile}`, '-D', `__vscode_texinfo_image_uri_base ${newPath}`];
         this.options.noHeaders && options.push('--no-headers');
+        this.options.noNumberSections && options.push('--no-number-sections');
         this.options.noValidation && options.push('--no-validate');
         this.options.noWarnings && options.push('--no-warn');
         if (insertScript !== undefined) {

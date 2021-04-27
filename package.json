@@ -192,6 +192,11 @@
                     "default": false,
                     "description": "Suppress node separators in preview."
                 },
+                "texinfo.preview.noNumberSections": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Do not display chapter and section numbers in preview"
+                },
                 "texinfo.preview.noValidation": {
                     "type": "boolean",
                     "default": false,

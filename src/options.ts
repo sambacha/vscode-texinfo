@@ -64,6 +64,10 @@ export default class Options {
         return this.getBoolean('preview.noHeaders');
     }
 
+    get noNumberSections() {
+        return this.getBoolean('preview.noNumberSections');
+    }
+
     get noValidation() {
         return this.getBoolean('preview.noValidation');
     }
