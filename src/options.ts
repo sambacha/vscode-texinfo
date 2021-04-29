@@ -36,6 +36,10 @@ export default class Options {
         return this.getBoolean('completion.hideSnippetCommands');
     }
 
+    get noWarnings() {
+        return this.getBoolean('diagnosis.noWarnings');
+    }
+
     get enableCodeLens() {
         return this.getBoolean('enableCodeLens');
     }
@@ -70,10 +74,6 @@ export default class Options {
 
     get noValidation() {
         return this.getBoolean('preview.noValidation');
-    }
-
-    get noWarnings() {
-        return this.getBoolean('preview.noWarnings');
     }
 
     get variables() {

@@ -102,9 +102,11 @@ export default class ContextMapping implements vscode.Disposable {
         const document = editor.document;
         // Only show preview for saved files, as we're not gonna send document content to `makeinfo` via STDIN.
         // Instead, the file will be loaded from disk.
-        if (document.isUntitled) {
-            if (!await prompt('Save this document to display preview.', 'Save')) return;
-            if (!await document.save()) return;
+        if (document.isUntitled && !await prompt('Save this document to display preview.', 'Save')) {
+            return;
+        }
+        if (document.isDirty && !await document.save()) {
+            return;
         }
         this.getDocumentContext(document).initPreview().show();
     }

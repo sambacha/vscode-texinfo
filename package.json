@@ -154,6 +154,11 @@
                     "default": true,
                     "description": "When snippet is enabled, hide the snippets' corresponding commands from completion items."
                 },
+                "texinfo.diagnosis.noWarnings": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Do not show warnings in diagnosis."
+                },
                 "texinfo.enableCodeLens": {
                     "type": "boolean",
                     "default": true,
@@ -201,11 +206,6 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Supress node cross-reference validation."
-                },
-                "texinfo.preview.noWarnings": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Suppress warnings."
                 },
                 "texinfo.preview.variables": {
                     "type": "array",

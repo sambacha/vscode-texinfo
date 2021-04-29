@@ -39,9 +39,7 @@ export default class Converter {
         this.options.noNumberSections && options.push('--no-number-sections');
         this.options.noValidation && options.push('--no-validate');
         this.options.noWarnings && options.push('--no-warn');
-        if (insertScript !== undefined) {
-            options.push('--set-customization-variable', `EXTRA_HEAD <script>${insertScript}</script>`);
-        }
+        insertScript !== undefined && options.push('-c', `EXTRA_HEAD <script>${insertScript}</script>`);
         this.addIncludePaths(this.options.includePaths, options);
         this.defineVariables(this.options.variables, options);
         this.includeCustomCSS(this.options.customCSS, options);
