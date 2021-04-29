@@ -113,17 +113,18 @@ binary release, which is proprietary. You can also build it from
 @url{https://github.com/microsoft/vscode, source} yourself.
 
 @quotation Note
-Theoretically vscode-texinfo can be installed on any version of Visual Studio
-Code since 1.40, but not all versions are tested. It's recommended to install a
-latest release.
+Theoretically vscode-texinfo can work on any version of Visual Studio Code since
+1.40, but not all versions are tested. It's recommended to install a latest
+release.
 @end quotation
 
 The easiest way to install vscode-texinfo is from the extension marketplace.
 Click the ``Extensions'' tab on Visual Studio Code's sidebar, type ``texinfo''
-and you can find and install this extension.
+and you can find and install this extension (Extension ID:
+@code{cismonx.texinfo}).
 
 @menu
-* Manual Installation::  Download and install vscode-texinfo manually
+* Manual Installation::  Download and install vscode-texinfo manually.
 * Build from Source::    Build vscode-texinfo from source code.
 @end menu
 
@@ -413,22 +414,37 @@ There are some other settings which can affect the behaviour and appearance of
 HTML previews.
 
 @itemize @bullet
-@item @code{texinfo.preview.noHeaders}: When enabled, headers and menus are no
-longer displayed in preview (by passing @code{--no-headers} to @code{makeinfo}).
+@item @code{texinfo.preview.errorLimit}: Number of errors which @code{makeinfo}
+can produce before quitting. (@code{--error-limit=NUM})
+@item @code{texinfo.preview.includePaths}: Array of extra paths to search for
+@code{@@include} files. (@code{-I PATH})
 @item @code{texinfo.preview.maxSize}: Max allowed size for the genereated HTML
 file before it's displayed in the preview. Files larger than this limit will
 trigger an error.
-@item @code{texinfo.preview.errorLimit}: Number of errors which @code{makeinfo}
-can produce before quitting. (@code{--error-limit=NUM})
+@item @code{texinfo.preview.noHeaders}: When enabled, headers and menus are no
+longer displayed in preview. (@code{--no-headers})
+@item @code{texinfo.preview.noNumberSections}: When enabled, do not display
+chapter and section numbers in preview. (@code{--no-number-sections})
 @item @code{texinfo.preview.noValidation}: When enabled, node cross-references
 are not validated. (@code{--no-validate})
-@item @code{texinfo.preview.noWarnings}: When enabled, @code{makeinfo} does not
-produce any warnings. (@code{--no-warn})
+@item @code{texinfo.preview.variables}: Array of variables to define (as with
+@code{@@set}). If a variable has a value, use the ASCII space character to
+separate key and value.
 @end itemize
 
 
 @node Diagnosis
 @section Diagnosis
+
+Diagnosis can help you locate syntactic and semantic problems in a Texinfo
+document, by parsing the error output of @code{makeinfo} and display the
+diagnostic information on the editor.
+
+The diagnostic information of a document is calculated automatically, whenever
+an attempt to generate preview is made.
+
+By default, all error and warning messages are shown. To disable warnings,
+switch on the configuration item @code{texinfo.diagnosis.noWarnings}.
 
 
 @bye
