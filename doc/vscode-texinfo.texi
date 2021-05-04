@@ -10,6 +10,12 @@
 @set vscode-api-url   https://code.visualstudio.com/api
 @set gnu-texinfo-docs https://www.gnu.org/software/texinfo/manual/texinfo
 
+@tex
+\global\def\linkcolor{0 0 1}
+\global\def\urlcolor{0 0 1}
+\global\urefurlonlylinktrue
+@end tex
+
 @copying
 This manual is for vscode-texinfo (version @value{VERSION}), an extension of
 Visual Studio Code.
@@ -75,10 +81,10 @@ developers.
 
 We believe that Texinfo deserves more users, for it is an excellent format for
 writing software manuals, as well as other technical materials. We chose Visual
-Studio Code, one of the most popular code editors as of 2020, and developed this
-very extension, vscode-texinfo, which provides some useful features for Visual
-Studio Code regarding the Texinfo format, in the hope that more developers can
-benefit from it.
+Studio Code, one of the most popular code editors as of year 2020, and developed
+this very extension, vscode-texinfo, which provides some useful features for
+Visual Studio Code regarding the Texinfo format, in the hope that more
+developers can benefit from it.
 
 vscode-texinfo is free software. You can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -109,19 +115,19 @@ Visual Studio Code.
 
 It is recommended to use a free distribution of Visual Studio Code,
 @url{https://github.com/VSCodium/vscodium, VSCodium}, instead of the official
-binary release, which is proprietary. You can also build it from
+binary release, which is proprietary software. You can also build it from
 @url{https://github.com/microsoft/vscode, source} yourself.
 
 @quotation Note
-Theoretically vscode-texinfo can work on any version of Visual Studio Code since
-1.40, but not all versions are tested. It's recommended to install a latest
-release.
+Theoretically vscode-texinfo can work with any version of Visual Studio Code
+since 1.40, but not all versions are tested. It's recommended to install a
+latest release.
 @end quotation
 
 The easiest way to install vscode-texinfo is from the extension marketplace.
 Click the ``Extensions'' tab on Visual Studio Code's sidebar, type ``texinfo''
 and you can find and install this extension (Extension ID:
-@code{cismonx.texinfo}).
+@code{CismonX.texinfo}).
 
 @menu
 * Manual Installation::  Download and install vscode-texinfo manually.
@@ -140,6 +146,7 @@ proprietary Visual Studio Marketplace.
 Before you install a @code{.vsix} file downloaded from a third party,
 you should check whether the file matches a trusted signature:
 
+@ifhtml
 @example
 wget -O cismonx.gpg.asc "https://sv.gnu.org/people/viewgpg.php?user_id=214244"
 gpg --import cismonx.gpg.asc
@@ -147,6 +154,20 @@ gpg --import cismonx.gpg.asc
 wget https://dl.sv.gnu.org/releases/vscode-texinfo/texinfo-0.2.0.vsix.sig.asc
 gpg --verify texinfo-0.2.0.vsix.sig.asc texinfo-0.2.0.vsix
 @end example
+@end ifhtml
+
+@ifnothtml
+@example
+wget -O cismonx.gpg.asc \
+    "https://sv.gnu.org/people/viewgpg.php?user_id=214244"
+gpg --import cismonx.gpg.asc
+
+wget "https://dl.sv.gnu.org/releases/vscode-texinfo/
+    texinfo-0.2.0.vsix.sig.asc"
+gpg --verify texinfo-0.2.0.vsix.sig.asc texinfo-0.2.0.vsix
+@end example
+@end ifnothtml
+
 
 Finally, install the @code{.vsix} file to Visual Studio Code via command
 palette: @code{Extensions: Install from VSIX...}.
@@ -164,7 +185,7 @@ git clone https://git.sv.gnu.org/git/vscode-texinfo.git
 cd vscode-texinfo
 @end example
 
-Then, install dependencies via Node Package Manager, and build the project:
+Then, install dependencies with Node Package Manager, and build the project:
 
 @example
 npm ci
@@ -172,7 +193,7 @@ npm run package
 @end example
 
 If the operation is successful, a @code{texinfo-@{VERSION@}.vsix} file will be
-generated under the root directory of the repository.
+generated under the root directory of the source code repository.
 
 
 @node Basic Usage
@@ -245,7 +266,9 @@ code snippets is disabled by default. You can re-enable it on by switching off
 @quotation Note
 Code completion provided by vscode-texinfo does not recognize much of Texinfo's
 semantics, and completion may appear in contexts where it should not exist. This
-is a known bug (which cannot be fixed in near future).
+is a known bug (which cannot be fixed in near future, unless a
+@url{https://microsoft.github.io/language-server-protocol/, language server} for
+Texinfo is implemented, which is not trivial).
 @end quotation
 
 
@@ -263,7 +286,7 @@ Three types of code blocks can be recognized by vscode-texinfo:
 @item Consecutive lines of comments
 @end itemize
 
-While editing a Texinfo document, you can collape or expand a code block either
+While editing a Texinfo document, you can collapse or expand a code block either
 by clicking the folding icon to the left of the first line of the block, or by
 invoking a corresponding command. See the Visual Studio Code User Guide for
 @url{@value{vscode-docs-url}/editor/codebasics#_folding, details}.
@@ -322,7 +345,7 @@ To check whether GNU Texinfo is correctly installed and configured, see
 @node Version Indicator
 @section Version Indicator
 
-The version indicator is as status bar item with text ``GNU Texinfo''. It is
+The version indicator is a status bar item with text ``GNU Texinfo''. It is
 located on the right side of the status bar, which is shown when the active text
 editor contains a Texinfo document.
 
