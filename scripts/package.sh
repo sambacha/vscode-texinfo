@@ -14,8 +14,9 @@ vsce package --baseContentUrl=$(json -f package.json repository.url)/tree
 
 unzip -d $VSIX_FILE_NAME{.d,}
 cd $VSIX_FILE_NAME.d
-minify-xml --output \[Content_Types\].xml{,}
-minify-xml --output extension.vsixmanifest{,}
+MINIFY_XML_OPTIONS='--no-shorten-namespaces --no-remove-unused-namespaces --no-remove-unused-default-namespace'
+minify-xml $MINIFY_XML_OPTIONS --output \[Content_Types\].xml{,}
+minify-xml $MINIFY_XML_OPTIONS --output extension.vsixmanifest{,}
 cd extension
 # Minify JSON files.
 json -j0 -I -e "$PACKAGE_JSON_CLEANUP_JS" -f package.json

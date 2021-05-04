@@ -9,7 +9,7 @@
     "displayName": "Texinfo Language Support",
     "description": "Texinfo language support for Visual Studio Code",
     "publisher": "cismonx",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "author": {
         "name": "CismonX",
         "email": "admin@cismon.net",
