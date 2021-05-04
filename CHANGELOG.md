@@ -8,7 +8,7 @@ this notice are preserved. This file is offered as-is, without any warranty.
 
 # Changelog
 
-## v0.2.0
+## v0.2.0 - 05/05/2021
 
 * Add version indicator (as status bar item).
 * Add user manual.
