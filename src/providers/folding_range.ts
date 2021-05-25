@@ -25,10 +25,12 @@ import GlobalContext from '../global_context';
 /**
  * Provide folding range info for Texinfo documents.
  */
-export default class FoldingRangeProvider implements vscode.FoldingRangeProvider {
-
+export default class FoldingRangeProvider
+    implements vscode.FoldingRangeProvider
+{
     provideFoldingRanges(document: vscode.TextDocument) {
-        return this._globalContext.contextMapping.getDocumentContext(document).foldingRange.foldingRanges;
+        return this._globalContext.contextMapping.getDocumentContext(document)
+            .foldingRange.foldingRanges;
     }
 
     constructor(private readonly _globalContext: GlobalContext) {}

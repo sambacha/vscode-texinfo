@@ -46,7 +46,10 @@ export default class DocumentContext {
         this._preview = undefined;
     }
 
-    constructor(readonly globalContext: GlobalContext, readonly document: vscode.TextDocument) {}
+    constructor(
+        readonly globalContext: GlobalContext,
+        readonly document: vscode.TextDocument,
+    ) {}
 
     private _preview?: PreviewContext;
 }

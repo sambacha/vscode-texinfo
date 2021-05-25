@@ -27,7 +27,8 @@ import * as vscode from 'vscode';
 export default class Logger implements vscode.Disposable {
 
     log(message: string) {
-        const dateTime = new Date().toLocaleString(undefined, { hour12: false });
+        const dateTime = new Date()
+            .toLocaleString(undefined, { hour12: false });
         this._outputChannel.appendLine(`[ ${dateTime} ]\n${message}`);
     }
 
@@ -39,5 +40,6 @@ export default class Logger implements vscode.Disposable {
         this._outputChannel.dispose();
     }
 
-    private readonly _outputChannel = vscode.window.createOutputChannel('Texinfo');
+    private readonly _outputChannel
+        = vscode.window.createOutputChannel('Texinfo');
 }

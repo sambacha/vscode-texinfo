@@ -32,18 +32,25 @@ import { Operator } from './types';
 export default class Converter {
 
     async toHTML(imgTransformer: Operator<vscode.Uri>, insertScript?: string) {
-        const newPath = imgTransformer(vscode.Uri.file(path.dirname(this._path))).toString() + '/';
-        const options = ['-o-', '--no-split', '--html', `--error-limit=${this._options.errorLimit}`,
-            `--init-file=${this._initFile}`, '-D', `__vscode_texinfo_image_uri_base ${newPath}`];
+        const pathUri = vscode.Uri.file(path.dirname(this._path));
+        const newPath = imgTransformer(pathUri).toString() + '/';
+        const options = ['-o-', '--no-split', '--html',
+            `--error-limit=${this._options.errorLimit}`,
+            `--init-file=${this._initFile}`,
+            '-D', `__vscode_texinfo_image_uri_base ${newPath}`,
+        ];
         this._options.noHeaders && options.push('--no-headers');
         this._options.noNumberSections && options.push('--no-number-sections');
         this._options.noValidation && options.push('--no-validate');
         this._options.noWarnings && options.push('--no-warn');
-        insertScript !== undefined && options.push('-c', `EXTRA_HEAD <script>${insertScript}</script>`);
+        if (insertScript !== undefined) {
+            options.push('-c', `EXTRA_HEAD <script>${insertScript}</script>`);
+        }
         this._addIncludePaths(this._options.includePaths, options);
         this._defineVariables(this._options.variables, options);
         this._includeCustomCSS(this._options.customCSS, options);
-        return await exec(this._options.makeinfo, options.concat(this._path), this._options.maxSize);
+        return await exec(this._options.makeinfo, options.concat(this._path),
+            this._options.maxSize);
     }
 
     constructor(
@@ -78,7 +85,8 @@ export default class Converter {
                     throw URIError;
             }
         } catch (e) {
-            this._logger.log(`Cannot load custom CSS. Invalid URI: '${cssFileURI}'`);
+            this._logger
+                .log(`Cannot load custom CSS. Invalid URI: '${cssFileURI}'`);
         }
     }
 }

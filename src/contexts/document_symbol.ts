@@ -55,15 +55,19 @@ export default class DocumentSymbolContext {
     }
 }
 
-function foldingRangeToSymbols(ranges: readonly Optional<FoldingRange>[], start: number, end: number) {
+function foldingRangeToSymbols(
+    ranges: readonly Optional<FoldingRange>[],
+    start: number,
+    end: number,
+) {
     const symbols = <vscode.DocumentSymbol[]>[];
     for (let idx = start; idx < end; ++idx) {
         const node = ranges[idx];
         if (node === undefined) continue;
         const range = lineNumToRange(idx, node.end);
         const selectionRange = lineNumToRange(idx);
-        const symbol = new vscode.DocumentSymbol('@' + node.name, node.detail, vscode.SymbolKind.String,
-            range, selectionRange);
+        const symbol = new vscode.DocumentSymbol('@' + node.name, node.detail,
+            vscode.SymbolKind.String, range, selectionRange);
         symbol.children = foldingRangeToSymbols(ranges, idx + 1, node.end);
         symbols.push(symbol);
         idx = node.end;

@@ -40,10 +40,12 @@ export default class GlobalContext {
     readonly indicator = new Indicator(this);
     readonly logger = new Logger;
 
-    readonly extensionPath = this.context.extensionPath;
+    readonly path = this.context.extensionPath;
 
     /**
-     * Note: `Options`' no singleton. Do not wire directly, always use `globalContext.options` instead.
+     * Note: `Options`' no singleton.
+     * 
+     * Do not wire directly, always use `globalContext.options` instead.
      */
     get options() {
         return this._options ??= new Options;
@@ -54,12 +56,18 @@ export default class GlobalContext {
     }
 
     constructor(private readonly context: vscode.ExtensionContext) {
-        this.subscribe(this.contextMapping, this.diagnosis, this.indicator, this.logger,
-            vscode.languages.registerCodeLensProvider('texinfo', new CodeLensProvider(this)),
-            vscode.languages.registerCompletionItemProvider('texinfo', new CompletionItemProvider(this), '@'),
-            vscode.languages.registerDocumentSymbolProvider('texinfo', new DocumentSymbolProvider(this)),
-            vscode.languages.registerFoldingRangeProvider('texinfo', new FoldingRangeProvider(this)),
-            vscode.workspace.onDidChangeConfiguration(() => this._options = undefined),
+        this.subscribe(
+            this.contextMapping, this.diagnosis, this.indicator, this.logger,
+            vscode.languages.registerCodeLensProvider('texinfo',
+                new CodeLensProvider(this)),
+            vscode.languages.registerCompletionItemProvider('texinfo',
+                new CompletionItemProvider(this), '@'),
+            vscode.languages.registerDocumentSymbolProvider('texinfo',
+                new DocumentSymbolProvider(this)),
+            vscode.languages.registerFoldingRangeProvider('texinfo',
+                new FoldingRangeProvider(this)),
+            vscode.workspace.onDidChangeConfiguration(
+                () => this._options = undefined),
         );
     }
 

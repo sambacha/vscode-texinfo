@@ -81,10 +81,10 @@ developers.
 
 We believe that Texinfo deserves more users, for it is an excellent format for
 writing software manuals, as well as other technical materials. We chose Visual
-Studio Code, one of the most popular code editors as of year 2020, and developed
-this very extension, vscode-texinfo, which provides some useful features for
-Visual Studio Code regarding the Texinfo format, in the hope that more
-developers can benefit from it.
+Studio Code, one of the most popular code editors as of year 2020, and
+developed this very extension, vscode-texinfo, which provides some useful
+features for Visual Studio Code regarding the Texinfo format, in the hope that
+more developers can benefit from it.
 
 vscode-texinfo is free software. You can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -100,8 +100,8 @@ version 3 of the License}, or (at your option) any later version.
 @section Contributing
 
 This project is hosted on @url{https://sv.gnu.org/p/vscode-texinfo, Savannah}.
-Any kind of contribution is welcome, including bug reports, patches, and general
-discussions regarding the usage of vscode-texinfo.
+Any kind of contribution is welcome, including bug reports, patches, and
+general discussions regarding the usage of vscode-texinfo.
 
 Before you submit something, please make sure that you have read this manual,
 and no one else has posted the same content.
@@ -146,13 +146,15 @@ proprietary Visual Studio Marketplace.
 Before you install a @code{.vsix} file downloaded from a third party,
 you should check whether the file matches a trusted signature:
 
+@set vsix-name texinfo-@value{VERSION}.vsix
+
 @ifhtml
 @example
 wget -O cismonx.gpg.asc "https://sv.gnu.org/people/viewgpg.php?user_id=214244"
 gpg --import cismonx.gpg.asc
 
-wget https://dl.sv.gnu.org/releases/vscode-texinfo/texinfo-0.2.0.vsix.sig.asc
-gpg --verify texinfo-0.2.0.vsix.sig.asc texinfo-0.2.0.vsix
+wget https://dl.sv.gnu.org/releases/vscode-texinfo/@value{vsix-name}.sig.asc
+gpg --verify @value{vsix-name}.sig.asc @value{vsix-name}
 @end example
 @end ifhtml
 
@@ -163,8 +165,8 @@ wget -O cismonx.gpg.asc \
 gpg --import cismonx.gpg.asc
 
 wget "https://dl.sv.gnu.org/releases/vscode-texinfo/
-    texinfo-0.2.0.vsix.sig.asc"
-gpg --verify texinfo-0.2.0.vsix.sig.asc texinfo-0.2.0.vsix
+    @value{vsix-name}.sig.asc"
+gpg --verify @value{vsix-name}.sig.asc @value{vsix-name}
 @end example
 @end ifnothtml
 
@@ -223,8 +225,8 @@ suffix @code{.texi}, @code{.txi} or @code{.texinfo}, this process should be
 automatic. If not, find and click the status bar item with ``Select Language
 Mode'' tooltip, then choose ``Texinfo'' in the menu which just popped up.
 
-If syntax highlighting does not look satisfactory, try another color theme where
-keyword/operator colors are distinct. Some good examples are Solarized
+If syntax highlighting does not look satisfactory, try another color theme
+where keyword/operator colors are distinct. Some good examples are Solarized
 Light/Dark, Monokai, etc.
 
 For details about how to @url{@value{vscode-docs-url}
@@ -265,10 +267,10 @@ code snippets is disabled by default. You can re-enable it on by switching off
 
 @quotation Note
 Code completion provided by vscode-texinfo does not recognize much of Texinfo's
-semantics, and completion may appear in contexts where it should not exist. This
-is a known bug (which cannot be fixed in near future, unless a
-@url{https://microsoft.github.io/language-server-protocol/, language server} for
-Texinfo is implemented, which is not trivial).
+semantics, and completion may appear in contexts where it should not exist.
+This is a known bug (which cannot be fixed in near future, unless a
+@url{https://microsoft.github.io/language-server-protocol/, language server}
+for Texinfo is implemented, which is not trivial).
 @end quotation
 
 
@@ -286,14 +288,15 @@ Three types of code blocks can be recognized by vscode-texinfo:
 @item Consecutive lines of comments
 @end itemize
 
-While editing a Texinfo document, you can collapse or expand a code block either
-by clicking the folding icon to the left of the first line of the block, or by
-invoking a corresponding command. See the Visual Studio Code User Guide for
-@url{@value{vscode-docs-url}/editor/codebasics#_folding, details}.
+While editing a Texinfo document, you can collapse or expand a code block
+either by clicking the folding icon to the left of the first line of the block,
+or by invoking a corresponding command. See the Visual Studio Code User Guide
+for @url{@value{vscode-docs-url}/editor/codebasics#_folding, details}.
 
 @quotation Note
 Due to performance issues, the block hierarchy of a Texinfo document is
-re-calculated only when total line count changes, or when the document is saved.
+re-calculated only when total line count changes, or when the document is
+saved.
 @end quotation
 
 
@@ -314,10 +317,10 @@ See the Visual Studio Code User Guide for more information about
 Some more advanced features of vscode-texinfo is available if GNU Texinfo is
 correctly installed and configured on your device.
 
-@url{https://www.gnu.org/software/texinfo, GNU Texinfo} is the official (and the
-only known) full implementation of Texinfo. On most platforms, it can be easily
-installed using a package manager. For example, if you're using a Debian-based
-GNU/Linux distribution, you can install GNU Texinfo with:
+@url{https://www.gnu.org/software/texinfo, GNU Texinfo} is the official (and
+the only known) full implementation of Texinfo. On most platforms, it can be
+easily installed using a package manager. For example, if you're using a
+Debian-based GNU/Linux distribution, you can install GNU Texinfo with:
 
 @example
 sudo apt-get install texinfo
@@ -329,8 +332,8 @@ plain text, etc.
 
 To specify the location of @code{makeinfo}, edit the configuration item
 @code{texinfo.makeinfo}. If it's not located in @code{$PATH}, an absolute path
-should be specified. Also note that the path should not contain any command line
-arguments.
+should be specified. Also note that the path should not contain any command
+line arguments.
 
 To check whether GNU Texinfo is correctly installed and configured, see
 @ref{Version Indicator}.
@@ -346,20 +349,20 @@ To check whether GNU Texinfo is correctly installed and configured, see
 @section Version Indicator
 
 The version indicator is a status bar item with text ``GNU Texinfo''. It is
-located on the right side of the status bar, which is shown when the active text
-editor contains a Texinfo document.
+located on the right side of the status bar, which is shown when the active
+text editor contains a Texinfo document.
 
 If you see a @b{check icon} and the version of GNU Texinfo, then
 congratulations, you're all set. If a @b{cross icon} is displayed, it means
 that GNU Texinfo is @emph{not} correctly installed and configured.
 
 If a @b{warning icon} is displayed, it means that the currently installed GNU
-Texinfo is outdated, or has an unrecognizable version number. In that case, some
-features may not work as expected.
+Texinfo is outdated, or has an unrecognizable version number. In that case,
+some features may not work as expected.
 
 @quotation Note
-The version indicator does not automatically refresh since the activation of the
-extension. To manually trigger a refresh, click the status bar item.
+The version indicator does not automatically refresh since the activation of
+the extension. To manually trigger a refresh, click the status bar item.
 @end quotation
 
 
@@ -371,9 +374,9 @@ to see how the document looks like when displayed online.
 
 In the active text editor which contains a Texinfo document, click the ``Show
 Preview'' button on the top right of the editor. A webview will be created in a
-split editor (if not already), and the HTML preview will be displayed there. The
-``Show Preview'' command is also available in command palette, and has a default
-@code{Ctrl+K V} key binding (on GNU/Linux).
+split editor (if not already), and the HTML preview will be displayed there.
+The ``Show Preview'' command is also available in command palette, and has a
+default @code{Ctrl+K V} key binding (on GNU/Linux).
 
 The HTML used for preview is generated by @code{makeinfo --html --nosplit}, and
 Texinfo source is read from disk, instead of taken from a
@@ -402,11 +405,12 @@ means that the preview is being updated.
 
 You can use a custom CSS to make the HTML preview look prettier. To configure
 this, edit the configuration option @code{texinfo.preview.customCSS}. The CSS
-file can either be an online or a local (starting with @code{file://}) resource.
+file can either be an online or a local (starting with @code{file://})
+resource.
 
-A good example is @url{https://www.gnu.org/software/gnulib/manual.css}, which is
-popular among manuals of GNU projects. (Note: May require some tinkering when
-used with darker editor themes)
+A good example is @url{https://www.gnu.org/software/gnulib/manual.css}, which
+is popular among manuals of GNU projects. (Note: May require some tinkering
+when used with darker editor themes)
 
 
 @node Goto Node

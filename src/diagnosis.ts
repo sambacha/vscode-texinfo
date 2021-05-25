@@ -47,7 +47,7 @@ export default class Diagnosis implements vscode.Disposable {
         const fileName = document.uri.path;
         const diagnostics = logText.split('\n')
             .filter(line => line.startsWith(fileName))  
-            .map(line => logLineToDiagnostic(line.substring(fileName.length + 1)))
+            .map(line => logToDiagnostic(line.substring(fileName.length + 1)))
             .filter(isDefined);
         this._diagnostics.set(document.uri, diagnostics);
     }
@@ -56,7 +56,8 @@ export default class Diagnosis implements vscode.Disposable {
         this._diagnostics.dispose();
     }
 
-    private readonly _diagnostics = vscode.languages.createDiagnosticCollection('texinfo');
+    private readonly _diagnostics
+        = vscode.languages.createDiagnosticCollection('texinfo');
 }
 
 /**
@@ -65,11 +66,12 @@ export default class Diagnosis implements vscode.Disposable {
  * @param lineText 
  * @returns 
  */
-function logLineToDiagnostic(lineText: string) {
+function logToDiagnostic(lineText: string) {
     const lineNum = parseInt(lineText) - 1;
     // Ignore error that does not correspond a line in document.
     if (isNaN(lineNum)) return undefined;
     const message = lineText.substring(lineNum.toString().length + 2);
-    const severity = message.startsWith('warning:') ? vscode.DiagnosticSeverity.Warning : undefined;
+    const severity = message.startsWith('warning:')
+        ? vscode.DiagnosticSeverity.Warning : undefined;
     return new vscode.Diagnostic(lineNumToRange(lineNum), message, severity);
 }

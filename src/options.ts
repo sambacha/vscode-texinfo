@@ -80,7 +80,8 @@ export default class Options {
         return this._getArray('preview.variables');
     }
 
-    private readonly _configuration = vscode.workspace.getConfiguration('texinfo');
+    private readonly _configuration
+        = vscode.workspace.getConfiguration('texinfo');
 
     private _getArray(section: string): readonly string[] {
         return this._configuration.get(section, []);

@@ -30,7 +30,8 @@ export default class CodeLensProvider implements vscode.CodeLensProvider {
     provideCodeLenses(document: vscode.TextDocument) {
         if (!this._globalContext.options.enableCodeLens) return undefined;
         if (!this._globalContext.indicator.canDisplayPreview) return undefined;
-        return this._globalContext.contextMapping.getDocumentContext(document).foldingRange.nodeValues;
+        return this._globalContext.contextMapping.getDocumentContext(document)
+            .foldingRange.nodeValues;
     }
 
     constructor(private readonly _globalContext: GlobalContext) {}

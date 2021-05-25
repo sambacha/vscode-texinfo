@@ -27,8 +27,8 @@ import DocumentContext from './document';
 /**
  * Stores information about folding ranges for a document.
  * 
- * Actually, more than folding ranges (e.g. code lens) is handled within this context, so I believe
- * we should use another name...
+ * Actually, more than folding ranges (e.g. code lens) is handled within
+ * this context, so perhaps we should use another name...
  */
 export default class FoldingRangeContext {
 
@@ -58,7 +58,9 @@ export default class FoldingRangeContext {
         const eol = this._document.eol === vscode.EndOfLine.LF ? '\n' : '\r\n';
         for (const event of events) {
             // Clear cached folding range when line count changes.
-            if (event.text.split(eol).length !== 1 || event.range.start.line !== event.range.end.line) {
+            if (event.text.split(eol).length !== 1 ||
+                event.range.start.line !== event.range.end.line
+            ) {
                 this._foldingRanges = undefined;
                 this._nodes = [];
                 return true;
@@ -80,8 +82,10 @@ export default class FoldingRangeContext {
     /**
      * Regex for matching subsection/section/chapter (-like) commands.
      */
-    private static readonly _nodeFormat = RegExp('^@(?:(node)|(subsection|unnumberedsubsec|appendixsubsec|subheading)' +
-        '|(section|unnumberedsec|appendixsec|heading)|(chapter|unnumbered|appendix|majorheading|chapheading)) (.*)$');
+    private static readonly _nodeFormat = RegExp('^@(?:(node)|' +
+        '(subsection|unnumberedsubsec|appendixsubsec|subheading)|' +
+        '(section|unnumberedsec|appendixsec|heading)|' +
+        '(chapter|unnumbered|appendix|majorheading|chapheading)) (.*)$');
 
     private _foldingRanges?: FoldingRange[];
 
@@ -100,8 +104,14 @@ export default class FoldingRangeContext {
         detail?: string,
         kind?: vscode.FoldingRangeKind 
     }) {
-        (this._foldingRanges ??= [])
-            .push({ name: extraArgs.name ?? '', detail: extraArgs.detail ?? '', start, end, kind: extraArgs.kind });
+        const items = {
+            name: extraArgs.name ?? '',
+            detail: extraArgs.detail ?? '',
+            start,
+            end,
+            kind: extraArgs.kind,
+        };
+        (this._foldingRanges ??= []).push(items);
     }
 
     /**
@@ -144,16 +154,19 @@ export default class FoldingRangeContext {
             if (!verbatim && this._processNode(line, idx, lastLine)) continue;
             const closingBlock = closingBlocks.pop();
             if (closingBlock === undefined) continue;
-            if (line.substring(1, closingBlock.name.length + 2).trim() === closingBlock.name) {
-                this._addRange(idx, closingBlock.line, { name: closingBlock.name });
-                // If `verbatim == true` goes here, this line must be the `@verbatim` line.
+            const name = closingBlock.name;
+            if (line.substring(1, name.length + 2).trim() === name) {
+                this._addRange(idx, closingBlock.line, { name: name });
+                // If `verbatim == true` goes here,
+                // this line must be the `@verbatim` line.
                 verbatim = false;
             } else {
                 closingBlocks.push(closingBlock);
             }
         }
         if (this._commentRange !== undefined) {
-            this._addRange(this._commentRange.start, this._commentRange.end, { kind: vscode.FoldingRangeKind.Comment });
+            this._addRange(this._commentRange.start, this._commentRange.end,
+                { kind: vscode.FoldingRangeKind.Comment });
         }
         return this._foldingRanges;
     }
@@ -162,7 +175,8 @@ export default class FoldingRangeContext {
         this._commentRange = undefined;
         this._headerStart = undefined;
         this._nodes = [];
-        this._closingSubsection = this._closingSection = this._closingChapter = undefined;
+        this._closingSubsection = this._closingSection = this._closingChapter
+            = undefined;
     }
 
     private _getLastTextLine(lineNum: number, limit = 3) {
@@ -176,7 +190,7 @@ export default class FoldingRangeContext {
 
     private _processComment(lineText: string, lineNum: number) {
         if (!lineText.startsWith('@c')) return false;
-        if (!lineText.startsWith(' ', 2) && !lineText.startsWith('omment ', 2)) {
+        if (lineText.charAt(2) != ' ' && !lineText.startsWith('omment ', 2)) {
             return false;
         }
         // Check for opening/closing header.
@@ -184,7 +198,8 @@ export default class FoldingRangeContext {
             if (this._headerStart === undefined) {
                 this._headerStart = lineNum;
             } else {
-                this._addRange(lineNum, this._headerStart, { kind: vscode.FoldingRangeKind.Region });
+                this._addRange(lineNum, this._headerStart,
+                    { kind: vscode.FoldingRangeKind.Region });
                 this._headerStart = undefined;
             }
             return true;
@@ -194,13 +209,18 @@ export default class FoldingRangeContext {
         } else if (this._commentRange.start - 1 === lineNum) {
             this._commentRange.start = lineNum;
         } else {
-            this._addRange(this._commentRange.start, this._commentRange.end, { kind: vscode.FoldingRangeKind.Comment });
+            this._addRange(this._commentRange.start, this._commentRange.end,
+                { kind: vscode.FoldingRangeKind.Comment });
             this._commentRange = undefined;
         }
         return true;
     }
 
-    private _processNode(lineText: string, lineNum: number, lastLineNum: number) {
+    private _processNode(
+        lineText: string,
+        lineNum: number,
+        lastLineNum: number,
+    ) {
         const result = lineText.match(FoldingRangeContext._nodeFormat);
         if (result === null) return false;
         // Node identifier.
@@ -214,20 +234,25 @@ export default class FoldingRangeContext {
         }
         // Subsection level node.
         if (result[2] !== undefined) {
-            this._addRange(lineNum, this._closingSubsection ?? lastLineNum, { name: result[2], detail: result[5] });
+            this._addRange(lineNum, this._closingSubsection ?? lastLineNum,
+                { name: result[2], detail: result[5] });
             this._closingSubsection = this._getLastTextLine(lineNum - 1);
             return true;
         }
         // Section level node.
         if (result[3] !== undefined) {
-            this._addRange(lineNum, this._closingSection ?? lastLineNum, { name: result[3], detail: result[5] });
-            this._closingSubsection = this._closingSection = this._getLastTextLine(lineNum - 1);
+            this._addRange(lineNum, this._closingSection ?? lastLineNum,
+                { name: result[3], detail: result[5] });
+            this._closingSubsection = this._closingSection
+                = this._getLastTextLine(lineNum - 1);
             return true;
         }
         // Chapter level node.
         if (result[4] !== undefined) {
-            this._addRange(lineNum, this._closingChapter ?? lastLineNum, { name: result[4], detail: result[5] });
-            this._closingSubsection = this._closingSection = this._closingChapter = this._getLastTextLine(lineNum - 1);
+            this._addRange(lineNum, this._closingChapter ?? lastLineNum,
+                { name: result[4], detail: result[5] });
+            this._closingSubsection = this._closingSection
+                = this._closingChapter = this._getLastTextLine(lineNum - 1);
             return true;
         }
         return false;

@@ -32,9 +32,18 @@ import { ExecResult } from './types';
  * @returns The output data, or `undefined` if execution fails.
  */
 export function exec(path: string, args: string[], maxBuffer: number) {
-    return new Promise<ExecResult>(resolve => child_process.execFile(path, args,
-        { env: { ...process.env, LC_MESSAGES: 'en_US' }, maxBuffer: maxBuffer }, (error, stdout, stderr) =>
-            resolve(error ? { error: stderr ? stderr : error.message } : { data: stdout, error: stderr })));
+    return new Promise<ExecResult>(
+        resolve => child_process.execFile(path, args,
+            {
+                env: { ...process.env, LC_MESSAGES: 'en_US' },
+                maxBuffer: maxBuffer,
+            },
+            (error, stdout, stderr) => resolve(error
+                ? { error: stderr ? stderr : error.message }
+                : { data: stdout, error: stderr }
+            )
+        )
+    );
 }
 
 /**
@@ -46,7 +55,8 @@ export function exec(path: string, args: string[], maxBuffer: number) {
  * @returns Whether the user clicked the button.
  */
 export async function prompt(message: string, label: string, error = false) {
-    const func = error ? vscode.window.showErrorMessage : vscode.window.showInformationMessage;
+    const func = error ?
+        vscode.window.showErrorMessage : vscode.window.showInformationMessage;
     return label === await func(message, label);
 }
 
@@ -68,7 +78,8 @@ export function lineNumToRange(startLine: number, endLine = startLine) {
  * @param charCode ASCII code of character.
  */
 export function isAlpha(charCode: number) {
-    return charCode >= 97 && charCode <= 122 || charCode >= 65 && charCode <= 90;
+    return (charCode >= 97 && charCode <= 122)
+        || (charCode >= 65 && charCode <= 90);
 }
 
 /**
@@ -77,16 +88,17 @@ export function isAlpha(charCode: number) {
  * @param charCode ASCII code of character.
  */
 export function isAlnum(charCode: number) {
-    return isAlpha(charCode) || charCode >= 48 && charCode <= 57;
+    return isAlpha(charCode) || (charCode >= 48 && charCode <= 57);
 }
 
 /**
  * Get corresponding HTML cross-reference name by node name.
  * 
- * See section *HTML Cross-reference Node Name Expansion* in the Texinfo manual.
+ * See section *HTML Cross-reference Node Name Expansion* in
+ * the Texinfo manual.
  * 
- * TODO: Node name is not displayed verbatim, leading to wrong HTML xref when containing commands.
- * Fix this when migrating to LSP.
+ * TODO: Node name is not displayed verbatim, leading to wrong HTML xref when
+ * containing commands. Fix this when migrating to LSP.
  * 
  * @param nodeName 
  */
@@ -100,5 +112,6 @@ export function getNodeHtmlRef(nodeName: string) {
             .join(''))
         .join('-');
     const firstCharCode = result.charCodeAt(0);
-    return isAlpha(firstCharCode) ? result : 'g_t_00' + firstCharCode.toString(16) + result.substring(1);
+    return isAlpha(firstCharCode) ? result : 'g_t_00'
+        + firstCharCode.toString(16) + result.substring(1);
 }

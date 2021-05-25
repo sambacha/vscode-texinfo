@@ -39,7 +39,8 @@ export default class PreviewContext {
     }
 
     goto(nodeName: string) {
-        this._panel.webview.postMessage({ command: 'goto', value: getNodeHtmlRef(nodeName) });
+        const message = { command: 'goto', value: getNodeHtmlRef(nodeName) };
+        this._webview.postMessage(message);
     }
 
     show() {
@@ -53,11 +54,14 @@ export default class PreviewContext {
         }
         this._updating = true;
         this._pendingUpdate = false;
-        // Inform the user that the preview is updating if `makeinfo` takes too long.
+        // Inform the user that the preview is updating, when `makeinfo`
+        // takes too long.
         setTimeout(() => this._updating && this._updateTitle(), 500);
-        const initFile = this._globalContext.extensionPath + '/ext/html-preview.pm';
-        const converter = new Converter(this._document.fileName, initFile, this._globalContext.options, this._logger);
-        const { data, error } = await converter.toHTML(path => this._panel.webview.asWebviewUri(path), this._script);
+        const initFile = this._globalContext.path + '/ext/html-preview.pm';
+        const converter = new Converter(this._document.fileName, initFile,
+            this._globalContext.options, this._logger);
+        const { data, error } = await converter
+            .toHTML(path => this._webview.asWebviewUri(path), this._script);
         if (error) {
             this._logger.log(error);
             this._diagnosis.update(this._document, error);
@@ -65,10 +69,11 @@ export default class PreviewContext {
             this._diagnosis.delete(this._document);
         }
         if (data === undefined) {
-            prompt(`Failed to show preview for ${this._document.fileName}.`, 'Show log', true)
+            prompt(`Failed to show preview for ${this._document.fileName}.`,
+                    'Show log', true)
                 .then(result => result && this._logger.show());
         } else {
-            this._panel.webview.html = data;
+            this._webview.html = data;
         }
         this._updating = false;
         this._updateTitle();
@@ -76,8 +81,14 @@ export default class PreviewContext {
     }
 
     constructor(private readonly _documentContext: DocumentContext) {
-        this._panel = vscode.window.createWebviewPanel('texinfo.preview', '', vscode.ViewColumn.Beside,
-            { enableFindWidget: true, retainContextWhenHidden: true, enableScripts: true });
+        const options = {
+            enableFindWidget: true,
+            retainContextWhenHidden: true,
+            enableScripts: true,
+        };
+        this._panel = vscode.window.createWebviewPanel('texinfo.preview', '',
+            vscode.ViewColumn.Beside, options);
+        this._webview = this._panel.webview;
         this._disposables.push(this._panel.onDidDispose(() => this.close()));
         this._updateTitle();
         this.updateWebview();
@@ -91,6 +102,7 @@ export default class PreviewContext {
     private readonly _disposables = <vscode.Disposable[]>[];
 
     private readonly _panel: vscode.WebviewPanel;
+    private readonly _webview: vscode.Webview;
 
     /**
      * Whether a preview update request is pending.
@@ -103,7 +115,8 @@ export default class PreviewContext {
     private _updating = false;
 
     /**
-     * Generate script used for jumping to the corresponding location of preview with code lens.
+     * Generate script used for jumping to the corresponding location of
+     * preview with code lens.
      */
     private get _script() {
         if (!this._globalContext.options.enableCodeLens) return undefined;

@@ -38,15 +38,19 @@ export default class Indicator implements vscode.Disposable {
 
     constructor(private readonly globalContext: GlobalContext) {
         globalContext.subscribe(
-            vscode.commands.registerCommand('texinfo.indicator.click', this._click.bind(this)),
-            vscode.window.onDidChangeActiveTextEditor(this._refresh.bind(this)),
+            vscode.commands.registerCommand('texinfo.indicator.click',
+                this._click.bind(this)),
+            vscode.window.onDidChangeActiveTextEditor(
+                this._refresh.bind(this)),
         );
-        this._updateStatus().then(() => this._refresh(vscode.window.activeTextEditor));
+        this._updateStatus()
+            .then(() => this._refresh(vscode.window.activeTextEditor));
     }
 
     private _canDisplayPreview = false;
 
-    private readonly _statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    private readonly _statusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Right, 100);
 
     /**
      * Calls when the status bar item is clicked.
@@ -70,18 +74,21 @@ export default class Indicator implements vscode.Disposable {
     }
 
     /**
-     * Update the installation status of GNU Texinfo, by checking `makeinfo --version`.
+     * Update the installation status of GNU Texinfo,
+     * by checking `makeinfo --version`.
      */
     private async _updateStatus() {
         const options = this.globalContext.options;
-        const output = await exec(options.makeinfo, ['--version'], options.maxSize);
+        const output = await exec(options.makeinfo, ['--version'],
+            options.maxSize);
         const result = output.data?.match(/\(GNU texinfo\) (.*)\n/);
         let tooltip = '', icon: string, version = '';
         if (result && result[1]) {
             version = result[1];
             if (!isNaN(+version) && +version < 6.7) {
                 icon = '$(warning)';
-                tooltip = `GNU Texinfo (${options.makeinfo}) is outdated (${version} < 6.7).`;
+                tooltip = `GNU Texinfo (${options.makeinfo}) ` +
+                    `is outdated (${version} < 6.7).`;
             } else {
                 // Unrecognizable version. Assume it is okay.
                 icon = '$(check)';
@@ -89,7 +96,8 @@ export default class Indicator implements vscode.Disposable {
             this._canDisplayPreview = true;
         } else {
             icon = '$(close)';
-            tooltip = `GNU Texinfo (${options.makeinfo}) is not correctly installed or configured.`;
+            tooltip = `GNU Texinfo (${options.makeinfo}) ` +
+                `is not correctly installed or configured.`;
             this._canDisplayPreview = false;
         }
         this._statusBarItem.command = 'texinfo.indicator.click';
