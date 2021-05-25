@@ -29,72 +29,72 @@ import * as vscode from 'vscode';
 export default class Options {
 
     get enableSnippets() {
-        return this.getBoolean('completion.enableSnippets');
+        return this._getBoolean('completion.enableSnippets');
     }
 
     get hideSnippetCommands() {
-        return this.getBoolean('completion.hideSnippetCommands');
+        return this._getBoolean('completion.hideSnippetCommands');
     }
 
     get noWarnings() {
-        return this.getBoolean('diagnosis.noWarnings');
+        return this._getBoolean('diagnosis.noWarnings');
     }
 
     get enableCodeLens() {
-        return this.getBoolean('enableCodeLens');
+        return this._getBoolean('enableCodeLens');
     }
 
     get makeinfo() {
-        return this.getString('makeinfo');
+        return this._getString('makeinfo');
     }
 
     get customCSS() {
-        return this.getString('preview.customCSS');
+        return this._getString('preview.customCSS');
     }
 
     get errorLimit() {
-        return this.getNumber('preview.errorLimit');
+        return this._getNumber('preview.errorLimit');
     }
 
     get includePaths() {
-        return this.getArray('preview.includePaths');
+        return this._getArray('preview.includePaths');
     }
 
     get maxSize() {
-        return this.getNumber('preview.maxSize') * 1024 * 1024;
+        return this._getNumber('preview.maxSize') * 1024 * 1024;
     }
 
     get noHeaders() {
-        return this.getBoolean('preview.noHeaders');
+        return this._getBoolean('preview.noHeaders');
     }
 
     get noNumberSections() {
-        return this.getBoolean('preview.noNumberSections');
+        return this._getBoolean('preview.noNumberSections');
     }
 
     get noValidation() {
-        return this.getBoolean('preview.noValidation');
+        return this._getBoolean('preview.noValidation');
     }
 
     get variables() {
-        return this.getArray('preview.variables');
+        return this._getArray('preview.variables');
     }
 
-    private readonly configuration = vscode.workspace.getConfiguration('texinfo');
+    private readonly _configuration = vscode.workspace.getConfiguration('texinfo');
 
-    private getArray(section: string): readonly string[] {
-        return this.configuration.get(section, []);
+    private _getArray(section: string): readonly string[] {
+        return this._configuration.get(section, []);
     }
 
-    private getBoolean(section: string) {
-        return this.configuration.get(section, false);
+    private _getBoolean(section: string) {
+        return this._configuration.get(section, false);
     }
 
-    private getNumber(section: string) {
-        return this.configuration.get(section, 0);
+    private _getNumber(section: string) {
+        return this._configuration.get(section, 0);
     }
 
-    private getString(section: string) {
-        return this.configuration.get(section, '');
+    private _getString(section: string) {
+        return this._configuration.get(section, '');
     }
 }

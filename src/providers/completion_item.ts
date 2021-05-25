@@ -39,9 +39,9 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
      * which means that GFDL applies to lines 46-365 of this file, while the remainder
      * is under GPL like other source code files of the project.
      */
-    private get completionItems() {
-        const enableSnippets = this.oldOptions.enableSnippets;
-        const hideSnippetCommands = this.oldOptions.hideSnippetCommands;
+    private _getCompletionItems() {
+        const enableSnippets = this._oldOptions.enableSnippets;
+        const hideSnippetCommands = this._oldOptions.hideSnippetCommands;
         return this._completionItems ??= [
             command('ampchar', 'Insert an ampersand, "&"', { hasEmptyBrace: true }),
             command('atchar', 'Insert an at sign, "@"', { hasEmptyBrace: true }),
@@ -387,25 +387,25 @@ export default class CompletionItemProvider implements vscode.CompletionItemProv
             if (document.getText(new vscode.Range(position.translate(0, -1), position)) !== '@') return undefined;
         }
         // Check whether options has changed.
-        const newOptions = this.globalContext.options;
-        if (this.oldOptions !== newOptions) {
-            this.oldOptions = newOptions;
+        const newOptions = this._globalContext.options;
+        if (this._oldOptions !== newOptions) {
+            this._oldOptions = newOptions;
             this._completionItems = undefined;
         }
-        if (position.character === 1) return this.completionItems;
+        if (position.character === 1) return this._getCompletionItems();
         // Check whether the '@' character is escaped.
         if (document.getText(new vscode.Range(position.translate(0, -2), position.translate(0, -1))) === '@') {
             return undefined;
         } else {
-            return this.completionItems;
+            return this._getCompletionItems();
         }
     }
 
-    constructor(private readonly globalContext: GlobalContext) {}
+    constructor(private readonly _globalContext: GlobalContext) {}
 
     private _completionItems?: CompletionItem[];
 
-    private oldOptions = this.globalContext.options;
+    private _oldOptions = this._globalContext.options;
 }
 
 /**

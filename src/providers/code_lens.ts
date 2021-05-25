@@ -28,10 +28,10 @@ import GlobalContext from '../global_context';
 export default class CodeLensProvider implements vscode.CodeLensProvider {
     
     provideCodeLenses(document: vscode.TextDocument) {
-        if (!this.globalContext.options.enableCodeLens) return undefined;
-        if (!this.globalContext.indicator.canDisplayPreview) return undefined;
-        return this.globalContext.contextMapping.getDocumentContext(document).foldingRange.nodeValues;
+        if (!this._globalContext.options.enableCodeLens) return undefined;
+        if (!this._globalContext.indicator.canDisplayPreview) return undefined;
+        return this._globalContext.contextMapping.getDocumentContext(document).foldingRange.nodeValues;
     }
 
-    constructor(private readonly globalContext: GlobalContext) {}
+    constructor(private readonly _globalContext: GlobalContext) {}
 }

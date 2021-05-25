@@ -30,25 +30,25 @@ import { FoldingRange, Optional } from '../utils/types';
 export default class DocumentSymbolContext {
 
     get documentSymbols() {
-        return this._documentSymbols ??= this.calculcateDocumentSymbols();
+        return this._documentSymbols ??= this._calculcateDocumentSymbols();
     }
 
     clear() {
         this._documentSymbols = undefined;
     }
 
-    constructor(private readonly documentContext: DocumentContext) {}
+    constructor(private readonly _documentContext: DocumentContext) {}
 
     private _documentSymbols?: vscode.DocumentSymbol[];
 
-    private readonly document = this.documentContext.document;
+    private readonly _document = this._documentContext.document;
 
     /**
      * Calculate document symbols based on folding ranges.
      */
-    private calculcateDocumentSymbols() {
-        const ranges = Array<Optional<FoldingRange>>(this.document.lineCount);
-        this.documentContext.foldingRange.foldingRanges
+    private _calculcateDocumentSymbols() {
+        const ranges = Array<Optional<FoldingRange>>(this._document.lineCount);
+        this._documentContext.foldingRange.foldingRanges
             .filter(range => range.kind === undefined)
             .forEach(range => ranges[range.start] = range);
         return foldingRangeToSymbols(ranges, 0, ranges.length);

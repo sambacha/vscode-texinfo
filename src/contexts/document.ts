@@ -35,18 +35,18 @@ export default class DocumentContext {
     readonly documentSymbol = new DocumentSymbolContext(this);
 
     initPreview() {
-        return this.preview ??= new PreviewContext(this);
+        return this._preview ??= new PreviewContext(this);
     }
 
     getPreview() {
-        return this.preview;
+        return this._preview;
     }
 
     closePreview() {
-        this.preview = undefined;
+        this._preview = undefined;
     }
 
     constructor(readonly globalContext: GlobalContext, readonly document: vscode.TextDocument) {}
 
-    private preview?: PreviewContext;
+    private _preview?: PreviewContext;
 }

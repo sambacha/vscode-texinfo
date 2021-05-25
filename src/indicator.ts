@@ -33,27 +33,27 @@ export default class Indicator implements vscode.Disposable {
     }
 
     dispose() {
-        this.statusBarItem.dispose();
+        this._statusBarItem.dispose();
     }
 
     constructor(private readonly globalContext: GlobalContext) {
         globalContext.subscribe(
-            vscode.commands.registerCommand('texinfo.indicator.click', this.click.bind(this)),
-            vscode.window.onDidChangeActiveTextEditor(this.refresh.bind(this)),
+            vscode.commands.registerCommand('texinfo.indicator.click', this._click.bind(this)),
+            vscode.window.onDidChangeActiveTextEditor(this._refresh.bind(this)),
         );
-        this.updateStatus().then(() => this.refresh(vscode.window.activeTextEditor));
+        this._updateStatus().then(() => this._refresh(vscode.window.activeTextEditor));
     }
 
     private _canDisplayPreview = false;
 
-    private readonly statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    private readonly _statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
     /**
      * Calls when the status bar item is clicked.
      */
-    private async click() {
-        await this.updateStatus();
-        this.refresh(vscode.window.activeTextEditor);
+    private async _click() {
+        await this._updateStatus();
+        this._refresh(vscode.window.activeTextEditor);
     }
 
     /**
@@ -61,18 +61,18 @@ export default class Indicator implements vscode.Disposable {
      * 
      * @param editor 
      */
-    private refresh(editor?: vscode.TextEditor) {
+    private _refresh(editor?: vscode.TextEditor) {
         if (editor?.document.languageId === 'texinfo') {
-            this.statusBarItem.show();
+            this._statusBarItem.show();
         } else {
-            this.statusBarItem.hide();
+            this._statusBarItem.hide();
         }
     }
 
     /**
      * Update the installation status of GNU Texinfo, by checking `makeinfo --version`.
      */
-    private async updateStatus() {
+    private async _updateStatus() {
         const options = this.globalContext.options;
         const output = await exec(options.makeinfo, ['--version'], options.maxSize);
         const result = output.data?.match(/\(GNU texinfo\) (.*)\n/);
@@ -92,8 +92,8 @@ export default class Indicator implements vscode.Disposable {
             tooltip = `GNU Texinfo (${options.makeinfo}) is not correctly installed or configured.`;
             this._canDisplayPreview = false;
         }
-        this.statusBarItem.command = 'texinfo.indicator.click';
-        this.statusBarItem.text = `${icon} GNU Texinfo ${version}`;
-        this.statusBarItem.tooltip = tooltip;
+        this._statusBarItem.command = 'texinfo.indicator.click';
+        this._statusBarItem.text = `${icon} GNU Texinfo ${version}`;
+        this._statusBarItem.tooltip = tooltip;
     }
 }

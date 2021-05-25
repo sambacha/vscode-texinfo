@@ -28,16 +28,16 @@ export default class Logger implements vscode.Disposable {
 
     log(message: string) {
         const dateTime = new Date().toLocaleString(undefined, { hour12: false });
-        this.outputChannel.appendLine(`[ ${dateTime} ]\n${message}`);
+        this._outputChannel.appendLine(`[ ${dateTime} ]\n${message}`);
     }
 
     show() {
-        this.outputChannel.show(true);
+        this._outputChannel.show(true);
     }
 
     dispose() {
-        this.outputChannel.dispose();
+        this._outputChannel.dispose();
     }
 
-    private readonly outputChannel = vscode.window.createOutputChannel('Texinfo');
+    private readonly _outputChannel = vscode.window.createOutputChannel('Texinfo');
 }

@@ -36,31 +36,31 @@ export default class ContextMapping implements vscode.Disposable {
      * @returns 
      */
     getDocumentContext(document: vscode.TextDocument) {
-        let documentContext = this.map.get(document);
+        let documentContext = this._map.get(document);
         if (documentContext === undefined) {
-            documentContext = new DocumentContext(this.globalContext, document);
-            this.map.set(document, documentContext);
+            documentContext = new DocumentContext(this._globalContext, document);
+            this._map.set(document, documentContext);
         }
         return documentContext;
     }
 
     dispose() {
-        this.map.forEach(documentContext => documentContext.getPreview()?.close());
+        this._map.forEach(documentContext => documentContext.getPreview()?.close());
     }
 
-    constructor(private readonly globalContext: GlobalContext) {
-        globalContext.subscribe(
-            vscode.commands.registerTextEditorCommand('texinfo.preview.show', this.showPreview.bind(this)),
-            vscode.commands.registerCommand('texinfo.preview.goto', this.gotoPreview.bind(this)),
-            vscode.workspace.onDidChangeTextDocument(this.onDocumentUpdate.bind(this)),
-            vscode.workspace.onDidCloseTextDocument(this.onDocumentClose.bind(this)),
-            vscode.workspace.onDidSaveTextDocument(this.onDocumentSave.bind(this)),
+    constructor(private readonly _globalContext: GlobalContext) {
+        _globalContext.subscribe(
+            vscode.commands.registerTextEditorCommand('texinfo.preview.show', this._showPreview.bind(this)),
+            vscode.commands.registerCommand('texinfo.preview.goto', this._gotoPreview.bind(this)),
+            vscode.workspace.onDidChangeTextDocument(this._onDocumentUpdate.bind(this)),
+            vscode.workspace.onDidCloseTextDocument(this._onDocumentClose.bind(this)),
+            vscode.workspace.onDidSaveTextDocument(this._onDocumentSave.bind(this)),
         );
     }
 
-    private readonly map = new Map<vscode.TextDocument, DocumentContext>();
+    private readonly _map = new Map<vscode.TextDocument, DocumentContext>();
 
-    private tryGetDocumentContext(document: vscode.TextDocument) {
+    private _tryGetDocumentContext(document: vscode.TextDocument) {
         return document.languageId === 'texinfo' ? this.getDocumentContext(document) : undefined;
     }
 
@@ -70,24 +70,24 @@ export default class ContextMapping implements vscode.Disposable {
      * @param document 
      * @param nodeName 
      */
-    private gotoPreview(document: vscode.TextDocument, nodeName: string) {
+    private _gotoPreview(document: vscode.TextDocument, nodeName: string) {
         this.getDocumentContext(document).initPreview().goto(nodeName);
     }
 
-    private onDocumentClose(document: vscode.TextDocument) {
-        this.map.get(document)?.getPreview()?.close();
-        this.map.delete(document);
+    private _onDocumentClose(document: vscode.TextDocument) {
+        this._map.get(document)?.getPreview()?.close();
+        this._map.delete(document);
     }
 
-    private onDocumentSave(document: vscode.TextDocument) {
-        const documentContext = this.tryGetDocumentContext(document);
+    private _onDocumentSave(document: vscode.TextDocument) {
+        const documentContext = this._tryGetDocumentContext(document);
         if (documentContext === undefined) return;
         documentContext.foldingRange.clear();
         documentContext.getPreview()?.updateWebview();
     }
 
-    private onDocumentUpdate(event: vscode.TextDocumentChangeEvent) {
-        const documentContext = this.tryGetDocumentContext(event.document);
+    private _onDocumentUpdate(event: vscode.TextDocumentChangeEvent) {
+        const documentContext = this._tryGetDocumentContext(event.document);
         if (documentContext?.foldingRange.update(event.contentChanges)) {
             documentContext.documentSymbol.clear();
         }
@@ -98,7 +98,7 @@ export default class ContextMapping implements vscode.Disposable {
      * 
      * @param editor The editor where the document is being held.
      */
-    private async showPreview(editor: vscode.TextEditor) {
+    private async _showPreview(editor: vscode.TextEditor) {
         const document = editor.document;
         // Only show preview for saved files, as we're not gonna send document content to `makeinfo` via STDIN.
         // Instead, the file will be loaded from disk.

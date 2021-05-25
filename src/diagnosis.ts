@@ -34,7 +34,7 @@ export default class Diagnosis implements vscode.Disposable {
      * @param document 
      */
     delete(document: vscode.TextDocument) {
-        this.diagnostics.delete(document.uri);
+        this._diagnostics.delete(document.uri);
     }
 
     /**
@@ -49,14 +49,14 @@ export default class Diagnosis implements vscode.Disposable {
             .filter(line => line.startsWith(fileName))  
             .map(line => logLineToDiagnostic(line.substring(fileName.length + 1)))
             .filter(isDefined);
-        this.diagnostics.set(document.uri, diagnostics);
+        this._diagnostics.set(document.uri, diagnostics);
     }
 
     dispose() {
-        this.diagnostics.dispose();
+        this._diagnostics.dispose();
     }
 
-    private readonly diagnostics = vscode.languages.createDiagnosticCollection('texinfo');
+    private readonly _diagnostics = vscode.languages.createDiagnosticCollection('texinfo');
 }
 
 /**

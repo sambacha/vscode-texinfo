@@ -31,82 +31,82 @@ import { getNodeHtmlRef, prompt } from '../utils/misc';
 export default class PreviewContext {
 
     close() {
-        this.disposables.forEach(event => event.dispose());
-        this.panel.dispose();
-        this.documentContext.closePreview();
+        this._disposables.forEach(event => event.dispose());
+        this._panel.dispose();
+        this._documentContext.closePreview();
         // Only show diagnostic information when the preview is active.
-        this.diagnosis.delete(this.document);
+        this._diagnosis.delete(this._document);
     }
 
     goto(nodeName: string) {
-        this.panel.webview.postMessage({ command: 'goto', value: getNodeHtmlRef(nodeName) });
+        this._panel.webview.postMessage({ command: 'goto', value: getNodeHtmlRef(nodeName) });
     }
 
     show() {
-        this.panel.reveal();
+        this._panel.reveal();
     }
 
     async updateWebview() {
-        if (this.updating) {
-            this.pendingUpdate = true;
+        if (this._updating) {
+            this._pendingUpdate = true;
             return;
         }
-        this.updating = true;
-        this.pendingUpdate = false;
+        this._updating = true;
+        this._pendingUpdate = false;
         // Inform the user that the preview is updating if `makeinfo` takes too long.
-        setTimeout(() => this.updating && this.updateTitle(), 500);
-        const initFile = this.globalContext.extensionPath + '/ext/html-preview.pm';
-        const converter = new Converter(this.document.fileName, initFile, this.globalContext.options, this.logger);
-        const { data, error } = await converter.toHTML(path => this.panel.webview.asWebviewUri(path), this.script);
+        setTimeout(() => this._updating && this._updateTitle(), 500);
+        const initFile = this._globalContext.extensionPath + '/ext/html-preview.pm';
+        const converter = new Converter(this._document.fileName, initFile, this._globalContext.options, this._logger);
+        const { data, error } = await converter.toHTML(path => this._panel.webview.asWebviewUri(path), this._script);
         if (error) {
-            this.logger.log(error);
-            this.diagnosis.update(this.document, error);
+            this._logger.log(error);
+            this._diagnosis.update(this._document, error);
         } else {
-            this.diagnosis.delete(this.document);
+            this._diagnosis.delete(this._document);
         }
         if (data === undefined) {
-            prompt(`Failed to show preview for ${this.document.fileName}.`, 'Show log', true)
-                .then(result => result && this.logger.show());
+            prompt(`Failed to show preview for ${this._document.fileName}.`, 'Show log', true)
+                .then(result => result && this._logger.show());
         } else {
-            this.panel.webview.html = data;
+            this._panel.webview.html = data;
         }
-        this.updating = false;
-        this.updateTitle();
-        this.pendingUpdate && this.updateWebview();
+        this._updating = false;
+        this._updateTitle();
+        this._pendingUpdate && this.updateWebview();
     }
 
-    constructor(private readonly documentContext: DocumentContext) {
-        this.panel = vscode.window.createWebviewPanel('texinfo.preview', '', vscode.ViewColumn.Beside,
+    constructor(private readonly _documentContext: DocumentContext) {
+        this._panel = vscode.window.createWebviewPanel('texinfo.preview', '', vscode.ViewColumn.Beside,
             { enableFindWidget: true, retainContextWhenHidden: true, enableScripts: true });
-        this.disposables.push(this.panel.onDidDispose(() => this.close()));
-        this.updateTitle();
+        this._disposables.push(this._panel.onDidDispose(() => this.close()));
+        this._updateTitle();
         this.updateWebview();
     }
 
-    private readonly document = this.documentContext.document;
-    private readonly globalContext = this.documentContext.globalContext;
-    private readonly diagnosis = this.globalContext.diagnosis;
-    private readonly logger = this.globalContext.logger;
+    private readonly _document = this._documentContext.document;
+    private readonly _globalContext = this._documentContext.globalContext;
+    private readonly _diagnosis = this._globalContext.diagnosis;
+    private readonly _logger = this._globalContext.logger;
 
-    private readonly disposables = <vscode.Disposable[]>[];
+    private readonly _disposables = <vscode.Disposable[]>[];
 
-    private readonly panel: vscode.WebviewPanel;
+    private readonly _panel: vscode.WebviewPanel;
 
     /**
      * Whether a preview update request is pending.
      */
-    private pendingUpdate = false;
+    private _pendingUpdate = false;
 
     /**
      * Whether the preview is updating.
      */
-    private updating = false;
+    private _updating = false;
 
     /**
      * Generate script used for jumping to the corresponding location of preview with code lens.
      */
-    private get script() {
-        if (!this.globalContext.options.enableCodeLens) return undefined;
+    private get _script() {
+        if (!this._globalContext.options.enableCodeLens) return undefined;
         return "window.addEventListener('message', event => {" +
             "const message = event.data;" +
             "switch (message.command) {" +
@@ -119,9 +119,9 @@ export default class PreviewContext {
         "})";
     }
 
-    private updateTitle() {
-        const updating = this.updating ? '(Updating) ' : '';
-        const fileName = path.basename(this.document.fileName);
-        this.panel.title = `${updating}Preview ${fileName}`;
+    private _updateTitle() {
+        const updating = this._updating ? '(Updating) ' : '';
+        const fileName = path.basename(this._document.fileName);
+        this._panel.title = `${updating}Preview ${fileName}`;
     }
 }

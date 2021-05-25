@@ -28,8 +28,8 @@ import GlobalContext from '../global_context';
 export default class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     provideDocumentSymbols(document: vscode.TextDocument) {
-        return this.globalContext.contextMapping.getDocumentContext(document).documentSymbol.documentSymbols;
+        return this._globalContext.contextMapping.getDocumentContext(document).documentSymbol.documentSymbols;
     }
 
-    constructor(private readonly globalContext: GlobalContext) {}
+    constructor(private readonly _globalContext: GlobalContext) {}
 }

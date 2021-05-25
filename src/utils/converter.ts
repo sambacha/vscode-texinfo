@@ -32,37 +32,37 @@ import { Operator } from './types';
 export default class Converter {
 
     async toHTML(imgTransformer: Operator<vscode.Uri>, insertScript?: string) {
-        const newPath = imgTransformer(vscode.Uri.file(path.dirname(this.path))).toString() + '/';
-        const options = ['-o-', '--no-split', '--html', `--error-limit=${this.options.errorLimit}`,
-            `--init-file=${this.initFile}`, '-D', `__vscode_texinfo_image_uri_base ${newPath}`];
-        this.options.noHeaders && options.push('--no-headers');
-        this.options.noNumberSections && options.push('--no-number-sections');
-        this.options.noValidation && options.push('--no-validate');
-        this.options.noWarnings && options.push('--no-warn');
+        const newPath = imgTransformer(vscode.Uri.file(path.dirname(this._path))).toString() + '/';
+        const options = ['-o-', '--no-split', '--html', `--error-limit=${this._options.errorLimit}`,
+            `--init-file=${this._initFile}`, '-D', `__vscode_texinfo_image_uri_base ${newPath}`];
+        this._options.noHeaders && options.push('--no-headers');
+        this._options.noNumberSections && options.push('--no-number-sections');
+        this._options.noValidation && options.push('--no-validate');
+        this._options.noWarnings && options.push('--no-warn');
         insertScript !== undefined && options.push('-c', `EXTRA_HEAD <script>${insertScript}</script>`);
-        this.addIncludePaths(this.options.includePaths, options);
-        this.defineVariables(this.options.variables, options);
-        this.includeCustomCSS(this.options.customCSS, options);
-        return await exec(this.options.makeinfo, options.concat(this.path), this.options.maxSize);
+        this._addIncludePaths(this._options.includePaths, options);
+        this._defineVariables(this._options.variables, options);
+        this._includeCustomCSS(this._options.customCSS, options);
+        return await exec(this._options.makeinfo, options.concat(this._path), this._options.maxSize);
     }
 
     constructor(
-        private readonly path: string,
-        private readonly initFile: string,
-        private readonly options: Options,
-        private readonly logger: Logger,
+        private readonly _path: string,
+        private readonly _initFile: string,
+        private readonly _options: Options,
+        private readonly _logger: Logger,
     ) {}
 
-    private addIncludePaths(paths: readonly string[], options: string[]) {
+    private _addIncludePaths(paths: readonly string[], options: string[]) {
         const separator = process.platform === 'win32' ? ';' : ':';
         options.push('-I', paths.join(separator));
     }
 
-    private defineVariables(variables: readonly string[], options: string[]) {
+    private _defineVariables(variables: readonly string[], options: string[]) {
         variables.forEach(varName => options.push('-D', varName));
     }
 
-    private includeCustomCSS(cssFileURI: string, options: string[]) {
+    private _includeCustomCSS(cssFileURI: string, options: string[]) {
         if (!cssFileURI) return;
         try {
             const uri = vscode.Uri.parse(cssFileURI, true);
@@ -78,7 +78,7 @@ export default class Converter {
                     throw URIError;
             }
         } catch (e) {
-            this.logger.log(`Cannot load custom CSS. Invalid URI: '${cssFileURI}'`);
+            this._logger.log(`Cannot load custom CSS. Invalid URI: '${cssFileURI}'`);
         }
     }
 }

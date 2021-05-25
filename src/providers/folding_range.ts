@@ -28,8 +28,8 @@ import GlobalContext from '../global_context';
 export default class FoldingRangeProvider implements vscode.FoldingRangeProvider {
 
     provideFoldingRanges(document: vscode.TextDocument) {
-        return this.globalContext.contextMapping.getDocumentContext(document).foldingRange.foldingRanges;
+        return this._globalContext.contextMapping.getDocumentContext(document).foldingRange.foldingRanges;
     }
 
-    constructor(private readonly globalContext: GlobalContext) {}
+    constructor(private readonly _globalContext: GlobalContext) {}
 }
