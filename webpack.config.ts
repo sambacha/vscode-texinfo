@@ -19,13 +19,15 @@ const config: webpack.Configuration = {
     output: {
         path: path.resolve(__dirname, 'out'),
         filename: 'extension.js',
-        libraryTarget: 'commonjs2',
+        library: {
+            type: "commonjs2",
+        },
         devtoolModuleFilenameTemplate: '../[resource-path]',
     },
     devtool: isProduction ? false : 'source-map',
     optimization: {
         concatenateModules: true,
-        minimize: true,
+        minimize: isProduction,
         minimizer: [
             new TerserPlugin({
                 extractComments: false,
@@ -39,6 +41,9 @@ const config: webpack.Configuration = {
                     },
                     mangle: {
                         module: true,
+                        properties: {
+                            regex: /^_/,
+                        },
                     },
                 },
             }),
