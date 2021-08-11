@@ -29,8 +29,8 @@ import { Operator } from './types';
 /**
  * Converter which converts file from Texinfo to other formats.
  */
-export default class Converter {
-
+export default class Converter
+{
     async toHTML(imgTransformer: Operator<vscode.Uri>, insertScript?: string) {
         const pathUri = vscode.Uri.file(path.dirname(this._path));
         const newPath = imgTransformer(pathUri).toString() + '/';
@@ -49,8 +49,11 @@ export default class Converter {
         this._addIncludePaths(this._options.includePaths, options);
         this._defineVariables(this._options.variables, options);
         this._includeCustomCSS(this._options.customCSS, options);
-        return await exec(this._options.makeinfo, options.concat(this._path),
-            this._options.maxSize);
+        return await exec(
+            this._options.makeinfo,
+            options.concat(this._path),
+            this._options.maxSize,
+        );
     }
 
     constructor(

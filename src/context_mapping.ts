@@ -28,8 +28,8 @@ import { prompt } from './utils/misc';
  * Manage mappings between Texinfo documents and corresponding
  * document-specific contexts.
  */
-export default class ContextMapping implements vscode.Disposable {
-
+export default class ContextMapping implements vscode.Disposable
+{
     /**
      * Get context of a Texinfo document. Create one if not exists.
      * 

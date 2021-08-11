@@ -32,15 +32,16 @@ export default class CompletionItemProvider
     /**
      * Full list of completion items.
      * 
-     * Note: Descriptions of completion items for @-commands are excerpted from
-     * the GNU Texinfo manual
-     * ({@link https://www.gnu.org/software/texinfo/manual/texinfo }),
-     * which is licensed under the GNU Free Documentation License, version 1.3.
+     * Note: Descriptions of completion items for @-commands
+     * are excerpted from the [GNU Texinfo manual], which is licensed under the
+     * GNU Free Documentation License, version 1.3.
      * 
      * According to GFDL, this usage is considered "aggregation with
-     * independent work", which means that GFDL applies to lines 48-367 of this
-     * file, while the remainder is under GPL like other source code files of
-     * the project.
+     * independent work", which means that GFDL applies to lines 50-1117 of
+     * this file, while the remainder is under GPL like other source code files
+     * of the project.
+     * 
+     * [GNU Texinfo manual]: https://gnu.org/software/texinfo/manual/texinfo
      */
     private _getCompletionItems() {
         const enableSnippets = this._oldOptions.enableSnippets;
@@ -159,10 +160,6 @@ export default class CompletionItemProvider
                 'Center the line of text following the command',
                 'text-line',
             ),
-            ...lineCommand('centerchap',
-                'Like @chapter, but centers the chapter title',
-                'text-line',
-            ),
             ...lineCommand('chapheading',
                 'Print an unnumbered chapter-like heading',
                 'title',
@@ -244,11 +241,6 @@ export default class CompletionItemProvider
             ...lineCommand('defindex',
                 'Define a new index, print entries in a roman font',
                 'index-name',
-            ),
-            ...lineCommand('definfoenclose',
-                'Create a new command for Info that marks text by enclosing ' +
-                    'it in strings that precede and follow the text.',
-                'newcmd', 'before', 'after',
             ),
             ...lineCommandX('defivar',
                 'Format a description for an instance variable ' +
@@ -612,10 +604,6 @@ export default class CompletionItemProvider
                 'Indicate text that is a URL',
                 1, 'URL',
             ),
-            ...braceCommand('inforef',
-                'Make a cross-reference to an Info file',
-                3, 'node-name', 'entry-name', 'info-file-name',
-            ),
             ...braceCommand('inlinefmt',
                 'Insert text only if the output format is fmt',
                 2, 'fmt', 'text',
@@ -819,10 +807,6 @@ export default class CompletionItemProvider
                 'Make a plain reference that does not start with ' +
                     'any special text',
                 1, 'node', 'entry', 'node-title', 'info-node', 'manual',
-            ),
-            command('refill',
-                'Refill and indent the paragraph after all the ' +
-                    'other processing has been done',
             ),
             command('registeredsymbol',
                 'Generate the legal symbol, "®"',
@@ -1153,12 +1137,18 @@ export default class CompletionItemProvider
         // Triggered in the middle of a word.
         if (context.triggerKind === vscode.CompletionTriggerKind.Invoke) {
             const wordRange = document.getWordRangeAtPosition(position);
-            if (wordRange === undefined) return undefined;
+            if (wordRange === undefined) {
+                return undefined;
+            }
             // Normalize position so that it can be treated as
             // triggered by '@' character.
-            position = wordRange.start;
-            const pos = new vscode.Range(position.translate(0, -1), position);
-            if (document.getText(pos) !== '@') return undefined;
+            const charBeforeWord = new vscode.Range(
+                wordRange.start.translate(0, -1),
+                wordRange.start,
+            );
+            if (document.getText(charBeforeWord) !== '@') {
+                return undefined;
+            }
         }
         // Check whether options has changed.
         const newOptions = this._globalContext.options;
@@ -1168,9 +1158,11 @@ export default class CompletionItemProvider
         }
         if (position.character === 1) return this._getCompletionItems();
         // Check whether the '@' character is escaped.
-        const pos = new vscode.Range(
-            position.translate(0, -2), position.translate(0, -1));
-        if (document.getText(pos) === '@') {
+        const secondCharBeforeWord = new vscode.Range(
+            position.translate(0, -2),
+            position.translate(0, -1)
+        );
+        if (document.getText(secondCharBeforeWord) === '@') {
             return undefined;
         } else {
             return this._getCompletionItems();

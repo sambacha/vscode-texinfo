@@ -26,8 +26,8 @@ import { isDefined } from './utils/types';
 /**
  * Manage diagnostic information of Texinfo documents.
  */
-export default class Diagnosis implements vscode.Disposable {
-
+export default class Diagnosis implements vscode.Disposable
+{
     /**
      * Remove a document's diagnostic entry from the collection.
      * 
@@ -68,10 +68,13 @@ export default class Diagnosis implements vscode.Disposable {
  */
 function logToDiagnostic(lineText: string) {
     const lineNum = parseInt(lineText) - 1;
-    // Ignore error that does not correspond a line in document.
-    if (isNaN(lineNum)) return undefined;
+    // Ignore error that does not correspond to a line in document.
+    if (isNaN(lineNum)) {
+        return undefined;
+    }
     const message = lineText.substring(lineNum.toString().length + 2);
     const severity = message.startsWith('warning:')
-        ? vscode.DiagnosticSeverity.Warning : undefined;
+        ? vscode.DiagnosticSeverity.Warning
+        : undefined;
     return new vscode.Diagnostic(lineNumToRange(lineNum), message, severity);
 }

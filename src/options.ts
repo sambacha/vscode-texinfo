@@ -26,8 +26,8 @@ import * as vscode from 'vscode';
  * 
  * See the `contributes.configuration` entry in package.json for details.
  */
-export default class Options {
-
+export default class Options
+{
     get enableSnippets() {
         return this._getBoolean('completion.enableSnippets');
     }

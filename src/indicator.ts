@@ -26,8 +26,8 @@ import { exec } from './utils/misc';
 /**
  * Shows whether GNU Texinfo is properly installed and configured.
  */
-export default class Indicator implements vscode.Disposable {
-
+export default class Indicator implements vscode.Disposable
+{
     get canDisplayPreview() {
         return this._canDisplayPreview;
     }
@@ -36,12 +36,15 @@ export default class Indicator implements vscode.Disposable {
         this._statusBarItem.dispose();
     }
 
-    constructor(private readonly globalContext: GlobalContext) {
-        globalContext.subscribe(
-            vscode.commands.registerCommand('texinfo.indicator.click',
-                this._click.bind(this)),
+    constructor(private readonly _globalContext: GlobalContext) {
+        _globalContext.subscribe(
+            vscode.commands.registerCommand(
+                'texinfo.indicator.click',
+                this._click.bind(this),
+            ),
             vscode.window.onDidChangeActiveTextEditor(
-                this._refresh.bind(this)),
+                this._refresh.bind(this),
+            ),
         );
         this._updateStatus()
             .then(() => this._refresh(vscode.window.activeTextEditor));
@@ -78,9 +81,9 @@ export default class Indicator implements vscode.Disposable {
      * by checking `makeinfo --version`.
      */
     private async _updateStatus() {
-        const options = this.globalContext.options;
-        const output = await exec(options.makeinfo, ['--version'],
-            options.maxSize);
+        const options = this._globalContext.options;
+        const output
+            = await exec(options.makeinfo, ['--version'], options.maxSize);
         const result = output.data?.match(/\(GNU texinfo\) (.*)\n/);
         let tooltip = '', icon: string, version = '';
         if (result && result[1]) {

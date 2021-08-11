@@ -24,11 +24,13 @@ import * as vscode from 'vscode';
 /**
  * Logger which prints message to VSCode output channel.
  */
-export default class Logger implements vscode.Disposable {
-
+export default class Logger implements vscode.Disposable
+{
     log(message: string) {
-        const dateTime = new Date()
-            .toLocaleString(undefined, { hour12: false });
+        const dateTime = new Date().toLocaleString(
+            undefined,
+            { hour12: false }
+        );
         this._outputChannel.appendLine(`[ ${dateTime} ]\n${message}`);
     }
 

@@ -27,8 +27,8 @@ import { FoldingRange, Optional } from '../utils/types';
 /**
  * Context for symbols in a Texinfo document.
  */
-export default class DocumentSymbolContext {
-
+export default class DocumentSymbolContext
+{
     get documentSymbols() {
         return this._documentSymbols ??= this._calculcateDocumentSymbols();
     }
@@ -63,11 +63,16 @@ function foldingRangeToSymbols(
     const symbols = <vscode.DocumentSymbol[]>[];
     for (let idx = start; idx < end; ++idx) {
         const node = ranges[idx];
-        if (node === undefined) continue;
-        const range = lineNumToRange(idx, node.end);
-        const selectionRange = lineNumToRange(idx);
-        const symbol = new vscode.DocumentSymbol('@' + node.name, node.detail,
-            vscode.SymbolKind.String, range, selectionRange);
+        if (node === undefined) {
+            continue;
+        }
+        const symbol = new vscode.DocumentSymbol(
+            '@' + node.name,
+            node.detail,
+            vscode.SymbolKind.String,
+            lineNumToRange(idx, node.end),  // full range
+            lineNumToRange(idx),            // selection range
+        );
         symbol.children = foldingRangeToSymbols(ranges, idx + 1, node.end);
         symbols.push(symbol);
         idx = node.end;

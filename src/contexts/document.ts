@@ -28,8 +28,8 @@ import PreviewContext from './preview';
 /**
  * Holds all contexts for a Texinfo document.
  */
-export default class DocumentContext {
-
+export default class DocumentContext
+{
     readonly foldingRange = new FoldingRangeContext(this);
 
     readonly documentSymbol = new DocumentSymbolContext(this);

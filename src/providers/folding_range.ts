@@ -29,8 +29,8 @@ export default class FoldingRangeProvider
     implements vscode.FoldingRangeProvider
 {
     provideFoldingRanges(document: vscode.TextDocument) {
-        return this._globalContext.contextMapping.getDocumentContext(document)
-            .foldingRange.foldingRanges;
+        return this._globalContext.contextMapping
+            .getDocumentContext(document).foldingRange.foldingRanges;
     }
 
     constructor(private readonly _globalContext: GlobalContext) {}

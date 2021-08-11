@@ -33,14 +33,14 @@ import FoldingRangeProvider from './providers/folding_range';
 /**
  * Manage extension-level global-scope contexts.
  */
-export default class GlobalContext {
-
+export default class GlobalContext
+{
     readonly contextMapping = new ContextMapping(this);
     readonly diagnosis = new Diagnosis;
     readonly indicator = new Indicator(this);
     readonly logger = new Logger;
 
-    readonly path = this.context.extensionPath;
+    readonly path = this._context.extensionPath;
 
     /**
      * Note: `Options`' no singleton.
@@ -52,22 +52,35 @@ export default class GlobalContext {
     }
 
     subscribe(...items: vscode.Disposable[]) {
-        this.context.subscriptions.push(...items);
+        this._context.subscriptions.push(...items);
     }
 
-    constructor(private readonly context: vscode.ExtensionContext) {
+    constructor(private readonly _context: vscode.ExtensionContext) {
         this.subscribe(
-            this.contextMapping, this.diagnosis, this.indicator, this.logger,
-            vscode.languages.registerCodeLensProvider('texinfo',
-                new CodeLensProvider(this)),
-            vscode.languages.registerCompletionItemProvider('texinfo',
-                new CompletionItemProvider(this), '@'),
-            vscode.languages.registerDocumentSymbolProvider('texinfo',
-                new DocumentSymbolProvider(this)),
-            vscode.languages.registerFoldingRangeProvider('texinfo',
-                new FoldingRangeProvider(this)),
+            this.contextMapping,
+            this.diagnosis,
+            this.indicator,
+            this.logger,
+            vscode.languages.registerCodeLensProvider(
+                'texinfo',
+                new CodeLensProvider(this),
+            ),
+            vscode.languages.registerCompletionItemProvider(
+                'texinfo',
+                new CompletionItemProvider(this),
+                '@',
+            ),
+            vscode.languages.registerDocumentSymbolProvider(
+                'texinfo',
+                new DocumentSymbolProvider(this),
+            ),
+            vscode.languages.registerFoldingRangeProvider(
+                'texinfo',
+                new FoldingRangeProvider(this),
+            ),
             vscode.workspace.onDidChangeConfiguration(
-                () => this._options = undefined),
+                () => this._options = undefined,
+            ),
         );
     }
 

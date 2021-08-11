@@ -30,8 +30,8 @@ import DocumentContext from './document';
  * Actually, more than folding ranges (e.g. code lens) is handled within
  * this context, so perhaps we should use another name...
  */
-export default class FoldingRangeContext {
-
+export default class FoldingRangeContext
+{
     /**
      * Get VSCode folding ranges from the context.
      */
@@ -129,7 +129,9 @@ export default class FoldingRangeContext {
         let verbatim = false;
         for (let idx = lastLine; idx >= 0; --idx) {
             const line = this._document.lineAt(idx).text.trimLeft();
-            if (!line.startsWith('@')) continue;
+            if (!line.startsWith('@')) {
+                continue;
+            }
             if (!verbatim) {
                 if (line === '@bye') {
                     lastLine = idx;
@@ -139,7 +141,9 @@ export default class FoldingRangeContext {
                     this._clearTemporaries();
                     continue;
                 }
-                if (this._processComment(line, idx)) continue;
+                if (this._processComment(line, idx)) {
+                    continue;
+                }
             }
             // Process block.
             if (line.startsWith('@end ')) {
@@ -151,9 +155,13 @@ export default class FoldingRangeContext {
                 closingBlocks.push({ name: name, line: idx });
                 continue;
             }
-            if (!verbatim && this._processNode(line, idx, lastLine)) continue;
+            if (!verbatim && this._processNode(line, idx, lastLine)) {
+                continue;
+            }
             const closingBlock = closingBlocks.pop();
-            if (closingBlock === undefined) continue;
+            if (closingBlock === undefined) {
+                continue;
+            }
             const name = closingBlock.name;
             if (line.substring(1, name.length + 2).trim() === name) {
                 this._addRange(idx, closingBlock.line, { name: name });
@@ -165,8 +173,11 @@ export default class FoldingRangeContext {
             }
         }
         if (this._commentRange !== undefined) {
-            this._addRange(this._commentRange.start, this._commentRange.end,
-                { kind: vscode.FoldingRangeKind.Comment });
+            this._addRange(
+                this._commentRange.start,
+                this._commentRange.end,
+                { kind: vscode.FoldingRangeKind.Comment },
+            );
         }
         return this._foldingRanges;
     }

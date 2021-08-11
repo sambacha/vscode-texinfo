@@ -25,13 +25,17 @@ import GlobalContext from '../global_context';
 /**
  * Provide code lenses for Texinfo document.
  */
-export default class CodeLensProvider implements vscode.CodeLensProvider {
-    
+export default class CodeLensProvider implements vscode.CodeLensProvider
+{
     provideCodeLenses(document: vscode.TextDocument) {
-        if (!this._globalContext.options.enableCodeLens) return undefined;
-        if (!this._globalContext.indicator.canDisplayPreview) return undefined;
-        return this._globalContext.contextMapping.getDocumentContext(document)
-            .foldingRange.nodeValues;
+        if (!this._globalContext.options.enableCodeLens) {
+            return undefined;
+        }
+        if (!this._globalContext.indicator.canDisplayPreview) {
+            return undefined;
+        }
+        return this._globalContext.contextMapping
+            .getDocumentContext(document).foldingRange.nodeValues;
     }
 
     constructor(private readonly _globalContext: GlobalContext) {}

@@ -112,6 +112,7 @@ export function getNodeHtmlRef(nodeName: string) {
             .join(''))
         .join('-');
     const firstCharCode = result.charCodeAt(0);
-    return isAlpha(firstCharCode) ? result : 'g_t_00'
-        + firstCharCode.toString(16) + result.substring(1);
+    return isAlpha(firstCharCode)
+        ? result
+        : 'g_t_00' + firstCharCode.toString(16) + result.substring(1);
 }

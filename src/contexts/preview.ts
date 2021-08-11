@@ -28,8 +28,8 @@ import { getNodeHtmlRef, prompt } from '../utils/misc';
 /**
  * Stores information of a Texinfo document preview.
  */
-export default class PreviewContext {
-
+export default class PreviewContext
+{
     close() {
         this._disposables.forEach(event => event.dispose());
         this._panel.dispose();
@@ -57,11 +57,16 @@ export default class PreviewContext {
         // Inform the user that the preview is updating, when `makeinfo`
         // takes too long.
         setTimeout(() => this._updating && this._updateTitle(), 500);
-        const initFile = this._globalContext.path + '/ext/html-preview.pm';
-        const converter = new Converter(this._document.fileName, initFile,
-            this._globalContext.options, this._logger);
-        const { data, error } = await converter
-            .toHTML(path => this._webview.asWebviewUri(path), this._script);
+        const converter = new Converter(
+            this._document.fileName,
+            this._globalContext.path + '/ext/html-preview.pm',
+            this._globalContext.options,
+            this._logger,
+        );
+        const { data, error } = await converter.toHTML(
+            path => this._webview.asWebviewUri(path),
+            this._script,
+        );
         if (error) {
             this._logger.log(error);
             this._diagnosis.update(this._document, error);
@@ -86,8 +91,11 @@ export default class PreviewContext {
             retainContextWhenHidden: true,
             enableScripts: true,
         };
-        this._panel = vscode.window.createWebviewPanel('texinfo.preview', '',
-            vscode.ViewColumn.Beside, options);
+        this._panel = vscode.window.createWebviewPanel(
+            'texinfo.preview', '',
+            vscode.ViewColumn.Beside,
+            options,
+        );
         this._webview = this._panel.webview;
         this._disposables.push(this._panel.onDidDispose(() => this.close()));
         this._updateTitle();
